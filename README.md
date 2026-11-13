@@ -1,10 +1,25 @@
-# Shree Self Driving & Car Rental Service — Quotation Calculator
+# Shree Self Driving & Car Rental Service — Quotation Calculator 2.0
 
-A modern, responsive, offline-first static web application for creating professional self-drive car rental quotations, generating instant WhatsApp Business messages, and exporting full-size A4 executive PDF quotations.
+A modern, responsive, offline-first static web application for creating professional self-drive car rental quotations, generating instant WhatsApp Business messages, booking calendar management, GST invoice generation, and exporting full-size A4 executive PDF quotations.
 
 ---
 
-## 🌟 Key Features
+## 🌟 Key Features (Version 2.0)
+
+- **✨ 3D Glassmorphism Premium UI:**
+  - Modern ultra-sleek 3D card depth, frosted glass effects, neon accents, and smooth animations.
+  - WCAG AAA high-contrast text rendering across both Dark and Light themes.
+
+- **📅 Realtime Booking Calendar (`/calendar/`):**
+  - Track vehicle availability, active rentals, upcoming pickups, and returns.
+  - Synchronized vehicle registry and instant booking creation.
+
+- **🧾 GST-Ready Invoice Generator (`/invoice/`):**
+  - Convert quotations or confirmed bookings directly into GST-compliant tax invoices.
+  - 18% CGST/SGST breakdown, reverse charge, and print-ready A4 PDF invoice export.
+
+- **🔄 Automatic GitHub Synchronizer:**
+  - Background live watcher (`auto-sync.py` / `start-autosync.bat`) that immediately commits and pushes all code modifications to GitHub repository in real time.
 
 - **⚡ Instant Automatic Calculations:**
   - Auto-calculates trip duration, days, extra hours, and total rental.
