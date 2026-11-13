@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shree Quotation Calculator — Billing Rules Test Runner</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { padding: 32px 16px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+    .test-container { max-width: 900px; margin: 0 auto; }
+    .test-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    .test-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.95rem;
+    }
+    .test-row:last-child { border-bottom: none; }
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+    .badge.pass { background: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid #22c55e; }
+    .badge.fail { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; }
+    .summary-box {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    .metric {
+      flex: 1;
+      background: var(--surface-raised);
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .metric .num { font-size: 1.8rem; font-weight: 800; color: var(--primary); }
+    .metric .lbl { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <div>
+        <h1 style="font-size: 1.8rem; font-weight: 800; margin: 0;">🧪 Rental Billing Rules Test Runner</h1>
+        <p style="color: var(--text-muted); margin: 6px 0 0;">Automatic test verification for core business calculation logic</p>
+      </div>
+      <a href="./" class="btn btn-secondary">← Back to Hub</a>
+    </div>
+
+    <div class="summary-box">
+      <div class="metric">
+        <div class="num" id="totalCount">0</div>
+        <div class="lbl">Total Tests</div>
+      </div>
+      <div class="metric">
+        <div class="num" style="color: #22c55e;" id="passCount">0</div>
+        <div class="lbl">Passed</div>
+      </div>
+      <div class="metric">
+        <div class="num" style="color: #ef4444;" id="failCount">0</div>
+        <div class="lbl">Failed</div>
+      </div>
+    </div>
+
+    <div class="test-card">
+      <h3 style="margin-top: 0; margin-bottom: 16px;">Test Cases</h3>
+      <div id="results"></div>
+    </div>
+  </div>
+
+  <script src="calc.js"></script>
+  <script>
+    const tests = [
+      {
+        name: "Standard 24-hour single day booking",
+        run: () => {
+          const res = RentalCalc.compute({
+            pickup: "2026-11-20T10:00",
+            return: "2026-11-21T10:00",
+            ratePerDay: 2500,
+            extraHourRate: 150,
+            deposit: 3000,
+            token: 1000
+          });
+          return res.days === 1 && res.extraHours === 0 && res.totalRental === 2500 && res.payable === 4500;
+        }
+      },
+      {
+        name: "Trip with 4 extra hours (28 total hours)",
+        run: () => {
+          const res = RentalCalc.compute({
+            pickup: "2026-11-20T10:00",
+            return: "2026-11-21T14:00",
+            ratePerDay: 2000,
+            extraHourRate: 200,
+            deposit: 0,
+            token: 0
+          });
+          return res.days === 1 && res.extraHours === 4 && res.extraCharge === 800 && res.totalRental === 2800 && res.payable === 2800;
+        }
+      },
+      {
+        name: "Flat discount calculation and net payable",
+        run: () => {
+          const res = RentalCalc.compute({
+            pickup: "2026-11-20T10:00",
+            return: "2026-11-22T10:00",
+            ratePerDay: 2000,
+            discountType: "flat",
+            discountValue: 500,
+            deposit: 2000,
+            token: 500
+          });
+          return res.days === 2 && res.totalRental === 4000 && res.discount === 500 && res.payable === 5000;
+        }
+      },
+      {
+        name: "Percentage discount calculation (10%)",
+        run: () => {
+          const res = RentalCalc.compute({
+            pickup: "2026-11-20T10:00",
+            return: "2026-11-22T10:00",
+            ratePerDay: 3000,
+            discountType: "percent",
+            discountValue: 10,
+            deposit: 0,
+            token: 0
+          });
+          return res.totalRental === 6000 && res.discount === 600 && res.payable === 5400;
+        }
+      },
+      {
+        name: "Validation error when return time is before pickup",
+        run: () => {
+          const res = RentalCalc.compute({
+            pickup: "2026-11-21T10:00",
+            return: "2026-11-20T10:00",
+            ratePerDay: 2500
+          });
+          return res.valid === false && Boolean(res.error);
+        }
+      },
+      {
+        name: "Validation error when day rate is missing",
+        run: () => {
+          const res = RentalCalc.compute({
+            pickup: "2026-11-20T10:00",
+            return: "2026-11-21T10:00",
+            ratePerDay: ""
+          });
+          return res.valid === false;
+        }
+      },
+      {
+        name: "Discount capped at total rental amount (cannot be negative)",
+        run: () => {
+          const res = RentalCalc.compute({
+            pickup: "2026-11-20T10:00",
+            return: "2026-11-21T10:00",
+            ratePerDay: 2000,
+            discountType: "flat",
+            discountValue: 5000,
+            deposit: 1000,
+            token: 0
+          });
+          return res.discount === 2000 && res.payable === 1000;
+        }
+      },
+      {
+        name: "Indian currency formatter utility (formatINR)",
+        run: () => {
+          return RentalCalc.formatINR(125000) === "₹1,25,000" && RentalCalc.formatINR(500) === "₹500";
+        }
+      }
+    ];
+
+    let passed = 0;
+    let failed = 0;
+    const container = document.getElementById("results");
+
+    tests.forEach((t) => {
+      let ok = false;
+      try {
+        ok = t.run();
+      } catch (e) {
+        ok = false;
+      }
+
+      if (ok) passed++; else failed++;
+
+      const div = document.createElement("div");
+      div.className = "test-row";
+      div.innerHTML = `
+        <span>${t.name}</span>
+        <span class="badge ${ok ? 'pass' : 'fail'}">${ok ? '✅ PASS' : '❌ FAIL'}</span>
+      `;
+      container.appendChild(div);
+    });
+
+    document.getElementById("totalCount").innerText = tests.length;
+    document.getElementById("passCount").innerText = passed;
+    document.getElementById("failCount").innerText = failed;
+  </script>
+</body>
+</html>
