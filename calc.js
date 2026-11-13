@@ -297,11 +297,6 @@
     view.terms.forEach(function (t) { L.push('\u2022 ' + t); });
 
     L.push('');
-    L.push('\uD83D\uDCDE *Bookings / WhatsApp:* +91 9768010603');
-    L.push('\uD83C\uDF10 *Website:* www.shreeselfdriving.in');
-    L.push('\u2709\uFE0F *Email:* shreeselfdriving@gmail.com');
-    L.push('\uD83D\uDCCD *Location:* Sector 17, Khanda Colony, Panvel, Navi Mumbai - 410206');
-    L.push('');
     L.push('\uD83D\uDE4F *Thank you for choosing ' + view.bizName + '!*');
     L.push('Have a safe and comfortable drive! \uD83D\uDE97');
     return L.join('\n');

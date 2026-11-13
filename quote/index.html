@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quotation Calculator - Shree Self Driving &amp; Car Rental Service</title>
+<link rel="stylesheet" href="../styles.css">
+<script src="../theme.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <!-- ================= BRAND BAR ================= -->
+  <header class="brandbar">
+    <div class="brand-left">
+      <div class="brand-icon-badge" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C2.1 10.8 2 11 2 11.2V16c0 .6.4 1 1 1h2"/>
+          <circle cx="7" cy="17" r="2"/>
+          <circle cx="17" cy="17" r="2"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1>Shree Self Driving &amp; Car Rental Service</h1>
+        <p>
+          <a href="../index.html">&larr; Back to Tools</a>
+          <span style="opacity:.4;">&bull;</span>
+          <a href="../calendar/index.html">Booking Calendar</a>
+          <span style="opacity:.4;">&bull;</span>
+          <a href="../invoice/index.html" style="color:var(--accent-gold); font-weight:700;">GST Invoice</a>
+          <span style="opacity:.4;">&bull;</span>
+          <a href="tel:9768010603" class="brand-phone-pill" title="Call for Bookings / Enquiries">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Bookings: 9768010603
+          </a>
+        </p>
+      </div>
+    </div>
+    <div class="brand-actions">
+      <a href="../Shree-Quotation-Calculator.zip" download class="btn ghost" style="padding:7px 14px; font-size:13px;" title="Download complete source code ZIP">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download ZIP
+      </a>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle theme">Light mode</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- ================= INPUTS PANEL ================= -->
+    <form class="card panel" id="form" autocomplete="off" onsubmit="return false;">
+      
+      <!-- Section 1: Business Details -->
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-3"/><line x1="9" y1="9" x2="9" y2="9.01"/><line x1="9" y1="13" x2="9" y2="13.01"/><line x1="9" y1="17" x2="9" y2="17.01"/></svg>
+        1. Business Information
+      </div>
+      <div class="field">
+        <label for="bizName">Business name</label>
+        <input type="text" id="bizName" value="SHREE SELF DRIVING &amp; CAR RENTAL SERVICE">
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label for="vehType">Rental type</label>
+          <input type="text" id="vehType" value="Self Drive">
+        </div>
+        <div class="field">
+          <label for="bizPhone">Bookings / Enquiries (Fixed)</label>
+          <input type="tel" id="bizPhone" value="9768010603" readonly title="Fixed Booking Number" style="font-weight:700; color:var(--accent-gold); cursor:not-allowed;">
+        </div>
+      </div>
+
+      <!-- Section 2: Customer Details -->
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        2. Customer Details
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label for="customerName">Customer name</label>
+          <input type="text" id="customerName" value="" placeholder="e.g. Rahul Sharma">
+        </div>
+        <div class="field">
+          <label for="quotationDate">Quotation date</label>
+          <input type="date" id="quotationDate">
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <div class="field-header">
+            <label for="validity">Quotation Validity</label>
+            <span class="field-pill accent">Auto-Expiry</span>
+          </div>
+          <select id="validity">
+            <option value="24 Hours" selected>24 Hours (Standard)</option>
+            <option value="48 Hours">48 Hours</option>
+            <option value="3 Days">3 Days</option>
+            <option value="7 Days">7 Days</option>
+            <option value="Valid for Today Only">Valid for Today Only</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="customerPhone">Customer WhatsApp Number (For Direct Sending)</label>
+          <input type="tel" id="customerPhone" value="" placeholder="e.g. 9876543210 (10 digits)">
+        </div>
+      </div>
+      
+
+      <!-- Section 3: Vehicle Selection & Setup -->
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C2.1 10.8 2 11 2 11.2V16c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
+        3. Vehicle Selection &amp; Setup
+      </div>
+      <div class="field">
+        <label for="vehiclePreset">Choose Vehicle (Auto-fills parameters)</label>
+        <div style="display: flex; gap: 8px;">
+          <select id="vehiclePreset" style="flex: 1;">
+            <option value="">-- Select a Vehicle --</option>
+          </select>
+          <button type="button" id="btnDeleteVehicle" class="btn ghost" title="Delete selected vehicle" style="padding: 8px 12px; color: var(--red); border-color: rgba(239,68,68,.35);" aria-label="Delete selected vehicle">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          </button>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;">
+        <button type="button" id="btnAddVehicle" class="btn ghost" style="flex: 1; padding: 8px 12px; font-size: 13px;">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Vehicle
+        </button>
+        <button type="button" id="btnSaveVehicle" class="btn ghost" style="flex: 1; padding: 8px 12px; font-size: 13px;" title="Save current parameters to selected vehicle">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save Parameters
+        </button>
+      </div>
+      <div id="vehMsg" role="alert" aria-live="polite" style="display:none; font-size:13px; margin-bottom:14px; padding: 8px 12px; font-weight:600;"></div>
+
+      <div class="field">
+        <label for="vehName">Vehicle name / Model</label>
+        <input type="text" id="vehName" value="" placeholder="e.g. Maruti Suzuki Swift / Ertiga">
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label for="vehFuel">Fuel type</label>
+          <input type="text" id="vehFuel" value="" placeholder="e.g. Petrol / CNG">
+        </div>
+        <div class="field">
+          <label for="vehSeats">Seating capacity</label>
+          <input type="text" id="vehSeats" value="" placeholder="e.g. 5 Seater">
+        </div>
+      </div>
+
+      <!-- Section 4: Trip Schedule -->
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        4. Trip Schedule (12-Hour Time)
+      </div>
+      <div class="field">
+        <label for="pickupDate">Pickup date &amp; time</label>
+        <div class="dt">
+          <input type="date" id="pickupDate" value="">
+          <div class="dt-time">
+            <select id="pickupHour" class="dt-hour" aria-label="Pickup hour"></select>
+            <span class="sep">:</span>
+            <select id="pickupMin" class="dt-min" aria-label="Pickup minutes"></select>
+            <select id="pickupAmPm" class="dt-ampm" aria-label="Pickup AM or PM">
+              <option value="AM">AM</option>
+              <option value="PM" selected>PM</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label for="returnDate">Return date &amp; time</label>
+        <div class="dt">
+          <input type="date" id="returnDate" value="">
+          <div class="dt-time">
+            <select id="returnHour" class="dt-hour" aria-label="Return hour"></select>
+            <span class="sep">:</span>
+            <select id="returnMin" class="dt-min" aria-label="Return minutes"></select>
+            <select id="returnAmPm" class="dt-ampm" aria-label="Return AM or PM">
+              <option value="AM">AM</option>
+              <option value="PM" selected>PM</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 5: Rates & Additional Charges (Strict 8-Item Sequence) -->
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        5. Rates &amp; Additional Charges
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <div class="field-header">
+            <label for="ratePerDay">1. Rate per day (₹)</label>
+            <span class="field-pill">₹ / day</span>
+          </div>
+          <input type="number" id="ratePerDay" min="0" step="1" value="" placeholder="e.g. 1500">
+        </div>
+        <div class="field">
+          <div class="field-header">
+            <label for="extraHourRate">2. Extra hour rate (₹)</label>
+            <span class="field-pill">₹ / hr</span>
+          </div>
+          <input type="number" id="extraHourRate" min="0" step="1" value="" placeholder="e.g. 100">
+        </div>
+        <div class="field">
+          <div class="field-header">
+            <label for="includedKM">3. Included KM limit</label>
+            <span id="kmHint" class="field-pill accent">300 km/d &times; days</span>
+          </div>
+          <div class="km-composite-input">
+            <div class="km-part-day" title="KM Per Day Limit (Default: 300 KM/day)">
+              <input type="number" id="kmPerDay" min="0" step="1" value="300" title="KM Per Day (Default 300 KM/day)" placeholder="300">
+              <span class="km-unit">km/d</span>
+            </div>
+            <span class="km-arrow">&rarr;</span>
+            <div class="km-part-total" title="Total Included KM (Auto-calculated as Per-day KM × days, fully editable)">
+              <input type="number" id="includedKM" min="0" step="1" value="" placeholder="Auto KM">
+              <span class="km-unit">KM</span>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-header">
+            <label for="extraKMRate">4. Extra KM rate (₹ / km)</label>
+            <span class="field-pill">₹ / km</span>
+          </div>
+          <input type="number" id="extraKMRate" min="0" step="1" value="" placeholder="e.g. 7">
+        </div>
+        <div class="field">
+          <div class="field-header">
+            <label for="token">5. Token received (₹)</label>
+            <span class="field-pill">Advance</span>
+          </div>
+          <input type="number" id="token" min="0" step="1" value="" placeholder="e.g. 1000">
+        </div>
+        <div class="field">
+          <div class="field-header">
+            <label for="deposit">6. Refundable deposit (₹)</label>
+            <span class="field-pill">Security</span>
+          </div>
+          <input type="number" id="deposit" min="0" step="1" value="" placeholder="e.g. 4000">
+        </div>
+        <div class="field">
+          <div class="field-header">
+            <label for="deliveryCharges">7. Delivery charges (₹)</label>
+            <span class="field-pill">Delivery</span>
+          </div>
+          <input type="number" id="deliveryCharges" min="0" step="1" value="" placeholder="e.g. 300">
+        </div>
+        <div class="field">
+          <div class="field-header">
+            <label for="washingCharges">8. Car washing charges (₹)</label>
+            <span class="field-pill">Washing</span>
+          </div>
+          <input type="number" id="washingCharges" min="0" step="1" value="" placeholder="e.g. 200">
+        </div>
+      </div>
+
+      <!-- Section 6: Offer / Discount -->
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+        6. Offer / Discount
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label for="discountType">Discount type</label>
+          <select id="discountType">
+            <option value="amount">Amount (₹)</option>
+            <option value="percent">Percent (%)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="discountValue">Discount value</label>
+          <input type="number" id="discountValue" min="0" step="1" value="0">
+        </div>
+      </div>
+
+      <!-- Section 7: Special Notes / Instructions -->
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        7. Special Notes &amp; Remarks
+      </div>
+      <div class="field">
+        <textarea id="quoteNotes" rows="3" placeholder="Enter special notes or instructions...">FASTag toll and parking charges as per actuals.
+Original driving licence and Aadhaar card mandatory at vehicle pickup.
+Vehicle inspection and fuel check will be conducted mutually at handover.</textarea>
+        <p class="small muted" style="font-size:11.5px; color:var(--text-dim); margin-top:4px;">Appears in highlighted box on Quotation, WhatsApp &amp; PDF.</p>
+      </div>
+
+      <!-- Section 8: Terms & Conditions -->
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        8. Terms &amp; Conditions
+      </div>
+      <div class="field">
+        <textarea id="terms" rows="7">Remaining rental amount and security deposit must be paid at vehicle handover.
+The {deposit} security deposit is refundable after vehicle return and inspection, subject to applicable deductions.
+The package includes {includedKM} KM. Extra KM will be charged at {extraKMRate} per KM.
+Extra hours are charged at {extraHourRate} per hour.
+A valid original Driving Licence and Government ID Proof are mandatory.
+Fuel, toll, parking and challan charges are the customer's responsibility.
+Vehicle condition and KM reading will be checked at handover and return.</textarea>
+        <p class="small muted" style="font-size:11.5px; color:var(--text-dim); margin-top:4px;">Placeholders: {deposit}, {includedKM}, {extraKMRate}, {extraHourRate}, {rate}</p>
+      </div>
+    </form>
+
+    <!-- ================= PREVIEW COLUMN ================= -->
+    <aside class="preview-col" id="preview-col">
+      <!-- Live Telemetry Summary Chips -->
+      <div class="summary" id="summary"></div>
+
+      <!-- Action Buttons -->
+      <div class="actions">
+        <button class="btn wa" id="btnWaPdf" type="button" title="Generate PDF & Share directly to WhatsApp / WhatsApp Business">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.888 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          <span id="btnWaPdfText">Share PDF to WhatsApp</span>
+        </button>
+        <button class="btn pdf" id="btnPdf" type="button" title="Download or Print Executive 1-Page PDF">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <span id="btnPdfText">Download / Print PDF</span>
+        </button>
+        <button class="btn ghost" id="btnWa" type="button" title="Share Formatted Text Message to WhatsApp / WhatsApp Business">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.888 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          WhatsApp Text
+        </button>
+        <button class="btn ghost" id="btnCopy" type="button" title="Copy Formatted Quotation Text">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy Text
+        </button>
+        <button class="btn ghost" id="btnConvertToInvoice" type="button" title="Convert this quotation directly into a GST Tax Invoice">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Convert to Invoice
+        </button>
+        <button class="btn ghost" id="btnReset" type="button" title="Reset all form fields">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          Reset
+        </button>
+      </div>
+
+      <!-- Banner for Validation Errors -->
+      <div class="banner" id="banner" role="alert" aria-live="polite">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span id="bannerText"></span>
+      </div>
+
+      
+  <!-- ================= MODAL: DESKTOP PDF WHATSAPP INSTRUCTIONS ================= -->
+  <div id="modalPdfWa" class="modal-backdrop" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="modalPdfWaTitle">
+    <div class="modal-box card" style="max-width:480px; text-align:center;">
+      <div style="width:54px; height:54px; margin:0 auto 12px; border-radius:50%; background:rgba(16,185,129,0.15); display:flex; align-items:center; justify-content:center; color:var(--emerald);">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 15 12 18 15 15"/><line x1="12" y1="18" x2="12" y2="9"/></svg>
+      </div>
+      <h3 id="modalPdfWaTitle" style="font-family:var(--font-display); font-size:19px; font-weight:800; margin-bottom:8px; color:var(--text-main);">
+        PDF Downloaded &amp; WhatsApp Opened!
+      </h3>
+      <p id="pdfWaFilename" style="font-size:12.5px; font-weight:700; color:var(--emerald); background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.25); padding:6px 12px; border-radius:6px; display:inline-block; margin-bottom:14px; font-family:var(--font-mono);"></p>
+      <div style="text-align:left; background:var(--card-surface); border:1px solid var(--border); border-radius:10px; padding:14px 16px; font-size:13px; line-height:1.6; margin-bottom:18px;">
+        <div style="font-weight:700; color:var(--text-main); margin-bottom:6px;">Next steps in WhatsApp:</div>
+        <ol style="margin:0; padding-left:20px; color:var(--text-muted);">
+          <li>WhatsApp chat window automatically open ho chuka hai.</li>
+          <li>Chat box me niche <b>📎 (Paperclip / Attach)</b> icon par click karein.</li>
+          <li><b>"Document"</b> select karein aur ye downloaded PDF file choose karein.</li>
+          <li>Send (➤) button dabayein!</li>
+        </ol>
+      </div>
+      <button type="button" class="btn" id="btnClosePdfWa" style="width:100%; justify-content:center; padding:10px; font-weight:700;">
+        Got It / Samajh Gaya
+      </button>
+    </div>
+  </div>
+
+      <!-- Quotation Preview Sheet -->
+      <div class="quote-card" id="quote"></div>
+    </aside>
+  </main>
+
+
+</div>
+
+<!-- ================= MOBILE STICKY PREVIEW BAR ================= -->
+<div class="mobile-preview-bar">
+  <div>
+    <div class="mp-info">Total Payable</div>
+    <div class="mp-amt mono-nums" id="mobPayableAmt">&mdash;</div>
+  </div>
+  <a href="#preview-col" class="btn" style="text-decoration:none;">
+    View Quotation &darr;
+  </a>
+</div>
+
+<!-- ================= MODAL: ADD NEW VEHICLE ================= -->
+<div id="modalAddVehicle" class="modal-backdrop" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="modalAddVehTitle">
+  <div class="modal-box card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h3 id="modalAddVehTitle" style="margin:0; font-family:var(--font-display); font-size:18px; font-weight:800; display:flex; align-items:center; gap:8px;">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add New Vehicle
+      </h3>
+      <button type="button" id="btnCloseModal" style="background:none; border:none; color:var(--text-muted); font-size:24px; cursor:pointer; line-height:1; padding:4px;" aria-label="Close dialog">&times;</button>
+    </div>
+    <div class="field">
+      <label for="newVehName">Vehicle Name &amp; Model *</label>
+      <input type="text" id="newVehName" placeholder="e.g. Maruti Suzuki Swift VXI 2024">
+    </div>
+    <div class="grid2">
+      <div class="field">
+        <label for="newVehFuel">Fuel type</label>
+        <input type="text" id="newVehFuel" placeholder="e.g. Petrol / Diesel / CNG" value="Petrol">
+      </div>
+      <div class="field">
+        <label for="newVehSeats">Seating capacity</label>
+        <input type="text" id="newVehSeats" placeholder="e.g. 5 Seater" value="5 Seater">
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="field">
+        <label for="newVehRate">Rate per day (₹)</label>
+        <input type="number" id="newVehRate" min="0" placeholder="e.g. 1800" value="1800">
+      </div>
+      <div class="field">
+        <label for="newVehExtraHour">Extra hour rate (₹)</label>
+        <input type="number" id="newVehExtraHour" min="0" placeholder="e.g. 100" value="100">
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="field">
+        <label for="newVehKM">Included KM per day (Default 300 km)</label>
+        <input type="number" id="newVehKM" min="0" placeholder="e.g. 300" value="300">
+      </div>
+      <div class="field">
+        <label for="newVehExtraKM">Extra KM rate (₹ / km)</label>
+        <input type="number" id="newVehExtraKM" min="0" placeholder="e.g. 8" value="8">
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="field">
+        <label for="newVehToken">Token received (₹)</label>
+        <input type="number" id="newVehToken" min="0" placeholder="e.g. 1000" value="1000">
+      </div>
+      <div class="field">
+        <label for="newVehDeposit">Refundable deposit (₹)</label>
+        <input type="number" id="newVehDeposit" min="0" placeholder="e.g. 4000" value="4000">
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="field">
+        <label for="newVehDelivery">Delivery charges (₹)</label>
+        <input type="number" id="newVehDelivery" min="0" placeholder="e.g. 300" value="0">
+      </div>
+      <div class="field">
+        <label for="newVehWashing">Car washing charges (₹)</label>
+        <input type="number" id="newVehWashing" min="0" placeholder="e.g. 200" value="0">
+      </div>
+    </div>
+    <div style="display:flex; gap:10px; margin-top:20px; justify-content:flex-end;">
+      <button type="button" class="btn ghost" id="btnCancelAddVehicle">Cancel</button>
+      <button type="button" class="btn" id="btnConfirmAddVehicle">Add Vehicle</button>
+    </div>
+  </div>
+</div>
+
+<script src="../html2pdf.bundle.min.js"></script>
+<script>
+  if (typeof html2pdf === 'undefined') {
+    var cdn = document.createElement('script');
+    cdn.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+    document.head.appendChild(cdn);
+  }
+</script>
+<script src="../calc.js?v=3"></script>
+<script>
+(function () {
+  'use strict';
+  var RC = window.RentalCalc;
+  var $ = function (id) { return document.getElementById(id); };
+  var val = function (id) { return ($(id).value || '').trim(); };
+  var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+  var esc = function (s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  };
+
+  var VEH_KEY = 'sdr-vehicles';
+  var isKmManuallyEdited = false;
+
+  var DEFAULT_FLEET = [
+    {
+      id: 'swift-vxi',
+      name: 'Maruti Swift VXi',
+      regNo: 'MH 46 BV 1001',
+      fuel: 'Petrol',
+      seats: '5 Seater',
+      ratePerDay: '2000',
+      extraHourRate: '150',
+      kmPerDay: '300',
+      includedKM: '',
+      extraKMRate: '9',
+      token: '1000',
+      deposit: '3000',
+      deliveryCharges: '0',
+      washingCharges: '0'
+    },
+    {
+      id: 'wagonr-zxi',
+      name: 'Maruti WagonR ZXi',
+      regNo: 'MH 46 BV 1002',
+      fuel: 'Petrol / CNG',
+      seats: '5 Seater',
+      ratePerDay: '1800',
+      extraHourRate: '120',
+      kmPerDay: '300',
+      includedKM: '',
+      extraKMRate: '8',
+      token: '1000',
+      deposit: '3000',
+      deliveryCharges: '0',
+      washingCharges: '0'
+    },
+    {
+      id: 'ertiga-zxi',
+      name: 'Maruti Ertiga ZXi',
+      regNo: 'MH 46 BV 1003',
+      fuel: 'Petrol / CNG',
+      seats: '7 Seater',
+      ratePerDay: '3000',
+      extraHourRate: '200',
+      kmPerDay: '300',
+      includedKM: '',
+      extraKMRate: '11',
+      token: '1500',
+      deposit: '4000',
+      deliveryCharges: '0',
+      washingCharges: '0'
+    },
+    {
+      id: 'creta-sx',
+      name: 'Hyundai Creta SX',
+      regNo: 'MH 46 BV 1004',
+      fuel: 'Diesel',
+      seats: '5 Seater',
+      ratePerDay: '3500',
+      extraHourRate: '250',
+      kmPerDay: '300',
+      includedKM: '',
+      extraKMRate: '12',
+      token: '2000',
+      deposit: '5000',
+      deliveryCharges: '0',
+      washingCharges: '0'
+    },
+    {
+      id: 'thar-4x4',
+      name: 'Mahindra Thar 4x4',
+      regNo: 'MH 46 BV 1005',
+      fuel: 'Diesel AT',
+      seats: '4 Seater',
+      ratePerDay: '4500',
+      extraHourRate: '300',
+      kmPerDay: '300',
+      includedKM: '',
+      extraKMRate: '15',
+      token: '2000',
+      deposit: '6000',
+      deliveryCharges: '0',
+      washingCharges: '0'
+    },
+    {
+      id: 'scorpio-n',
+      name: 'Mahindra Scorpio-N',
+      regNo: 'MH 46 BV 1006',
+      fuel: 'Diesel',
+      seats: '7 Seater',
+      ratePerDay: '4000',
+      extraHourRate: '250',
+      kmPerDay: '300',
+      includedKM: '',
+      extraKMRate: '14',
+      token: '2000',
+      deposit: '5000',
+      deliveryCharges: '0',
+      washingCharges: '0'
+    }
+  ];
+
+  function loadVehicles() {
+    try {
+      var data = localStorage.getItem(VEH_KEY);
+      if (data) {
+        var parsed = JSON.parse(data);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map(function (v) {
+            if (!v.kmPerDay) v.kmPerDay = '300';
+            return v;
+          });
+        }
+      }
+    } catch (e) {}
+    saveVehicles(DEFAULT_FLEET);
+    return DEFAULT_FLEET.slice();
+  }
+
+  function saveVehicles(list) {
+    try {
+      localStorage.setItem(VEH_KEY, JSON.stringify(list));
+    } catch (e) {}
+  }
+
+  function populateVehicleDropdown(selectedId) {
+    var list = loadVehicles();
+    var sel = $('vehiclePreset');
+    var html = '<option value="">-- Select a Vehicle --</option>';
+    list.forEach(function (v) {
+      var isSel = (v.id === selectedId) ? ' selected' : '';
+      var sub = (v.fuel ? ' (' + v.fuel + ')' : '') + (v.ratePerDay ? ' - ₹' + v.ratePerDay + '/day' : '');
+      html += '<option value="' + esc(v.id) + '"' + isSel + '>' + esc(v.name) + sub + '</option>';
+    });
+    sel.innerHTML = html;
+  }
+
+  window.addEventListener('storage', function (e) {
+    if (e.key === VEH_KEY) {
+      populateVehicleDropdown($('vehiclePreset').value);
+    }
+  });
+
+  function showVehMsg(msg, type) {
+    var el = $('vehMsg');
+    el.textContent = msg;
+    el.style.display = 'block';
+    if (type === 'success') {
+      el.style.background = 'rgba(16, 185, 129, 0.15)';
+      el.style.color = 'var(--emerald)';
+      el.style.border = '1px solid rgba(16, 185, 129, 0.35)';
+    } else {
+      el.style.background = 'rgba(245, 158, 11, 0.15)';
+      el.style.color = 'var(--accent-gold)';
+      el.style.border = '1px solid rgba(245, 158, 11, 0.35)';
+    }
+    setTimeout(function () {
+      el.style.display = 'none';
+    }, 3500);
+  }
+
+  function getTripDays() {
+    var p = combine('pickupDate', 'pickupHour', 'pickupMin', 'pickupAmPm');
+    var r = combine('returnDate', 'returnHour', 'returnMin', 'returnAmPm');
+    if (!p || !r) return 0;
+    var d1 = new Date(p);
+    var d2 = new Date(r);
+    if (isNaN(d1.getTime()) || isNaN(d2.getTime()) || d2.getTime() <= d1.getTime()) return 0;
+    var hours = Math.ceil((d2.getTime() - d1.getTime()) / 3600000);
+    return Math.max(1, Math.floor(hours / 24));
+  }
+
+  function autoCalcKM() {
+    var days = getTripDays();
+    var perDay = parseInt($('kmPerDay').value, 10);
+    if (!isFinite(perDay) || perDay <= 0) perDay = 300;
+
+    if (days > 0) {
+      if (!isKmManuallyEdited || !val('includedKM')) {
+        $('includedKM').value = perDay * days;
+      }
+      $('kmHint').textContent = perDay + ' km \u00D7 ' + days + 'd = ' + $('includedKM').value + ' KM';
+    } else {
+      if (!isKmManuallyEdited) {
+        $('includedKM').value = '';
+      }
+      $('kmHint').textContent = perDay + ' km/day \u00D7 days';
+    }
+  }
+
+  function clearVehicleFields() {
+    $('vehName').value = '';
+    $('vehFuel').value = '';
+    $('vehSeats').value = '';
+    $('pickupDate').value = '';
+    $('returnDate').value = '';
+    $('ratePerDay').value = '';
+    $('extraHourRate').value = '';
+    $('kmPerDay').value = '300';
+    $('includedKM').value = '';
+    $('kmHint').textContent = '300 km/day \u00D7 days';
+    isKmManuallyEdited = false;
+    $('extraKMRate').value = '';
+    $('token').value = '';
+    $('deposit').value = '';
+    $('deliveryCharges').value = '';
+    $('washingCharges').value = '';
+    $('discountValue').value = '0';
+  }
+
+  function todayISO() {
+    var d = new Date();
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  }
+
+  /* Populate the 12-hour time selects and apply sensible defaults. */
+  function buildTimeSelects() {
+    var hours = '', mins = '';
+    for (var h = 1; h <= 12; h++) hours += '<option value="' + h + '">' + pad(h) + '</option>';
+    for (var m = 0; m < 60; m += 5) mins += '<option value="' + pad(m) + '">' + pad(m) + '</option>';
+    ['pickupHour', 'returnHour'].forEach(function (id) { $(id).innerHTML = hours; });
+    ['pickupMin', 'returnMin'].forEach(function (id) { $(id).innerHTML = mins; });
+  }
+
+  function applyDefaults() {
+    if (!val('quotationDate')) $('quotationDate').value = todayISO();
+    $('pickupHour').value = '3';
+    $('pickupMin').value = '00';
+    $('pickupAmPm').value = 'PM';
+    $('returnHour').value = '8';
+    $('returnMin').value = '00';
+    $('returnAmPm').value = 'PM';
+    $('pickupDate').value = '';
+    $('returnDate').value = '';
+  }
+
+  /* Combine date + 12-hour time into a local "YYYY-MM-DDTHH:mm" string. */
+  function combine(dateId, hourId, minId, ampmId) {
+    var date = val(dateId);
+    if (!date) return '';
+    var h12 = parseInt($(hourId).value, 10);
+    if (!isFinite(h12)) h12 = 12;
+    var h = h12 % 12;
+    if ($(ampmId).value === 'PM') h += 12;
+    return date + 'T' + pad(h) + ':' + $(minId).value;
+  }
+
+  function readInputs() {
+    return {
+      bizName: val('bizName') || 'SHREE SELF DRIVING & CAR RENTAL SERVICE',
+      bizPhone: '9768010603',
+      customerName: val('customerName'),
+      customerPhone: val('customerPhone'),
+      quotationDate: val('quotationDate'),
+      validity: $('validity') ? $('validity').value : '24 Hours',
+      quoteNotes: val('quoteNotes'),
+      vehType: val('vehType') || 'Self Drive',
+      vehName: val('vehName'),
+      vehFuel: val('vehFuel'),
+      vehSeats: val('vehSeats'),
+      pickup: combine('pickupDate', 'pickupHour', 'pickupMin', 'pickupAmPm'),
+      return: combine('returnDate', 'returnHour', 'returnMin', 'returnAmPm'),
+      ratePerDay: val('ratePerDay'),
+      extraHourRate: val('extraHourRate'),
+      kmPerDay: val('kmPerDay') || '300',
+      includedKM: val('includedKM'),
+      extraKMRate: val('extraKMRate'),
+      token: val('token'),
+      deposit: val('deposit'),
+      deliveryCharges: val('deliveryCharges'),
+      washingCharges: val('washingCharges'),
+      discountType: $('discountType').value,
+      discountValue: val('discountValue'),
+      terms: val('terms')
+    };
+  }
+
+  /* HTML renderer for the shared view matching the reference layout */
+  function renderHtml(view, inputs, calc) {
+    inputs = inputs || readInputs();
+    calc = calc || RC.compute(inputs);
+    var fmtINR = RC.formatINR;
+    var fmtDuration = RC.formatDuration || function (d, h) {
+      var s = d + (d === 1 ? ' Day' : ' Days');
+      if (h > 0) s += ' + ' + h + (h === 1 ? ' Hour' : ' Hours');
+      return s;
+    };
+
+    var h = '';
+    // Header with left company branding and right quotation + validity badge
+    h += '<div class="q-ref-header">' +
+           '<div class="q-ref-brand">' +
+             '<div class="q-ref-brand-title">' + esc(inputs.bizName || 'SHREE SELF DRIVING & CAR RENTAL SERVICE') + '</div>' +
+             '<div class="q-ref-brand-loc">Sector 17, Khanda Colony, Panvel, Navi Mumbai, Maharashtra - 410206</div>' +
+             '<div class="q-ref-brand-sub">Phone: <b>+91 9768010603</b> &bull; Email: <b>shreeselfdriving@gmail.com</b></div>' +
+             '<div class="q-ref-brand-web">Website: www.shreeselfdriving.in</div>' +
+           '</div>' +
+           '<div class="q-ref-right">' +
+             '<div class="q-ref-badge">QUOTATION</div>' +
+             '<div class="q-ref-validity">⏰ Validity: ' + esc(inputs.validity || '24 Hours') + '</div>' +
+           '</div>' +
+         '</div>';
+
+    // Grid 1: Customer Details & Trip Schedule (side by side)
+    h += '<div class="q-ref-grid2">' +
+           '<div class="q-ref-card">' +
+             '<div class="q-ref-card-head">🧾 CUSTOMER DETAILS</div>' +
+             '<div class="q-ref-card-body">' +
+               '<div class="q-ref-row"><span class="q-lbl">Customer Name</span><span class="q-val">' + esc(inputs.customerName || 'Customer') + '</span></div>' +
+               '<div class="q-ref-row"><span class="q-lbl">Contact Phone</span><span class="q-val">' + esc(inputs.customerPhone || 'Not Specified') + '</span></div>' +
+               '<div class="q-ref-row"><span class="q-lbl">Quotation Date</span><span class="q-val">' + esc(RC.formatDateOnly(inputs.quotationDate || new Date())) + '</span></div>' +
+               '<div class="q-ref-row"><span class="q-lbl">Quote Validity</span><span class="q-val">' + esc(inputs.validity || '24 Hours') + '</span></div>' +
+             '</div>' +
+           '</div>' +
+           '<div class="q-ref-card">' +
+             '<div class="q-ref-card-head">📅 TRIP SCHEDULE</div>' +
+             '<div class="q-ref-card-body">' +
+               '<div class="q-ref-row"><span class="q-lbl">🟢 Pickup</span><span class="q-val">' + esc(RC.formatDateTime(inputs.pickup)) + '</span></div>' +
+               '<div class="q-ref-row"><span class="q-lbl">🔴 Return</span><span class="q-val">' + esc(RC.formatDateTime(inputs.return)) + '</span></div>' +
+               '<div class="q-ref-row"><span class="q-lbl">⏳ Total Duration</span><span class="q-val">' + esc(fmtDuration(calc.days, calc.extraHours)) + '</span></div>' +
+               '<div class="q-ref-row"><span class="q-lbl">📋 Rental Type</span><span class="q-val">' + esc(inputs.vehType || 'Self Drive') + '</span></div>' +
+             '</div>' +
+           '</div>' +
+         '</div>';
+
+    // Grid 2: Vehicle Details & KM Package (side by side)
+    h += '<div class="q-ref-grid2">' +
+           '<div class="q-ref-card">' +
+             '<div class="q-ref-card-head">🚘 VEHICLE DETAILS</div>' +
+             '<div class="q-ref-card-body">' +
+               '<div class="q-ref-row"><span class="q-lbl">Vehicle</span><span class="q-val">' + esc(inputs.vehName || 'Car') + '</span></div>' +
+               '<div class="q-ref-row"><span class="q-lbl">Fuel Type</span><span class="q-val">' + esc(inputs.vehFuel || 'Petrol') + '</span></div>' +
+               '<div class="q-ref-row"><span class="q-lbl">Rental Type</span><span class="q-val">' + esc(inputs.vehType || 'Self Drive') + '</span></div>' +
+               '<div class="q-ref-row"><span class="q-lbl">Seating Capacity</span><span class="q-val">' + esc(inputs.vehSeats || '5 Seater') + '</span></div>' +
+             '</div>' +
+           '</div>' +
+           '<div class="q-ref-card">' +
+             '<div class="q-ref-card-head">🛣️ KM PACKAGE DETAILS</div>' +
+             '<div class="q-ref-card-body">' +
+               '<div class="q-ref-row"><span class="q-lbl">Included KM Limit</span><span class="q-val">' + esc(calc.includedKM > 0 ? (calc.kmPerDay > 0 && calc.days > 0 && calc.includedKM === calc.kmPerDay * calc.days ? calc.includedKM + ' KM (' + calc.kmPerDay + ' KM/day × ' + calc.days + ' Days)' : calc.includedKM + ' KM') : 'Unlimited') + '</span></div>' +
+               '<div class="q-ref-row"><span class="q-lbl">Extra KM Charges</span><span class="q-val">' + fmtINR(calc.extraKMRate) + ' Per KM</span></div>' +
+               '<div class="q-ref-row"><span class="q-lbl">Extra Hour Charges</span><span class="q-val">' + fmtINR(calc.extraHourRate) + ' Per Hour</span></div>' +
+               '<div class="q-ref-row"><span class="q-lbl">Extra Hours Taken</span><span class="q-val">' + (calc.extraHours > 0 ? calc.extraHours + ' Hours' : 'Nil') + '</span></div>' +
+             '</div>' +
+           '</div>' +
+         '</div>';
+
+    // Charges Breakdown Table
+    h += '<div class="q-ref-table-card">' +
+           '<div class="q-ref-card-head">💰 CHARGES BREAKDOWN</div>' +
+           '<div class="q-ref-table-header">' +
+             '<span>Description</span>' +
+             '<span>Amount</span>' +
+           '</div>' +
+           '<div class="q-ref-table-body">' +
+             '<div class="q-ref-trow"><span>Rental Charges (' + fmtINR(calc.ratePerDay) + ' &times; ' + calc.days + ' Days)</span><span class="q-val">' + fmtINR(calc.rental) + '</span></div>';
+
+    if (calc.extraHours > 0) {
+      h += '<div class="q-ref-trow"><span>Extra Hours (' + calc.extraHours + ' &times; ' + fmtINR(calc.extraHourRate) + ')</span><span class="q-val">' + fmtINR(calc.extraHourCharge) + '</span></div>';
+    }
+    h += '<div class="q-ref-trow bold"><span>Total Rental Amount</span><span class="q-val">' + fmtINR(calc.totalRental) + '</span></div>';
+
+    if (calc.discount > 0) {
+      var pct = calc.discountType === 'percent' ? ' (' + calc.discountValue + '%)' : '';
+      h += '<div class="q-ref-trow credit"><span>Less Offer / Discount' + pct + '</span><span class="q-val">&minus;' + fmtINR(calc.discount) + '</span></div>';
+    }
+    if (calc.deposit > 0) {
+      h += '<div class="q-ref-trow"><span>Refundable Security Deposit</span><span class="q-val">' + fmtINR(calc.deposit) + '</span></div>';
+    }
+    if (calc.deliveryCharges > 0) {
+      h += '<div class="q-ref-trow"><span>Delivery Charges</span><span class="q-val">' + fmtINR(calc.deliveryCharges) + '</span></div>';
+    }
+    if (calc.washingCharges > 0) {
+      h += '<div class="q-ref-trow"><span>Car Washing Charges</span><span class="q-val">' + fmtINR(calc.washingCharges) + '</span></div>';
+    }
+    if (calc.token > 0) {
+      h += '<div class="q-ref-trow credit"><span>Less Token / Advance Received</span><span class="q-val">&minus;' + fmtINR(calc.token) + '</span></div>';
+    }
+    h += '</div></div>';
+
+    // Total Payable Bar
+    h += '<div class="q-ref-payable-bar">' +
+           '<div class="q-ref-payable-lbl">✅ TOTAL PAYABLE AT HANDOVER</div>' +
+           '<div class="q-ref-payable-amt">' + fmtINR(calc.payable) + '</div>' +
+         '</div>';
+
+    // Grid 3: Important Notes & Terms & Conditions (side by side)
+    var notes = (inputs.quoteNotes || '').split('\n').map(function(s) { return s.trim(); }).filter(Boolean);
+    if (notes.length === 0) {
+      notes = [
+        'Security deposit is 100% refundable within 24 hours of vehicle return.',
+        'Fuel policy: Return vehicle with same fuel level as received.',
+        'Smoking and alcohol consumption strictly prohibited inside car.',
+        'Vehicle is permitted for self-drive within state limits only.'
+      ];
+    }
+    var terms = (view && view.terms && view.terms.length) ? view.terms : [
+      'Original Driving Licence & Aadhaar card mandatory at handover.',
+      'Fastag & toll charges to be borne by client.',
+      'Speed limit 80 km/h strictly enforced as per RTO guidelines.',
+      'Late return without notice charged at ₹300/hour penalty.'
+    ];
+
+    h += '<div class="q-ref-grid2">' +
+           '<div class="q-ref-card">' +
+             '<div class="q-ref-card-head" style="border-left-color:#f59e0b;">📝 IMPORTANT NOTES & INSTRUCTIONS</div>' +
+             '<ul class="q-ref-bullets">';
+    notes.forEach(function(n) { h += '<li>' + esc(n) + '</li>'; });
+    h += '</ul></div>';
+
+    h += '<div class="q-ref-card">' +
+           '<div class="q-ref-card-head" style="border-left-color:#0f172a;">📌 TERMS & CONDITIONS</div>' +
+           '<ul class="q-ref-bullets">';
+    terms.forEach(function(t) { h += '<li>' + esc(t) + '</li>'; });
+    h += '</ul></div>';
+    h += '</div>';
+
+    // Grid 4: Payment Instructions & Authorized Signatory Box (anchors bottom cleanly)
+    h += '<div class="q-ref-sign-grid">' +
+           '<div class="q-ref-paymodes">' +
+             '<div class="q-ref-pay-title">💳 PAYMENT &amp; SECURITY INSTRUCTIONS</div>' +
+             '<div class="q-ref-pay-desc">Accepted Modes: <b>UPI (GPay / PhonePe / Paytm: 9768010603)</b>, IMPS/NEFT Bank Transfer, or Cash at handover. Security deposit refunded via UPI within 24 hours post vehicle inspection.</div>' +
+           '</div>' +
+           '<div class="q-ref-signbox">' +
+             '<div class="q-ref-sign-title">FOR SHREE SELF DRIVING &amp; CAR RENTAL SERVICE</div>' +
+             '<div class="q-ref-sign-space">Authorized Signatory / Seal</div>' +
+             '<div class="q-ref-sign-date">Date: ' + esc(RC.formatDateOnly(inputs.quotationDate || new Date())) + '</div>' +
+           '</div>' +
+         '</div>';
+
+    // Bottom Greeting
+    h += '<div class="q-ref-thankyou">🙏 Thank you for choosing Shree Self Driving & Car Rental Service! Have a safe and comfortable drive! 🚗</div>';
+
+
+    return h;
+  }
+
+  function renderSummary(calc, ok) {
+    var chip = function (k, v, color) {
+      var colStyle = color ? ' style="color:' + color + ';"' : '';
+      return '<div class="chip"><div class="k">' + k + '</div><div class="v mono-nums"' + colStyle + '>' + esc(ok ? v : '\u2014') + '</div></div>';
+    };
+    $('summary').innerHTML =
+      chip('Duration', calc.days + 'd' + (calc.extraHours > 0 ? ' ' + calc.extraHours + 'h' : '')) +
+      chip('Days', calc.days) +
+      chip('Extra hrs', calc.extraHours) +
+      chip('Payable', RC.formatINR(calc.payable), 'var(--emerald)');
+
+    var mobAmt = $('mobPayableAmt');
+    if (mobAmt) mobAmt.textContent = ok ? RC.formatINR(calc.payable) : '\u2014';
+  }
+
+  function errorCard(message) {
+    return '<div class="q-head">' +
+      '<div class="q-emoji" style="color:var(--red); border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.1);">' +
+        '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' +
+      '</div>' +
+      '<h2>Cannot build quotation</h2><div class="q-error">' + esc(message) + '</div></div>';
+  }
+
+  var lastText = '';
+
+  function update() {
+    var inputs = readInputs();
+    var hasDates = Boolean(inputs.pickup && inputs.return);
+    var hasVeh = Boolean(inputs.vehName);
+    var hasRate = Boolean(inputs.ratePerDay);
+
+    if (!hasDates || !hasVeh || !hasRate) {
+      $('summary').innerHTML =
+        '<div class="chip"><div class="k">Duration</div><div class="v mono-nums">&mdash;</div></div>' +
+        '<div class="chip"><div class="k">Days</div><div class="v mono-nums">&mdash;</div></div>' +
+        '<div class="chip"><div class="k">Extra hrs</div><div class="v mono-nums">&mdash;</div></div>' +
+        '<div class="chip"><div class="k">Payable</div><div class="v mono-nums">&mdash;</div></div>';
+
+      var mobAmt = $('mobPayableAmt');
+      if (mobAmt) mobAmt.textContent = '\u2014';
+
+      var isInitialOrEmpty = (!inputs.pickup && !inputs.return) || (!inputs.vehName && !inputs.ratePerDay);
+      if (isInitialOrEmpty) {
+        $('banner').classList.remove('show');
+        $('quote').innerHTML =
+          '<div class="q-empty-state">' +
+            '<div class="empty-icon" aria-hidden="true">' +
+              '<svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                '<path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C2.1 10.8 2 11 2 11.2V16c0 .6.4 1 1 1h2"/>' +
+                '<circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>' +
+              '</svg>' +
+            '</div>' +
+            '<h3>Select a Vehicle to Begin</h3>' +
+            '<p>Choose a vehicle from the dropdown above to auto-fill its rates, then specify pickup &amp; return dates to generate the quotation.</p>' +
+          '</div>';
+      } else {
+        var calc = RC.compute(inputs);
+        var err = calc.error || 'Please fill in vehicle details and rate per day.';
+        $('bannerText').textContent = err;
+        $('banner').classList.add('show');
+        $('quote').innerHTML = errorCard(err);
+      }
+
+      lastText = '';
+      ['btnCopy', 'btnWa', 'btnPdf'].forEach(function (id) {
+        $(id).disabled = true;
+      });
+      return;
+    }
+
+    var calc = RC.compute(inputs);
+    var ok = !calc.error;
+    renderSummary(calc, ok);
+
+    if (ok) {
+      var view = RC.buildView(inputs, calc);
+      lastText = RC.buildText(view);
+      $('quote').innerHTML = renderHtml(view, inputs, calc);
+      $('banner').classList.remove('show');
+    } else {
+      lastText = '';
+      $('quote').innerHTML = errorCard(calc.error);
+      $('bannerText').textContent = calc.error;
+      $('banner').classList.add('show');
+    }
+
+    ['btnCopy', 'btnWa', 'btnPdf'].forEach(function (id) {
+      $(id).disabled = !ok;
+    });
+  }
+
+  /* ---------- Vehicle Presets Management ---------- */
+  $('vehiclePreset').addEventListener('change', function () {
+    var id = this.value;
+    if (!id) {
+      clearVehicleFields();
+      update();
+      return;
+    }
+    var list = loadVehicles();
+    var veh = list.find(function (v) { return v.id === id; });
+    if (veh) {
+      $('vehName').value = veh.name || '';
+      $('vehFuel').value = veh.fuel || '';
+      $('vehSeats').value = veh.seats || '';
+      $('ratePerDay').value = veh.ratePerDay != null ? veh.ratePerDay : '';
+      $('extraHourRate').value = veh.extraHourRate != null ? veh.extraHourRate : '';
+      $('kmPerDay').value = veh.kmPerDay != null && veh.kmPerDay !== '' ? veh.kmPerDay : '300';
+      if (veh.includedKM) {
+        $('includedKM').value = veh.includedKM;
+        isKmManuallyEdited = true;
+        $('kmHint').textContent = 'Custom: ' + veh.includedKM + ' KM';
+      } else {
+        isKmManuallyEdited = false;
+        autoCalcKM();
+      }
+      $('extraKMRate').value = veh.extraKMRate != null ? veh.extraKMRate : '';
+      $('token').value = veh.token != null ? veh.token : '';
+      $('deposit').value = veh.deposit != null ? veh.deposit : '';
+      $('deliveryCharges').value = veh.deliveryCharges != null ? veh.deliveryCharges : '';
+      $('washingCharges').value = veh.washingCharges != null ? veh.washingCharges : '';
+      showVehMsg('Loaded ' + veh.name, 'success');
+      update();
+    }
+  });
+
+  $('btnSaveVehicle').addEventListener('click', function () {
+    var id = $('vehiclePreset').value;
+    var currentName = val('vehName');
+    if (!currentName) {
+      alert('Please enter a vehicle name or select a vehicle first.');
+      $('vehName').focus();
+      return;
+    }
+    var list = loadVehicles();
+    var veh = null;
+    if (id) {
+      veh = list.find(function (v) { return v.id === id; });
+    }
+    if (!veh) {
+      var newId = 'veh_' + Date.now();
+      veh = { id: newId };
+      list.push(veh);
+      id = newId;
+    }
+    veh.name = currentName;
+    veh.fuel = val('vehFuel') || 'Petrol';
+    veh.seats = val('vehSeats') || '5 Seater';
+    veh.ratePerDay = val('ratePerDay');
+    veh.extraHourRate = val('extraHourRate');
+    veh.kmPerDay = val('kmPerDay') || '300';
+    veh.includedKM = val('includedKM');
+    veh.extraKMRate = val('extraKMRate');
+    veh.token = val('token');
+    veh.deposit = val('deposit');
+    veh.deliveryCharges = val('deliveryCharges');
+    veh.washingCharges = val('washingCharges');
+
+    saveVehicles(list);
+    populateVehicleDropdown(id);
+    showVehMsg('Saved parameters for ' + veh.name + '!', 'success');
+  });
+
+  $('btnDeleteVehicle').addEventListener('click', function () {
+    var id = $('vehiclePreset').value;
+    if (!id) {
+      alert('Please select a vehicle from the dropdown to delete.');
+      return;
+    }
+    var list = loadVehicles();
+    var veh = list.find(function (v) { return v.id === id; });
+    if (!veh) return;
+    if (confirm('Are you sure you want to delete "' + veh.name + '"?')) {
+      list = list.filter(function (v) { return v.id !== id; });
+      saveVehicles(list);
+      populateVehicleDropdown('');
+      clearVehicleFields();
+      showVehMsg('Deleted ' + veh.name, 'info');
+      update();
+    }
+  });
+
+  function openAddModal() {
+    $('newVehName').value = '';
+    $('newVehFuel').value = 'Petrol';
+    $('newVehSeats').value = '5 Seater';
+    $('newVehRate').value = '1500';
+    $('newVehExtraHour').value = '100';
+    $('newVehKM').value = '300';
+    $('newVehExtraKM').value = '8';
+    $('newVehToken').value = '1000';
+    $('newVehDeposit').value = '4000';
+    $('newVehDelivery').value = '0';
+    $('newVehWashing').value = '0';
+    $('modalAddVehicle').style.display = 'flex';
+    $('newVehName').focus();
+  }
+
+  function closeAddModal() {
+    $('modalAddVehicle').style.display = 'none';
+  }
+
+  $('btnAddVehicle').addEventListener('click', openAddModal);
+  $('btnCancelAddVehicle').addEventListener('click', closeAddModal);
+  $('btnCloseModal').addEventListener('click', closeAddModal);
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && $('modalAddVehicle').style.display === 'flex') {
+      closeAddModal();
+    }
+  });
+
+  $('btnConfirmAddVehicle').addEventListener('click', function () {
+    var name = ($('newVehName').value || '').trim();
+    if (!name) {
+      alert('Please enter a vehicle name.');
+      $('newVehName').focus();
+      return;
+    }
+    var newId = 'veh_' + Date.now();
+    var newVeh = {
+      id: newId,
+      name: name,
+      fuel: ($('newVehFuel').value || 'Petrol').trim(),
+      seats: ($('newVehSeats').value || '5 Seater').trim(),
+      ratePerDay: ($('newVehRate').value || '1500').trim(),
+      extraHourRate: ($('newVehExtraHour').value || '100').trim(),
+      kmPerDay: ($('newVehKM').value || '300').trim(),
+      includedKM: '',
+      extraKMRate: ($('newVehExtraKM').value || '8').trim(),
+      token: ($('newVehToken').value || '1000').trim(),
+      deposit: ($('newVehDeposit').value || '4000').trim(),
+      deliveryCharges: ($('newVehDelivery').value || '0').trim(),
+      washingCharges: ($('newVehWashing').value || '0').trim()
+    };
+    var list = loadVehicles();
+    list.push(newVeh);
+    saveVehicles(list);
+    closeAddModal();
+    populateVehicleDropdown(newId);
+    $('vehName').value = newVeh.name;
+    $('vehFuel').value = newVeh.fuel;
+    $('vehSeats').value = newVeh.seats;
+    $('ratePerDay').value = newVeh.ratePerDay;
+    $('extraHourRate').value = newVeh.extraHourRate;
+    $('kmPerDay').value = newVeh.kmPerDay;
+    isKmManuallyEdited = false;
+    autoCalcKM();
+    $('extraKMRate').value = newVeh.extraKMRate;
+    $('token').value = newVeh.token;
+    $('deposit').value = newVeh.deposit;
+    $('deliveryCharges').value = newVeh.deliveryCharges;
+    $('washingCharges').value = newVeh.washingCharges;
+    showVehMsg('Added ' + newVeh.name + '!', 'success');
+    update();
+  });
+
+  /* Auto KM & Manual Edit Event Listeners */
+  $('kmPerDay').addEventListener('input', function () {
+    isKmManuallyEdited = false;
+    autoCalcKM();
+    update();
+  });
+
+  $('includedKM').addEventListener('input', function () {
+    isKmManuallyEdited = true;
+    var v = val('includedKM');
+    $('kmHint').textContent = v ? 'Custom: ' + v + ' KM' : '300 km/day \u00D7 days';
+  });
+
+  ['pickupDate', 'pickupHour', 'pickupMin', 'pickupAmPm', 'returnDate', 'returnHour', 'returnMin', 'returnAmPm'].forEach(function (id) {
+    var el = $(id);
+    if (el) {
+      el.addEventListener('change', function () {
+        autoCalcKM();
+        update();
+      });
+      el.addEventListener('input', function () {
+        autoCalcKM();
+        update();
+      });
+    }
+  });
+
+  /* ---------- Actions ---------- */
+  $('btnCopy').addEventListener('click', function () {
+    var btn = this;
+    var done = function () {
+      var oldHtml = btn.innerHTML;
+      btn.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+      btn.style.borderColor = 'var(--emerald)';
+      btn.style.color = 'var(--emerald)';
+      setTimeout(function () {
+        btn.innerHTML = oldHtml;
+        btn.style.borderColor = '';
+        btn.style.color = '';
+      }, 1600);
+    };
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = lastText;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); done(); } catch (e) { alert('Copy failed. Please copy manually.'); }
+      document.body.removeChild(ta);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(lastText).then(done, fallback);
+    } else { fallback(); }
+  });
+
+  /* ---------- High-Fidelity Exact 1-Page A4 PDF Generation (No Bottom Contact Info, 100% Solid White) ---------- */
+  function getPdfCleanFilename() {
+    var cust = (val('customerName') || 'Customer').replace(/[^a-zA-Z0-9]/g, '_');
+    var veh = (val('vehName') || 'Car').replace(/[^a-zA-Z0-9]/g, '_');
+    return 'Shree_Quotation_' + cust + '_' + veh + '.pdf';
+  }
+
+  function generatePdfBlob(callback) {
+    var card = $('quote');
+    if (!card || !card.querySelector('.q-ref-header, .q-head')) {
+      alert('Please fill in vehicle name, dates, and day rate to generate quotation first.');
+      return;
+    }
+
+    var fileName = getPdfCleanFilename();
+
+    // Create an isolated dedicated print stage (690px width centered in 748px A4 printable area)
+    // Guarantees consistent left and right margins with zero text cut-off on mobile, laptops, and desktop
+    var stage = document.createElement('div');
+    stage.className = 'quote-card';
+    stage.style.cssText = [
+      'width: 690px',
+      'min-width: 690px',
+      'max-width: 690px',
+      'margin: 0 auto',
+      'box-sizing: border-box',
+      'padding: 12px 16px',
+      'background: #ffffff !important',
+      'color: #0f172a !important',
+      'border: 1px solid #cbd5e1',
+      'border-radius: 6px',
+      'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif'
+    ].join('; ') + ';';
+    stage.innerHTML = card.innerHTML;
+
+    var opt = {
+      margin: [6, 6, 6, 6],
+      filename: fileName,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        scrollY: 0,
+        scrollX: 0,
+        logging: false
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: {
+        mode: ['avoid-all', 'css', 'legacy'],
+        avoid: ['.q-ref-card', '.q-ref-table-card', '.q-ref-payable-bar', '.q-ref-grid2', '.q-ref-sign-grid']
+      }
+    };
+
+    try {
+      var worker = html2pdf().set(opt).from(stage);
+      worker.toPdf().then(function () {
+        var pdf = worker.prop.pdf;
+
+        // Overlay selectable & searchable text for PDF readers
+        try {
+          var inputs = readInputs();
+          var calc = RC.compute(inputs);
+          pdf.setFontSize(8);
+          pdf.setTextColor(255, 255, 255); // Invisible white text on white sheet
+          var s1 = (inputs.bizName || 'SHREE SELF DRIVING & CAR RENTAL SERVICE') + ' QUOTATION | Customer: ' + (inputs.customerName || 'Customer') + ' | Date: ' + (inputs.quotationDate || '');
+          var s2 = 'Vehicle: ' + (inputs.vehName || '') + ' (' + (inputs.vehFuel || '') + ') | Pickup: ' + (inputs.pickup || '') + ' | Return: ' + (inputs.return || '');
+          var s3 = 'Total Payable At Handover: Rs. ' + (calc.payable || 0) + ' | Bookings: +91 9768010603 | www.shreeselfdriving.in';
+          pdf.text(s1, 8, 290);
+          pdf.text(s2, 8, 293);
+          pdf.text(s3, 8, 295);
+        } catch (textErr) {
+          console.warn('Text overlay warning:', textErr);
+        }
+
+        var blob = pdf.output('blob');
+        if (!blob || blob.size < 5000) {
+          throw new Error('Generated PDF is empty or invalid (size: ' + (blob ? blob.size : 0) + ' bytes)');
+        }
+        callback(null, blob, fileName);
+      }).catch(function (err) {
+        console.error('PDF generation error:', err);
+        callback(err);
+      });
+    } catch (ex) {
+      console.error('PDF execution error:', ex);
+      callback(ex);
+    }
+  }
+
+  /* ---------- WhatsApp & Customer Phone Utilities ---------- */
+  function cleanCustomerPhone(raw) {
+    if (!raw) return '';
+    var num = String(raw).replace(/\D/g, '');
+    if (!num) return '';
+    // Strip leading 0 if 11 digits (e.g. 09768010603 -> 9768010603)
+    if (num.length === 11 && num.charAt(0) === '0') {
+      num = num.substring(1);
+    }
+    // Strip 0 after 91 if 13 digits (e.g. 9109768010603 -> 919768010603)
+    if (num.length === 13 && num.substring(0, 3) === '910') {
+      num = '91' + num.substring(3);
+    }
+    // If standard 10-digit Indian mobile, add country code 91
+    if (num.length === 10) {
+      num = '91' + num;
+    }
+    return num;
+  }
+
+  function resolveCustomerPhone(promptIfMissing) {
+    var raw = (val('customerPhone') || '').trim();
+    if (!raw && promptIfMissing) {
+      var entered = prompt('कस्टमर का 10 अंकों का WhatsApp नंबर दर्ज करें (सीधे कस्टमर की चैट खोलने के लिए):\n(Enter Customer 10-digit WhatsApp Number):', '');
+      if (entered !== null && entered.trim()) {
+        var el = $('customerPhone');
+        if (el) {
+          el.value = entered.trim();
+          update();
+        }
+        raw = entered.trim();
+      }
+    }
+    return cleanCustomerPhone(raw);
+  }
+
+  function openWhatsApp(phone, text) {
+    if (!text) return;
+    var encoded = encodeURIComponent(text);
+    var cleanPhone = cleanCustomerPhone(phone);
+    var isMobile = /Android|iPhone|iPad|iPod|Windows Phone|webOS|BlackBerry/i.test(navigator.userAgent);
+
+    if (isMobile) {
+      // Official WhatsApp Universal Link: directly launches WhatsApp / WhatsApp Business on mobile
+      var mobUrl = cleanPhone
+        ? 'https://wa.me/' + cleanPhone + '?text=' + encoded
+        : 'https://wa.me/?text=' + encoded;
+      window.location.href = mobUrl;
+    } else {
+      // On Desktop: web.whatsapp.com directly opens the customer chat with prefilled quotation text
+      var deskUrl = cleanPhone
+        ? 'https://web.whatsapp.com/send?phone=' + cleanPhone + '&text=' + encoded
+        : 'https://web.whatsapp.com/send?text=' + encoded;
+      var waWin = window.open(deskUrl, '_blank');
+      if (!waWin || waWin.closed || typeof waWin.closed === 'undefined') {
+        window.location.href = cleanPhone ? ('https://wa.me/' + cleanPhone + '?text=' + encoded) : ('https://wa.me/?text=' + encoded);
+      }
+    }
+  }
+
+  function fallbackShareDesktop(blob, fileName, phone) {
+    // 1. Download PDF file
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 8000);
+
+    // 2. Open WhatsApp directly into the customer chat with quotation text
+    openWhatsApp(phone, lastText || 'Quotation from Shree Self Driving & Car Rental Service');
+
+    // 3. Show Instruction Modal
+    var modal = $('modalPdfWa');
+    var fnameEl = $('pdfWaFilename');
+    if (fnameEl) fnameEl.textContent = fileName;
+    if (modal) modal.style.display = 'flex';
+  }
+
+  /* Share PDF directly to WhatsApp / WhatsApp Business */
+  $('btnWaPdf').addEventListener('click', function () {
+    var btn = this;
+    var btnText = $('btnWaPdfText');
+    var originalText = 'Share PDF to WhatsApp';
+
+    var inputs = readInputs();
+    if (!inputs.vehName || !inputs.pickup || !inputs.return || !inputs.ratePerDay) {
+      alert('Please fill in vehicle, dates and rate per day first.');
+      return;
+    }
+
+    var phone = resolveCustomerPhone(true);
+
+    if (btnText) btnText.innerHTML = '<span class="btn-spinner"></span> Generating PDF...';
+    btn.disabled = true;
+
+    generatePdfBlob(function (err, blob, fileName) {
+      var restoreBtn = function () {
+        btn.disabled = false;
+        if (btnText) btnText.textContent = originalText;
+      };
+
+      if (err || !blob) {
+        restoreBtn();
+        alert('Could not generate PDF: ' + (err ? err.message : 'Unknown error'));
+        return;
+      }
+
+      var pdfFile = new File([blob], fileName, { type: 'application/pdf' });
+
+      // Try Native Web Share API with files (Android / iOS -> WhatsApp Business / WhatsApp)
+      if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+        navigator.share({
+          files: [pdfFile],
+          title: 'Quotation - ' + (inputs.customerName || 'Shree Self Driving'),
+          text: lastText || 'Quotation from Shree Self Driving & Car Rental Service\nBookings: +91 9768010603\nwww.shreeselfdriving.in'
+        }).then(function () {
+          restoreBtn();
+        }).catch(function (shareErr) {
+          restoreBtn();
+          if (shareErr && shareErr.name !== 'AbortError') {
+            fallbackShareDesktop(blob, fileName, phone);
+          }
+        });
+      } else {
+        restoreBtn();
+        fallbackShareDesktop(blob, fileName, phone);
+      }
+    });
+  });
+
+  /* Download or Print PDF */
+  $('btnPdf').addEventListener('click', function () {
+    var btn = this;
+    var btnText = $('btnPdfText');
+    var originalText = 'Download / Print PDF';
+
+    var inputs = readInputs();
+    if (!inputs.vehName || !inputs.pickup || !inputs.return || !inputs.ratePerDay) {
+      window.print();
+      return;
+    }
+
+    if (btnText) btnText.innerHTML = '<span class="btn-spinner"></span> Creating PDF...';
+    btn.disabled = true;
+
+    generatePdfBlob(function (err, blob, fileName) {
+      btn.disabled = false;
+      if (btnText) btnText.textContent = originalText;
+
+      if (!err && blob) {
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(url); }, 8000);
+      } else {
+        window.print();
+      }
+    });
+  });
+
+  /* Text message to WhatsApp */
+  $('btnWa').addEventListener('click', function () {
+    if (!lastText) {
+      alert('कृपया पहले गाड़ी, तारीख और दर भरें ताकि कोटेशन बन सके।');
+      return;
+    }
+    var phone = resolveCustomerPhone(true);
+    openWhatsApp(phone, lastText);
+  });
+
+
+
+  $('btnClosePdfWa').addEventListener('click', function () {
+    $('modalPdfWa').style.display = 'none';
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && $('modalPdfWa').style.display === 'flex') {
+      $('modalPdfWa').style.display = 'none';
+    }
+  });
+
+  $('btnConvertToInvoice').addEventListener('click', function () {
+    var inputs = readInputs();
+    if (!inputs.vehName || !inputs.pickup || !inputs.return || !inputs.ratePerDay) {
+      alert('Please fill in vehicle details, dates and rate per day first.');
+      return;
+    }
+    var calc = RC.compute(inputs);
+    var p = new URLSearchParams();
+    if (inputs.customerName) p.set('customerName', inputs.customerName);
+    if (inputs.customerPhone) p.set('customerPhone', inputs.customerPhone);
+    if (inputs.vehName) p.set('vehName', inputs.vehName);
+    if (inputs.ratePerDay) p.set('dayRate', inputs.ratePerDay);
+    if (calc.days) p.set('days', calc.days);
+    if (calc.extraHours) p.set('extraHours', calc.extraHours);
+    if (inputs.deposit) p.set('deposit', inputs.deposit);
+    if (inputs.token) p.set('token', inputs.token);
+    if (calc.discount) p.set('discount', calc.discount);
+    if (inputs.pickupDate) p.set('pickupDate', inputs.pickupDate);
+    if (inputs.returnDate) p.set('returnDate', inputs.returnDate);
+
+    window.location.href = '../invoice/index.html?' + p.toString();
+  });
+
+  $('btnReset').addEventListener('click', function () {
+    $('form').reset();
+    populateVehicleDropdown('');
+    clearVehicleFields();
+    applyDefaults();
+    autoCalcKM();
+    update();
+  });
+
+  /* Live update on any change */
+  $('form').addEventListener('input', update);
+  $('form').addEventListener('change', update);
+
+  buildTimeSelects();
+  populateVehicleDropdown('');
+  clearVehicleFields();
+  applyDefaults();
+
+  /* URL Query Parameters Pre-population (e.g. from Booking Calendar) */
+  try {
+    var p = new URLSearchParams(window.location.search);
+    if (p.get('customerName')) $('customerName').value = p.get('customerName');
+    if (p.get('customerPhone')) $('customerPhone').value = p.get('customerPhone');
+    if (p.get('pickupDate')) $('pickupDate').value = p.get('pickupDate');
+    if (p.get('returnDate')) $('returnDate').value = p.get('returnDate');
+    if (p.get('token')) $('token').value = p.get('token');
+    if (p.get('vehName')) {
+      var vName = p.get('vehName');
+      $('vehName').value = vName;
+      var list = loadVehicles();
+      var match = list.find(function (v) { return (v.name || '').toLowerCase() === vName.toLowerCase(); });
+      if (match) {
+        $('vehiclePreset').value = match.id;
+        $('vehFuel').value = match.fuel || '';
+        $('vehSeats').value = match.seats || '';
+        if (match.ratePerDay) $('ratePerDay').value = match.ratePerDay;
+        if (match.extraHourRate) $('extraHourRate').value = match.extraHourRate;
+        if (match.deposit) $('deposit').value = match.deposit;
+      }
+    }
+  } catch (urlEx) {}
+
+  autoCalcKM();
+  update();
+
+  window._update = update;
+  window._generatePdfBlob = generatePdfBlob;
+  window._readInputs = readInputs;
+})();
+</script>
+</body>
+</html>

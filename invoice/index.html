@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GST Invoice Generator - Shree Self Driving &amp; Car Rental Service</title>
+<link rel="stylesheet" href="../styles.css">
+<script src="../theme.js"></script>
+<style>
+/* Invoice Generator Dedicated Styling */
+.inv-layout {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 24px;
+  align-items: start;
+  margin-top: 20px;
+}
+.inv-tabs {
+  display: flex;
+  background: linear-gradient(180deg, #080e1c 0%, #0d1527 100%);
+  border: 1px solid #1e2c4c;
+  border-top: 1px solid #121c32;
+  border-bottom: 1px solid #2a3d66;
+  border-radius: 10px;
+  padding: 4px;
+  gap: 4px;
+  margin-bottom: 16px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.45);
+}
+.inv-tab {
+  flex: 1;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 7px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.inv-tab.active {
+  background: linear-gradient(180deg, rgba(30, 48, 86, 0.85) 0%, rgba(19, 30, 56, 0.95) 100%);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  border-bottom: 1.5px solid rgba(0, 0, 0, 0.4);
+}
+.import-bar {
+  background: linear-gradient(165deg, rgba(245, 158, 11, 0.12) 0%, rgba(217, 119, 6, 0.05) 100%);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-top: 1px solid rgba(251, 191, 36, 0.45);
+  border-bottom: 2px solid rgba(180, 83, 9, 0.3);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+.import-bar select {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  max-width: 280px;
+}
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 18px 0 10px 0;
+  padding-bottom: 4px;
+  border-bottom: 1px dashed var(--border);
+}
+.section-head:first-of-type {
+  margin-top: 0;
+}
+
+/* Printable A4 Tax Invoice Card */
+.invoice-sheet {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #cbd5e1;
+  border-top: 1px solid #f1f5f9;
+  border-bottom: 2px solid #94a3b8;
+  border-radius: 8px;
+  padding: 26px 30px;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.25), 0 25px 50px -10px rgba(0,0,0,0.45), inset 0 1px 0 #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 12.5px;
+  line-height: 1.45;
+  box-sizing: border-box;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sheet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 14px;
+  border-bottom: 2px solid #0f172a;
+  margin-bottom: 14px;
+}
+.sheet-brand h2 {
+  font-size: 18px;
+  font-weight: 900;
+  color: #0f172a;
+  margin: 0 0 2px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+.sheet-brand p {
+  margin: 0;
+  font-size: 11.5px;
+  color: #475569;
+}
+.sheet-title-badge {
+  text-align: right;
+}
+.sheet-title-badge h1 {
+  font-size: 20px;
+  font-weight: 900;
+  color: #1e3a8a;
+  margin: 0 0 4px 0;
+  letter-spacing: 0.05em;
+}
+.sheet-num-date {
+  font-size: 12px;
+  font-weight: 700;
+  color: #334155;
+}
+.meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 14px;
+  font-size: 12px;
+}
+.meta-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 10px 12px;
+}
+.meta-box h4 {
+  margin: 0 0 6px 0;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 3px;
+}
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 3px;
+}
+.meta-row:last-child {
+  margin-bottom: 0;
+}
+.meta-lbl {
+  color: #64748b;
+}
+.meta-val {
+  font-weight: 700;
+  color: #0f172a;
+  text-align: right;
+}
+
+/* Line Items Table */
+.sheet-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 14px;
+  font-size: 11.5px;
+}
+.sheet-table th {
+  background: #0f172a;
+  color: #ffffff;
+  padding: 7px 10px;
+  text-align: left;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+}
+.sheet-table th.tar, .sheet-table td.tar {
+  text-align: right;
+}
+.sheet-table th.tac, .sheet-table td.tac {
+  text-align: center;
+}
+.sheet-table td {
+  padding: 6px 10px;
+  border-bottom: 1px solid #e2e8f0;
+  color: #1e293b;
+}
+.sheet-table tr:nth-child(even) td {
+  background: #f8fafc;
+}
+.sheet-table tr.total-row td {
+  font-weight: 800;
+  background: #f1f5f9;
+  border-top: 1px solid #cbd5e1;
+  border-bottom: 1px solid #cbd5e1;
+}
+
+/* Totals Box */
+.sheet-calc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+.sheet-words-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.sheet-words-title {
+  font-size: 10.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+.sheet-words-text {
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.4;
+}
+.sheet-bank-box {
+  margin-top: 8px;
+  font-size: 11px;
+  color: #475569;
+  border-top: 1px dashed #cbd5e1;
+  padding-top: 6px;
+}
+.sheet-calc-box {
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: #ffffff;
+  padding: 8px 12px;
+}
+.sheet-calc-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 0;
+  font-size: 12px;
+  color: #334155;
+}
+.sheet-calc-row.bold {
+  font-weight: 800;
+  color: #0f172a;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 5px;
+  margin-top: 3px;
+}
+.sheet-calc-row.grand-total {
+  background: #1e3a8a;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 900;
+  padding: 6px 10px;
+  border-radius: 4px;
+  margin-top: 6px;
+}
+.sheet-sign-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-top: 14px;
+  border-top: 1px solid #e2e8f0;
+}
+.sheet-terms {
+  max-width: 60%;
+  font-size: 10px;
+  color: #64748b;
+  line-height: 1.4;
+}
+.sheet-seal {
+  text-align: center;
+  font-size: 11px;
+}
+.sheet-seal-space {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  font-style: italic;
+  font-size: 10px;
+}
+
+/* History List Table */
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.history-table th {
+  background: var(--card-surface);
+  color: var(--text-muted);
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+.history-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13.5px;
+}
+.history-table tr:hover td {
+  background: var(--card-hover);
+}
+
+@media (max-width: 1050px) {
+  .inv-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #invoicePreviewSheet, #invoicePreviewSheet * {
+    visibility: visible;
+  }
+  #invoicePreviewSheet {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+}
+
+/* ==========================================================================
+   Light Mode Complete Visibility & Contrast Audit Overrides for Invoice
+   ========================================================================== */
+[data-theme="light"] .inv-tabs {
+  background: #f1f5f9 !important;
+  border: 1.5px solid #cbd5e1 !important;
+  box-shadow: inset 0 2px 4px rgba(15, 23, 42, 0.08) !important;
+}
+
+[data-theme="light"] .inv-tab {
+  color: #334155 !important;
+  font-weight: 700 !important;
+}
+
+[data-theme="light"] .inv-tab:hover {
+  color: #0f172a !important;
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .inv-tab.active {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1.5px solid #94a3b8 !important;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.14) !important;
+}
+
+[data-theme="light"] .import-bar {
+  background: #fef3c7 !important;
+  border: 1.5px solid #f59e0b !important;
+  color: #78350f !important;
+}
+
+[data-theme="light"] .import-bar select {
+  background: #ffffff !important;
+  border: 1.5px solid #94a3b8 !important;
+  color: #020617 !important;
+  font-weight: 700 !important;
+}
+
+[data-theme="light"] .section-head {
+  color: #92400e !important;
+  border-bottom: 1.5px dashed #cbd5e1 !important;
+  font-weight: 800 !important;
+}
+
+[data-theme="light"] .history-table th {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-bottom: 2px solid #cbd5e1 !important;
+  font-weight: 800 !important;
+}
+
+[data-theme="light"] .history-table td {
+  color: #020617 !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  font-weight: 600 !important;
+}
+
+[data-theme="light"] .history-table tr:hover td {
+  background: #f8fafc !important;
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <!-- ================= BRAND BAR ================= -->
+  <header class="brandbar">
+    <div class="brand-left">
+      <div class="brand-icon-badge" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1>Shree Self Driving &amp; Car Rental Service</h1>
+        <p>
+          <a href="../index.html">&larr; Back to Tools</a>
+          <span style="opacity:.4;">&bull;</span>
+          <a href="../quote/index.html">Quotation Calculator</a>
+          <span style="opacity:.4;">&bull;</span>
+          <a href="../calendar/index.html">Booking Calendar</a>
+          <span style="opacity:.4;">&bull;</span>
+          <a href="tel:9768010603" class="brand-phone-pill" title="Bookings">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            9768010603
+          </a>
+        </p>
+      </div>
+    </div>
+    <div class="brand-actions">
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle theme">Light mode</button>
+    </div>
+  </header>
+
+  <!-- ================= TOP TABS ================= -->
+  <div class="inv-tabs" style="margin-top:18px;">
+    <button type="button" class="inv-tab active" id="tabEditor">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      Create / Edit Invoice
+    </button>
+    <button type="button" class="inv-tab" id="tabHistory">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Saved Invoices Records (<span id="historyCount">0</span>)
+    </button>
+  </div>
+
+  <!-- ================= VIEW 1: INVOICE GENERATOR EDITOR ================= -->
+  <div id="viewEditor">
+    <!-- Quick Sync / Import Bar -->
+    <div class="import-bar">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" style="color:var(--accent-gold);"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span style="font-weight:700; font-size:13px; color:var(--text-main);">Quick Import from Advance Bookings:</span>
+        <select id="selImportBooking">
+          <option value="">-- Choose Confirmed Booking to Populate --</option>
+        </select>
+      </div>
+      <div>
+        <button type="button" class="btn ghost" id="btnResetInvoice" style="padding:5px 12px; font-size:12.5px;">
+          Reset Form
+        </button>
+      </div>
+    </div>
+
+    <div class="inv-layout">
+      <!-- INPUTS FORM PANEL -->
+      <form class="card panel" id="formInvoice" autocomplete="off" onsubmit="return false;">
+        
+        <!-- SECTION 1: INVOICE META -->
+        <div class="section-head">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          1. Invoice &amp; Tax Configuration
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label for="invType">Invoice Document Type</label>
+            <select id="invType">
+              <option value="TAX INVOICE">GST Tax Invoice (Rule 46)</option>
+              <option value="BILL OF SUPPLY">Bill of Supply (Non-GST)</option>
+              <option value="PROFORMA INVOICE">Proforma Invoice</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="invNumber">Invoice Serial Number *</label>
+            <input type="text" id="invNumber" value="SSD/26-27/001" required>
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label for="invDate">Invoice Date *</label>
+            <input type="date" id="invDate" required>
+          </div>
+          <div class="field">
+            <label for="invSac">SAC / HSN Code</label>
+            <input type="text" id="invSac" value="996601" placeholder="996601 (Rental of passenger cars)">
+          </div>
+        </div>
+
+        <!-- SECTION 2: BILLED TO (CUSTOMER DETAILS) -->
+        <div class="section-head">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          2. Customer (Billed To) Details
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label for="custName">Customer / Company Name *</label>
+            <input type="text" id="custName" placeholder="e.g. Rahul Sharma" required>
+          </div>
+          <div class="field">
+            <label for="custPhone">WhatsApp Mobile Number *</label>
+            <input type="tel" id="custPhone" placeholder="e.g. 9876543210 (10 digits)" required>
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label for="custGstin">Customer GSTIN (Optional B2B)</label>
+            <input type="text" id="custGstin" placeholder="e.g. 27ABCDE1234F1Z5">
+          </div>
+          <div class="field">
+            <label for="custAddress">Customer Address &amp; State</label>
+            <input type="text" id="custAddress" value="Maharashtra (27)" placeholder="City / Address, State">
+          </div>
+        </div>
+
+        <!-- SECTION 3: VEHICLE & TRIP DETAILS -->
+        <div class="section-head">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C2.1 10.8 2 11 2 11.2V16c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
+          3. Vehicle &amp; Rental Duration
+        </div>
+        <div class="field" style="margin-bottom:10px;">
+          <label for="invVehicleSelect">Select Fleet Vehicle (Auto-fills Rates, Reg No. &amp; Deposit)</label>
+          <select id="invVehicleSelect">
+            <option value="">-- Choose from Fleet Cars or Type Below --</option>
+          </select>
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label for="vehName">Vehicle Name &amp; Model *</label>
+            <input type="text" id="vehName" placeholder="e.g. Maruti Swift VXi (Petrol)" required>
+          </div>
+          <div class="field">
+            <label for="vehReg">Vehicle Reg. No. / Plate</label>
+            <input type="text" id="vehReg" placeholder="e.g. MH 46 BV 1001">
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label for="pickupDateTime">Pickup Date &amp; Time *</label>
+            <input type="datetime-local" id="pickupDateTime" required>
+          </div>
+          <div class="field">
+            <label for="returnDateTime">Return Date &amp; Time *</label>
+            <input type="datetime-local" id="returnDateTime" required>
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label for="billDays">Billed Days</label>
+            <input type="number" id="billDays" value="1" min="1" step="1">
+          </div>
+          <div class="field">
+            <label for="dayRate">Rate Per Day (₹) *</label>
+            <input type="number" id="dayRate" placeholder="e.g. 2500" min="0" required>
+          </div>
+        </div>
+
+        <!-- SECTION 4: EXTRA CHARGES & ADJUSTMENTS -->
+        <div class="section-head">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          4. Extra Hours, Services &amp; Discounts
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label for="extraHours">Extra Hours (Qty)</label>
+            <input type="number" id="extraHours" value="0" min="0" step="1">
+          </div>
+          <div class="field">
+            <label for="extraHourRate">Extra Hour Rate (₹)</label>
+            <input type="number" id="extraHourRate" value="150" min="0">
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label for="deliveryCharges">Delivery / Doorstep Charge (₹)</label>
+            <input type="number" id="deliveryCharges" value="0" min="0">
+          </div>
+          <div class="field">
+            <label for="washingCharges">Car Washing Charge (₹)</label>
+            <input type="number" id="washingCharges" value="0" min="0">
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label for="discount">Discount / Less Promo (₹)</label>
+            <input type="number" id="discount" value="0" min="0">
+          </div>
+          <div class="field">
+            <label for="gstRate">GST Tax Rate (%)</label>
+            <select id="gstRate">
+              <option value="5">5% GST (Passenger Transport SAC 9966)</option>
+              <option value="12">12% GST (With ITC)</option>
+              <option value="18">18% GST (Equipment Rental SAC 9973)</option>
+              <option value="0">0% (Nil / Exempt / Bill of Supply)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- SECTION 5: ADVANCE TOKEN & DEPOSIT -->
+        <div class="section-head">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+          5. Deposits &amp; Advance Payments
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label for="deposit">Refundable Security Deposit (₹)</label>
+            <input type="number" id="deposit" value="3000" min="0" title="Security deposit is exempt from GST">
+          </div>
+          <div class="field">
+            <label for="tokenPaid">Advance Token Paid (₹)</label>
+            <input type="number" id="tokenPaid" value="0" min="0">
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label for="paymentStatus">Payment Status</label>
+            <select id="paymentStatus">
+              <option value="Paid in Full">Paid in Full</option>
+              <option value="Balance Due">Balance Due at Handover</option>
+              <option value="Partial Paid">Partial Paid</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="paymentMode">Payment Mode</label>
+            <select id="paymentMode">
+              <option value="UPI (GPay / PhonePe / Paytm)">UPI (GPay / PhonePe / Paytm)</option>
+              <option value="Cash">Cash</option>
+              <option value="Bank Transfer / NEFT / IMPS">Bank Transfer / NEFT / IMPS</option>
+              <option value="Credit / Debit Card">Credit / Debit Card</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="actions" style="margin-top:20px;">
+          <button class="btn wa" id="btnWaInvoice" type="button" style="flex:1;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.888 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            Send WhatsApp Invoice
+          </button>
+          <button class="btn pdf" id="btnPrintPdf" type="button" style="flex:1;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            Print / Save A4 PDF
+          </button>
+          <button class="btn primary" id="btnSaveInvoice" type="button" style="padding:10px 18px;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Save to Records
+          </button>
+        </div>
+      </form>
+
+      <!-- LIVE EXECUTIVE INVOICE SHEET PREVIEW -->
+      <aside>
+        <div id="invoicePreviewSheet" class="invoice-sheet">
+          <!-- Dynamically populated via JS renderInvoice() -->
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- ================= VIEW 2: SAVED INVOICES RECORDS ================= -->
+  <div id="viewHistory" style="display:none; margin-top:14px;">
+    <div class="card" style="padding:20px; border-radius:12px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h3 style="margin:0; font-family:var(--font-display); font-size:18px;">Issued Tax Invoices Database</h3>
+        <input type="text" id="searchHistory" class="search-input" placeholder="Search invoice, customer, car..." style="width:260px;">
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Invoice No</th>
+              <th>Date</th>
+              <th>Customer</th>
+              <th>Vehicle</th>
+              <th>Taxable</th>
+              <th>GST</th>
+              <th>Net Total</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="historyTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../calc.js"></script>
+<script src="../html2pdf.bundle.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var INVOICES_KEY = 'sdr-invoices';
+  var BOOKINGS_KEY = 'sdr-bookings';
+  var VEH_KEY = 'sdr-vehicles';
+
+  var $ = function (id) { return document.getElementById(id); };
+  var val = function (id) { return ($(id).value || '').trim(); };
+  var numVal = function (id) { return parseFloat(val(id)) || 0; };
+
+  /* Format Currency Indian */
+  function fmt(n) {
+    return '₹' + (Number(n) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  /* Number to Words converter (Indian numbering system) */
+  function numToWords(n) {
+    n = Math.round(n);
+    if (n === 0) return 'Zero Rupees Only';
+    var a = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
+      'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+    var b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+    function inWords(num) {
+      if (num < 20) return a[num];
+      var digit = num % 10;
+      return b[Math.floor(num / 10)] + (digit ? ' ' + a[digit] : '');
+    }
+
+    var str = '';
+    var crore = Math.floor(n / 10000000); n %= 10000000;
+    var lakh = Math.floor(n / 100000); n %= 100000;
+    var thousand = Math.floor(n / 1000); n %= 1000;
+    var hundred = Math.floor(n / 100); n %= 100;
+
+    if (crore) str += inWords(crore) + ' Crore ';
+    if (lakh) str += inWords(lakh) + ' Lakh ';
+    if (thousand) str += inWords(thousand) + ' Thousand ';
+    if (hundred) str += inWords(hundred) + ' Hundred ';
+    if (n) {
+      if (str) str += 'and ';
+      str += inWords(n) + ' ';
+    }
+    return str.trim() + ' Rupees Only';
+  }
+
+  /* Clean Phone */
+  function cleanPhone(raw) {
+    if (!raw) return '';
+    var num = String(raw).replace(/\D/g, '');
+    if (!num) return '';
+    if (num.length === 11 && num.charAt(0) === '0') num = num.substring(1);
+    if (num.length === 13 && num.substring(0, 3) === '910') num = '91' + num.substring(3);
+    if (num.length === 10) num = '91' + num;
+    return num;
+  }
+
+  /* Load / Save Invoices */
+  function loadInvoices() {
+    try {
+      var d = localStorage.getItem(INVOICES_KEY);
+      if (d) {
+        var p = JSON.parse(d);
+        if (Array.isArray(p)) return p;
+      }
+    } catch (e) {}
+    return [];
+  }
+
+  function saveInvoices(list) {
+    try {
+      localStorage.setItem(INVOICES_KEY, JSON.stringify(list));
+    } catch (e) {}
+  }
+
+    var DEFAULT_FLEET = [
+    {
+      id: 'swift-vxi',
+      name: 'Maruti Swift VXi',
+      regNo: 'MH 46 BV 1001',
+      fuel: 'Petrol',
+      seats: '5 Seater',
+      ratePerDay: '2000',
+      extraHourRate: '150',
+      kmPerDay: '300',
+      includedKM: '',
+      extraKMRate: '9',
+      token: '1000',
+      deposit: '3000',
+      deliveryCharges: '0',
+      washingCharges: '0'
+    },
+    {
+      id: 'wagonr-zxi',
+      name: 'Maruti WagonR ZXi',
+      regNo: 'MH 46 BV 1002',
+      fuel: 'Petrol / CNG',
+      seats: '5 Seater',
+      ratePerDay: '1800',
+      extraHourRate: '120',
+      kmPerDay: '300',
+      includedKM: '',
+      extraKMRate: '8',
+      token: '1000',
+      deposit: '3000',
+      deliveryCharges: '0',
+      washingCharges: '0'
+    },
+    {
+      id: 'ertiga-zxi',
+      name: 'Maruti Ertiga ZXi',
+      regNo: 'MH 46 BV 1003',
+      fuel: 'Petrol / CNG',
+      seats: '7 Seater',
+      ratePerDay: '3000',
+      extraHourRate: '200',
+      kmPerDay: '300',
+      includedKM: '',
+      extraKMRate: '11',
+      token: '1500',
+      deposit: '4000',
+      deliveryCharges: '0',
+      washingCharges: '0'
+    },
+    {
+      id: 'creta-sx',
+      name: 'Hyundai Creta SX',
+      regNo: 'MH 46 BV 1004',
+      fuel: 'Diesel',
+      seats: '5 Seater',
+      ratePerDay: '3500',
+      extraHourRate: '250',
+      kmPerDay: '300',
+      includedKM: '',
+      extraKMRate: '12',
+      token: '2000',
+      deposit: '5000',
+      deliveryCharges: '0',
+      washingCharges: '0'
+    },
+    {
+      id: 'thar-4x4',
+      name: 'Mahindra Thar 4x4',
+      regNo: 'MH 46 BV 1005',
+      fuel: 'Diesel AT',
+      seats: '4 Seater',
+      ratePerDay: '4500',
+      extraHourRate: '300',
+      kmPerDay: '300',
+      includedKM: '',
+      extraKMRate: '15',
+      token: '2000',
+      deposit: '6000',
+      deliveryCharges: '0',
+      washingCharges: '0'
+    },
+    {
+      id: 'scorpio-n',
+      name: 'Mahindra Scorpio-N',
+      regNo: 'MH 46 BV 1006',
+      fuel: 'Diesel',
+      seats: '7 Seater',
+      ratePerDay: '4000',
+      extraHourRate: '250',
+      kmPerDay: '300',
+      includedKM: '',
+      extraKMRate: '14',
+      token: '2000',
+      deposit: '5000',
+      deliveryCharges: '0',
+      washingCharges: '0'
+    }
+  ];
+
+  function loadVehicles() {
+    try {
+      var data = localStorage.getItem(VEH_KEY);
+      if (data) {
+        var parsed = JSON.parse(data);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    try {
+      localStorage.setItem(VEH_KEY, JSON.stringify(DEFAULT_FLEET));
+    } catch (ex) {}
+    return DEFAULT_FLEET.slice();
+  }
+
+  function populateFleetDropdown() {
+    var list = loadVehicles();
+    var sel = $('invVehicleSelect');
+    if (!sel) return;
+    sel.innerHTML = '<option value="">-- Choose from Fleet Cars or Type Below --</option>';
+    list.forEach(function (v) {
+      var opt = document.createElement('option');
+      opt.value = v.id;
+      opt.textContent = v.name + (v.fuel ? ' (' + v.fuel + ')' : '') + (v.ratePerDay ? ' - ₹' + v.ratePerDay + '/day' : '');
+      sel.appendChild(opt);
+    });
+  }
+
+  /* Load Bookings from Booking Calendar */
+  function loadBookings() {
+    try {
+      var d = localStorage.getItem(BOOKINGS_KEY);
+      if (d) {
+        var p = JSON.parse(d);
+        if (Array.isArray(p)) return p;
+      }
+    } catch (e) {}
+    return [];
+  }
+
+  /* Populate Import Bookings Dropdown */
+  function populateImportDropdown() {
+    var bookings = loadBookings();
+    var sel = $('selImportBooking');
+    sel.innerHTML = '<option value="">-- Choose Confirmed Booking to Populate --</option>';
+    bookings.forEach(function (b) {
+      var opt = document.createElement('option');
+      opt.value = b.id;
+      opt.textContent = b.customerName + ' - ' + b.vehicleName + ' (' + b.pickupDate + ' to ' + b.returnDate + ')';
+      sel.appendChild(opt);
+    });
+  }
+
+  $('invVehicleSelect').addEventListener('change', function () {
+    var id = this.value;
+    if (!id) return;
+    var list = loadVehicles();
+    var v = list.find(function (item) { return item.id === id; });
+    if (v) {
+      $('vehName').value = v.name + (v.fuel ? ' (' + v.fuel + ')' : '');
+      $('vehReg').value = v.regNo || 'MH 46 BV 1001';
+      if (v.ratePerDay) $('dayRate').value = v.ratePerDay;
+      if (v.extraHourRate) $('extraHourRate').value = v.extraHourRate;
+      if (v.deposit) $('deposit').value = v.deposit;
+      if (v.token) $('tokenPaid').value = v.token;
+      renderInvoice();
+    }
+  });
+
+  window.addEventListener('storage', function (e) {
+    if (e.key === VEH_KEY) {
+      populateFleetDropdown();
+    }
+    if (e.key === BOOKINGS_KEY) {
+      populateImportDropdown();
+  populateFleetDropdown();
+    }
+  });
+
+  $('selImportBooking').addEventListener('change' , function () {
+    var id = this.value;
+    if (!id) return;
+    var bookings = loadBookings();
+    var b = bookings.find(function (item) { return item.id === id; });
+    if (b) importFromBooking(b);
+  });
+
+  function importFromBooking(b) {
+    $('custName').value = b.customerName || '';
+    $('custPhone').value = b.customerPhone || '';
+    $('vehName').value = b.vehicleName || '';
+    if (b.pickupDate) {
+      $('pickupDateTime').value = b.pickupDate + 'T' + (b.pickupTime || '10:00');
+    }
+    if (b.returnDate) {
+      $('returnDateTime').value = b.returnDate + 'T' + (b.returnTime || '20:00');
+    }
+    if (b.tokenAmount) $('tokenPaid').value = b.tokenAmount;
+    if (b.totalAmount) {
+      $('dayRate').value = b.totalAmount;
+      $('billDays').value = 1;
+    }
+    autoCalcDates();
+    renderInvoice();
+  }
+
+  /* Auto Calculate Days from Pickup & Return */
+  function autoCalcDates() {
+    var pStr = val('pickupDateTime');
+    var rStr = val('returnDateTime');
+    if (pStr && rStr) {
+      var p = new Date(pStr);
+      var r = new Date(rStr);
+      var diffMs = r.getTime() - p.getTime();
+      if (diffMs > 0) {
+        var diffHours = Math.ceil(diffMs / (1000 * 60 * 60));
+        var days = Math.max(1, Math.floor(diffHours / 24));
+        var extra = Math.max(0, diffHours - (days * 24));
+        $('billDays').value = days;
+        $('extraHours').value = extra;
+      }
+    }
+  }
+
+  $('pickupDateTime').addEventListener('change', function () { autoCalcDates(); renderInvoice(); });
+  $('returnDateTime').addEventListener('change', function () { autoCalcDates(); renderInvoice(); });
+
+  /* Calculate Invoice Financials */
+  function computeInvoice() {
+    var days = Math.max(1, numVal('billDays'));
+    var dayRate = numVal('dayRate');
+    var baseRental = days * dayRate;
+
+    var extraHours = numVal('extraHours');
+    var extraHourRate = numVal('extraHourRate');
+    var extraHoursCharge = extraHours * extraHourRate;
+
+    var delivery = numVal('deliveryCharges');
+    var washing = numVal('washingCharges');
+    var discount = numVal('discount');
+
+    var subtotalTaxable = Math.max(0, (baseRental + extraHoursCharge + delivery + washing) - discount);
+
+    var gstRate = numVal('gstRate');
+    var isGST = val('invType') === 'TAX INVOICE' && gstRate > 0;
+
+    var cgstRate = isGST ? (gstRate / 2) : 0;
+    var sgstRate = isGST ? (gstRate / 2) : 0;
+    var cgst = isGST ? Math.round((subtotalTaxable * (cgstRate / 100)) * 100) / 100 : 0;
+    var sgst = isGST ? Math.round((subtotalTaxable * (sgstRate / 100)) * 100) / 100 : 0;
+    var totalTax = cgst + sgst;
+
+    var totalRentalWithTax = subtotalTaxable + totalTax;
+    var deposit = numVal('deposit');
+    var token = numVal('tokenPaid');
+
+    var netPayable = Math.max(0, (totalRentalWithTax + deposit) - token);
+
+    return {
+      days: days,
+      dayRate: dayRate,
+      baseRental: baseRental,
+      extraHours: extraHours,
+      extraHourRate: extraHourRate,
+      extraHoursCharge: extraHoursCharge,
+      delivery: delivery,
+      washing: washing,
+      discount: discount,
+      subtotalTaxable: subtotalTaxable,
+      gstRate: gstRate,
+      isGST: isGST,
+      cgstRate: cgstRate,
+      sgstRate: sgstRate,
+      cgst: cgst,
+      sgst: sgst,
+      totalTax: totalTax,
+      totalRentalWithTax: totalRentalWithTax,
+      deposit: deposit,
+      token: token,
+      netPayable: netPayable
+    };
+  }
+
+  /* Render Live Invoice Preview Sheet */
+  function renderInvoice() {
+    var c = computeInvoice();
+    var sheet = $('invoicePreviewSheet');
+
+    var invNum = val('invNumber') || 'SSD/26-27/001';
+    var invDate = val('invDate') || new Date().toISOString().split('T')[0];
+    var invType = val('invType') || 'TAX INVOICE';
+    var sac = val('invSac') || '996601';
+
+    var custName = val('custName') || 'Valued Customer';
+    var custPhone = val('custPhone') || '9768010603';
+    var custGst = val('custGstin') || 'URP (Unregistered Person)';
+    var custAddr = val('custAddress') || 'Maharashtra (27)';
+
+    var veh = val('vehName') || 'Self Drive Passenger Car';
+    var vehReg = val('vehReg') || 'MH 46 Self Drive Fleet';
+    var pTime = val('pickupDateTime') ? val('pickupDateTime').replace('T', ' ') : 'Handover';
+    var rTime = val('returnDateTime') ? val('returnDateTime').replace('T', ' ') : 'Return';
+
+    var status = val('paymentStatus') || 'Paid in Full';
+    var mode = val('paymentMode') || 'UPI / Bank Transfer';
+
+    var h = '';
+    // Header
+    h += '<div class="sheet-header">' +
+           '<div class="sheet-brand">' +
+             '<h2>Shree Self Driving &amp; Car Rental Service</h2>' +
+             '<p>Near Kia Motors Showroom, Bhoomi Landmark, Sector 17, Khanda Colony, Panvel, Navi Mumbai &ndash; 410206</p>' +
+             '<p><b>Phone:</b> +91 9768010603 &bull; <b>Email:</b> shreeselfdriving@gmail.com &bull; <b>Web:</b> www.shreeselfdriving.in</p>' +
+             '<p><b>GSTIN:</b> 27AABCS9768K1Z2 &bull; <b>State Code:</b> 27 (Maharashtra)</p>' +
+           '</div>' +
+           '<div class="sheet-title-badge">' +
+             '<h1>' + invType + '</h1>' +
+             '<div class="sheet-num-date">Invoice No: ' + invNum + '</div>' +
+             '<div class="sheet-num-date">Date: ' + invDate + '</div>' +
+             '<div style="margin-top:4px;"><span class="status-badge confirmed" style="font-size:10px; padding:2px 8px;">' + status + '</span></div>' +
+           '</div>' +
+         '</div>';
+
+    // Meta Grid: Billed To & Trip Information
+    h += '<div class="meta-grid">' +
+           '<div class="meta-box">' +
+             '<h4>Billed To (Client Details)</h4>' +
+             '<div class="meta-row"><span class="meta-lbl">Client Name:</span><span class="meta-val">' + custName + '</span></div>' +
+             '<div class="meta-row"><span class="meta-lbl">Contact Phone:</span><span class="meta-val">+91 ' + custPhone + '</span></div>' +
+             '<div class="meta-row"><span class="meta-lbl">Client GSTIN:</span><span class="meta-val">' + custGst + '</span></div>' +
+             '<div class="meta-row"><span class="meta-lbl">Place of Supply:</span><span class="meta-val">' + custAddr + '</span></div>' +
+           '</div>' +
+           '<div class="meta-box">' +
+             '<h4>Vehicle &amp; Trip Particulars</h4>' +
+             '<div class="meta-row"><span class="meta-lbl">Vehicle:</span><span class="meta-val">' + veh + '</span></div>' +
+             '<div class="meta-row"><span class="meta-lbl">Reg. No:</span><span class="meta-val">' + vehReg + '</span></div>' +
+             '<div class="meta-row"><span class="meta-lbl">Pickup:</span><span class="meta-val">' + pTime + '</span></div>' +
+             '<div class="meta-row"><span class="meta-lbl">Return:</span><span class="meta-val">' + rTime + ' (' + c.days + 'd' + (c.extraHours ? ' ' + c.extraHours + 'h' : '') + ')</span></div>' +
+           '</div>' +
+         '</div>';
+
+    // Items Table
+    h += '<table class="sheet-table">' +
+           '<thead>' +
+             '<tr>' +
+               '<th style="width:30px;">#</th>' +
+               '<th>Description of Services</th>' +
+               '<th class="tac" style="width:70px;">SAC</th>' +
+               '<th class="tac" style="width:50px;">Qty</th>' +
+               '<th class="tar" style="width:80px;">Rate</th>' +
+               '<th class="tar" style="width:90px;">Taxable Amt</th>' +
+             '</tr>' +
+           '</thead>' +
+           '<tbody>';
+
+    var itemIdx = 1;
+    // 1. Base Rental
+    h += '<tr>' +
+           '<td>' + (itemIdx++) + '</td>' +
+           '<td><b>Self-Drive Car Rental Service</b> &ndash; ' + veh + ' (' + c.days + ' Day' + (c.days > 1 ? 's' : '') + ')</td>' +
+           '<td class="tac">' + sac + '</td>' +
+           '<td class="tac">' + c.days + ' d</td>' +
+           '<td class="tar">' + fmt(c.dayRate) + '</td>' +
+           '<td class="tar">' + fmt(c.baseRental) + '</td>' +
+         '</tr>';
+
+    // 2. Extra Hours
+    if (c.extraHoursCharge > 0) {
+      h += '<tr>' +
+             '<td>' + (itemIdx++) + '</td>' +
+             '<td>Late Return / Extra Hours Charge (' + c.extraHours + ' hrs @ ' + fmt(c.extraHourRate) + '/hr)</td>' +
+             '<td class="tac">' + sac + '</td>' +
+             '<td class="tac">' + c.extraHours + ' h</td>' +
+             '<td class="tar">' + fmt(c.extraHourRate) + '</td>' +
+             '<td class="tar">' + fmt(c.extraHoursCharge) + '</td>' +
+           '</tr>';
+    }
+
+    // 3. Delivery
+    if (c.delivery > 0) {
+      h += '<tr>' +
+             '<td>' + (itemIdx++) + '</td>' +
+             '<td>Doorstep Vehicle Delivery &amp; Pickup Service</td>' +
+             '<td class="tac">' + sac + '</td>' +
+             '<td class="tac">1</td>' +
+             '<td class="tar">' + fmt(c.delivery) + '</td>' +
+             '<td class="tar">' + fmt(c.delivery) + '</td>' +
+           '</tr>';
+    }
+
+    // 4. Washing
+    if (c.washing > 0) {
+      h += '<tr>' +
+             '<td>' + (itemIdx++) + '</td>' +
+             '<td>Car Washing &amp; Sanitization Service</td>' +
+             '<td class="tac">' + sac + '</td>' +
+             '<td class="tac">1</td>' +
+             '<td class="tar">' + fmt(c.washing) + '</td>' +
+             '<td class="tar">' + fmt(c.washing) + '</td>' +
+           '</tr>';
+    }
+
+    // 5. Discount
+    if (c.discount > 0) {
+      h += '<tr>' +
+             '<td>&bull;</td>' +
+             '<td style="color:#059669;">Special Promotional Offer / Loyalty Discount Applied</td>' +
+             '<td class="tac">&mdash;</td>' +
+             '<td class="tac">&mdash;</td>' +
+             '<td class="tar" style="color:#059669;">&minus;' + fmt(c.discount) + '</td>' +
+             '<td class="tar" style="color:#059669;">&minus;' + fmt(c.discount) + '</td>' +
+           '</tr>';
+    }
+
+    h += '<tr class="total-row">' +
+           '<td colspan="5" class="tar">Total Taxable Value:</td>' +
+           '<td class="tar">' + fmt(c.subtotalTaxable) + '</td>' +
+         '</tr>';
+    h += '</tbody></table>';
+
+    // Financials Breakdown & Bank Details Grid
+    h += '<div class="sheet-calc-grid">' +
+           '<div class="sheet-words-box">' +
+             '<div>' +
+               '<div class="sheet-words-title">Invoice Amount in Words:</div>' +
+               '<div class="sheet-words-text">' + numToWords(c.netPayable) + '</div>' +
+             '</div>' +
+             '<div class="sheet-bank-box">' +
+               '<b>Bank &amp; Payment Details:</b><br>' +
+               'A/C Name: Shree Self Driving &bull; Bank: HDFC Bank<br>' +
+               'A/C No: 50200084729103 &bull; IFSC: HDFC0001042<br>' +
+               'UPI ID: <b>9768010603@upi</b> (GPay / PhonePe / Paytm)<br>' +
+               'Payment Mode: <b>' + mode + '</b>' +
+             '</div>' +
+           '</div>' +
+           '<div class="sheet-calc-box">' +
+             '<div class="sheet-calc-row"><span>Total Taxable Rental:</span><span>' + fmt(c.subtotalTaxable) + '</span></div>';
+
+    if (c.isGST) {
+      h += '<div class="sheet-calc-row"><span>CGST (' + c.cgstRate + '%):</span><span>' + fmt(c.cgst) + '</span></div>' +
+           '<div class="sheet-calc-row"><span>SGST (' + c.sgstRate + '%):</span><span>' + fmt(c.sgst) + '</span></div>' +
+           '<div class="sheet-calc-row bold"><span>Total with GST:</span><span>' + fmt(c.totalRentalWithTax) + '</span></div>';
+    }
+
+    if (c.deposit > 0) {
+      h += '<div class="sheet-calc-row"><span>Refundable Security Deposit (Exempt):</span><span>' + fmt(c.deposit) + '</span></div>';
+    }
+
+    if (c.token > 0) {
+      h += '<div class="sheet-calc-row" style="color:#059669;"><span>Less Advance Token Received:</span><span>&minus;' + fmt(c.token) + '</span></div>';
+    }
+
+    h += '<div class="sheet-calc-row grand-total">' +
+           '<span>NET AMOUNT PAYABLE:</span>' +
+           '<span>' + fmt(c.netPayable) + '</span>' +
+         '</div>' +
+       '</div></div>';
+
+    // Signatory & Terms
+    h += '<div class="sheet-sign-box">' +
+           '<div class="sheet-terms">' +
+             '<b>Terms &amp; Conditions:</b><br>' +
+             '1. Fastag tolls, parking fees, and challans during the rental duration are borne by the hirer.<br>' +
+             '2. Security deposit is refundable via UPI within 24 hours of vehicle return post inspection.<br>' +
+             '3. Subject to Panvel, Navi Mumbai jurisdiction.' +
+           '</div>' +
+           '<div class="sheet-seal">' +
+             '<b>For SHREE SELF DRIVING</b>' +
+             '<div class="sheet-seal-space">[ Authorized Signatory / Seal ]</div>' +
+             '<div>Official Stamp &amp; Signature</div>' +
+           '</div>' +
+         '</div>';
+
+    sheet.innerHTML = h;
+  }
+
+  /* WhatsApp Invoice Text Sender */
+  function sendWhatsAppInvoice() {
+    var c = computeInvoice();
+    var phone = cleanPhone(val('custPhone'));
+    if (!phone) {
+      var entered = prompt('कस्टमर का 10 अंकों का WhatsApp नंबर दर्ज करें (सीधे इनवॉइस भेजने के लिए):', '');
+      if (entered) {
+        phone = cleanPhone(entered);
+        $('custPhone').value = entered.trim();
+        renderInvoice();
+      }
+    }
+
+    var lines = [
+      '🧾 *SHREE SELF DRIVING & CAR RENTAL SERVICE*',
+      '━━━━━━━━━━━━━━━━━━━━',
+      '📄 *' + (val('invType') || 'TAX INVOICE') + '*',
+      '*Invoice No:* ' + (val('invNumber') || 'SSD/26-27/001'),
+      '*Date:* ' + (val('invDate') || new Date().toISOString().split('T')[0]),
+      '━━━━━━━━━━━━━━━━━━━━',
+      '👤 *Billed To:* ' + (val('custName') || 'Valued Customer'),
+      '🚙 *Vehicle:* ' + (val('vehName') || 'Self Drive Car') + ' (' + (val('vehReg') || '') + ')',
+      '📅 *Rental Days:* ' + c.days + ' Days' + (c.extraHours ? ' (' + c.extraHours + ' hrs extra)' : ''),
+      '━━━━━━━━━━━━━━━━━━━━',
+      '💰 *Taxable Rental Amount:* ' + fmt(c.subtotalTaxable)
+    ];
+
+    if (c.isGST) {
+      lines.push('📊 *CGST (' + c.cgstRate + '%) + SGST (' + c.sgstRate + '%):* ' + fmt(c.totalTax));
+    }
+    if (c.deposit > 0) {
+      lines.push('🛡️ *Refundable Deposit:* ' + fmt(c.deposit));
+    }
+    if (c.token > 0) {
+      lines.push('💳 *Less Advance Token Received:* -' + fmt(c.token));
+    }
+
+    lines.push('━━━━━━━━━━━━━━━━━━━━');
+    lines.push('✅ *NET PAYABLE / RECEIVED:* ' + fmt(c.netPayable));
+    lines.push('📝 *Status:* ' + (val('paymentStatus') || 'Paid in Full'));
+    lines.push('💳 *Pay via UPI:* 9768010603@upi');
+    lines.push('━━━━━━━━━━━━━━━━━━━━');
+    lines.push('📞 *Bookings:* +91 9768010603');
+    lines.push('🙏 *Thank you for your business!*');
+
+    var text = encodeURIComponent(lines.join('\n'));
+    var isMobile = /Android|iPhone|iPad|iPod|Windows Phone|webOS|BlackBerry/i.test(navigator.userAgent);
+
+    if (isMobile) {
+      window.location.href = phone ? 'https://wa.me/' + phone + '?text=' + text : 'https://wa.me/?text=' + text;
+    } else {
+      var deskUrl = phone ? 'https://web.whatsapp.com/send?phone=' + phone + '&text=' + text : 'https://web.whatsapp.com/send?text=' + text;
+      var w = window.open(deskUrl, '_blank');
+      if (!w || w.closed || typeof w.closed === 'undefined') {
+        window.location.href = phone ? 'https://wa.me/' + phone + '?text=' + text : 'https://wa.me/?text=' + text;
+      }
+    }
+  }
+
+  /* PDF Generator */
+  function generateInvoicePdf() {
+    var sheet = $('invoicePreviewSheet');
+    var invNum = (val('invNumber') || 'Invoice').replace(/[^a-zA-Z0-9]/g, '_');
+    var cust = (val('custName') || 'Client').replace(/[^a-zA-Z0-9]/g, '_');
+    var fileName = 'Shree_Invoice_' + invNum + '_' + cust + '.pdf';
+
+    if (typeof html2pdf !== 'undefined') {
+      var opt = {
+        margin: [6, 6, 6, 6],
+        filename: fileName,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollY: 0 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+      html2pdf().set(opt).from(sheet).save();
+    } else {
+      window.print();
+    }
+  }
+
+  /* Save Invoice to LocalStorage */
+  function saveCurrentInvoice() {
+    var c = computeInvoice();
+    var invNum = val('invNumber') || 'SSD/26-27/001';
+
+    var record = {
+      id: 'inv-' + Date.now(),
+      invNumber: invNum,
+      invDate: val('invDate') || new Date().toISOString().split('T')[0],
+      invType: val('invType'),
+      custName: val('custName'),
+      custPhone: val('custPhone'),
+      custGstin: val('custGstin'),
+      custAddress: val('custAddress'),
+      vehName: val('vehName'),
+      vehReg: val('vehReg'),
+      pickupDateTime: val('pickupDateTime'),
+      returnDateTime: val('returnDateTime'),
+      billDays: c.days,
+      dayRate: c.dayRate,
+      extraHours: c.extraHours,
+      extraHourRate: c.extraHourRate,
+      deliveryCharges: c.delivery,
+      washingCharges: c.washing,
+      discount: c.discount,
+      deposit: c.deposit,
+      tokenPaid: c.token,
+      gstRate: c.gstRate,
+      subtotalTaxable: c.subtotalTaxable,
+      totalTax: c.totalTax,
+      netPayable: c.netPayable,
+      status: val('paymentStatus'),
+      mode: val('paymentMode'),
+      savedAt: new Date().toISOString()
+    };
+
+    var list = loadInvoices();
+    var existingIdx = list.findIndex(function (item) { return item.invNumber === invNum; });
+    if (existingIdx !== -1) {
+      list[existingIdx] = record;
+    } else {
+      list.unshift(record);
+    }
+    saveInvoices(list);
+    renderHistory();
+    alert('Invoice ' + invNum + ' successfully saved to Records database!');
+  }
+
+  /* Render Invoices History Table */
+  function renderHistory() {
+    var list = loadInvoices();
+    $('historyCount').textContent = list.length;
+    var tbody = $('historyTableBody');
+    tbody.innerHTML = '';
+
+    var query = val('searchHistory').toLowerCase();
+    var filtered = list.filter(function (inv) {
+      if (!query) return true;
+      return (inv.invNumber || '').toLowerCase().indexOf(query) !== -1 ||
+             (inv.custName || '').toLowerCase().indexOf(query) !== -1 ||
+             (inv.custPhone || '').indexOf(query) !== -1 ||
+             (inv.vehName || '').toLowerCase().indexOf(query) !== -1;
+    });
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:30px; color:var(--text-muted);">' +
+        'No saved invoices found. Click "Save to Records" when creating an invoice.</td></tr>';
+      return;
+    }
+
+    filtered.forEach(function (inv) {
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td class="mono-nums" style="font-weight:700; color:var(--accent-gold);">' + inv.invNumber + '</td>' +
+        '<td>' + inv.invDate + '</td>' +
+        '<td><b>' + (inv.custName || 'Client') + '</b><br><span style="font-size:11.5px; color:var(--text-muted);">' + (inv.custPhone || '') + '</span></td>' +
+        '<td>' + (inv.vehName || '') + '</td>' +
+        '<td class="mono-nums">' + fmt(inv.subtotalTaxable || 0) + '</td>' +
+        '<td class="mono-nums">' + fmt(inv.totalTax || 0) + '</td>' +
+        '<td class="mono-nums" style="font-weight:800; color:var(--emerald);">' + fmt(inv.netPayable || 0) + '</td>' +
+        '<td><span class="status-badge confirmed" style="font-size:10.5px;">' + (inv.status || 'Paid') + '</span></td>' +
+        '<td>' +
+          '<button class="btn ghost btn-icon" title="Load into Editor" data-load="' + inv.id + '" style="margin-right:4px;">' +
+            '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>' +
+          '</button>' +
+          '<button class="btn ghost btn-icon" title="Delete from Database" data-del="' + inv.id + '" style="color:var(--red);">' +
+            '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>' +
+          '</button>' +
+        '</td>';
+      tbody.appendChild(tr);
+    });
+
+    tbody.querySelectorAll('[data-load]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = this.getAttribute('data-load');
+        var inv = list.find(function (item) { return item.id === id; });
+        if (inv) loadIntoEditor(inv);
+      });
+    });
+
+    tbody.querySelectorAll('[data-del]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = this.getAttribute('data-del');
+        var inv = list.find(function (item) { return item.id === id; });
+        if (inv && confirm('Are you sure you want to delete invoice ' + inv.invNumber + '?')) {
+          var updated = list.filter(function (item) { return item.id !== id; });
+          saveInvoices(updated);
+          renderHistory();
+        }
+      });
+    });
+  }
+
+  function loadIntoEditor(inv) {
+    $('invNumber').value = inv.invNumber || '';
+    $('invDate').value = inv.invDate || '';
+    $('invType').value = inv.invType || 'TAX INVOICE';
+    $('custName').value = inv.custName || '';
+    $('custPhone').value = inv.custPhone || '';
+    $('custGstin').value = inv.custGstin || '';
+    $('custAddress').value = inv.custAddress || 'Maharashtra (27)';
+    $('vehName').value = inv.vehName || '';
+    $('vehReg').value = inv.vehReg || '';
+    $('pickupDateTime').value = inv.pickupDateTime || '';
+    $('returnDateTime').value = inv.returnDateTime || '';
+    $('billDays').value = inv.billDays || 1;
+    $('dayRate').value = inv.dayRate || 0;
+    $('extraHours').value = inv.extraHours || 0;
+    $('extraHourRate').value = inv.extraHourRate || 150;
+    $('deliveryCharges').value = inv.deliveryCharges || 0;
+    $('washingCharges').value = inv.washingCharges || 0;
+    $('discount').value = inv.discount || 0;
+    $('deposit').value = inv.deposit || 0;
+    $('tokenPaid').value = inv.tokenPaid || 0;
+    $('gstRate').value = inv.gstRate != null ? inv.gstRate : 5;
+    $('paymentStatus').value = inv.status || 'Paid in Full';
+    $('paymentMode').value = inv.mode || 'UPI (GPay / PhonePe / Paytm)';
+
+    renderInvoice();
+    $('tabEditor').click();
+  }
+
+  /* Next sequential invoice number */
+  function setNextInvoiceNumber() {
+    var list = loadInvoices();
+    var count = list.length + 1;
+    var numPadded = String(count).padStart(3, '0');
+    $('invNumber').value = 'SSD/26-27/' + numPadded;
+  }
+
+  /* Parse URL Search Parameters (Sync with Quotation Calculator / Booking Calendar) */
+  function parseUrlParams() {
+    try {
+      var p = new URLSearchParams(window.location.search);
+      var hasParams = false;
+      if (p.get('customerName')) { $('custName').value = p.get('customerName'); hasParams = true; }
+      if (p.get('customerPhone')) { $('custPhone').value = p.get('customerPhone'); hasParams = true; }
+      if (p.get('vehName')) { $('vehName').value = p.get('vehName'); hasParams = true; }
+      if (p.get('dayRate')) { $('dayRate').value = p.get('dayRate'); hasParams = true; }
+      if (p.get('days')) { $('billDays').value = p.get('days'); hasParams = true; }
+      if (p.get('extraHours')) { $('extraHours').value = p.get('extraHours'); hasParams = true; }
+      if (p.get('deposit')) { $('deposit').value = p.get('deposit'); hasParams = true; }
+      if (p.get('token')) { $('tokenPaid').value = p.get('token'); hasParams = true; }
+      if (p.get('discount')) { $('discount').value = p.get('discount'); hasParams = true; }
+      if (p.get('pickupDate')) {
+        $('pickupDateTime').value = p.get('pickupDate') + 'T10:00';
+        hasParams = true;
+      }
+      if (p.get('returnDate')) {
+        $('returnDateTime').value = p.get('returnDate') + 'T20:00';
+        hasParams = true;
+      }
+      if (hasParams) {
+        autoCalcDates();
+      }
+    } catch (e) {}
+  }
+
+  /* Reset Form */
+  $('btnResetInvoice').addEventListener('click', function () {
+    $('formInvoice').reset();
+    setNextInvoiceNumber();
+    $('invDate').value = new Date().toISOString().split('T')[0];
+    renderInvoice();
+  });
+
+  /* View Tabs */
+  $('tabEditor').addEventListener('click', function () {
+    $('tabEditor').classList.add('active');
+    $('tabHistory').classList.remove('active');
+    $('viewEditor').style.display = 'block';
+    $('viewHistory').style.display = 'none';
+  });
+
+  $('tabHistory').addEventListener('click', function () {
+    $('tabHistory').classList.add('active');
+    $('tabEditor').classList.remove('active');
+    $('viewEditor').style.display = 'none';
+    $('viewHistory').style.display = 'block';
+    renderHistory();
+  });
+
+  /* Wire Action Buttons */
+  $('btnWaInvoice').addEventListener('click', sendWhatsAppInvoice);
+  $('btnPrintPdf').addEventListener('click', generateInvoicePdf);
+  $('btnSaveInvoice').addEventListener('click', saveCurrentInvoice);
+  $('searchHistory').addEventListener('input', renderHistory);
+
+  /* Form live listeners */
+  $('formInvoice').addEventListener('input', renderInvoice);
+  $('formInvoice').addEventListener('change', renderInvoice);
+
+  // Initialize
+  $('invDate').value = new Date().toISOString().split('T')[0];
+  setNextInvoiceNumber();
+  populateImportDropdown();
+  parseUrlParams();
+  renderInvoice();
+  renderHistory();
+})();
+</script>
+</body>
+</html>

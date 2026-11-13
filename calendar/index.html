@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Booking Calendar &amp; Advance Bookings - Shree Self Driving</title>
+<link rel="stylesheet" href="../styles.css">
+<script src="../theme.js"></script>
+<style>
+/* Calendar & Bookings Dedicated Styling */
+.cal-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  margin-top: 18px;
+}
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 14px;
+}
+.kpi-card {
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(165deg, rgba(23, 36, 66, 0.75) 0%, rgba(13, 21, 39, 0.88) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.45);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, border-color 0.2s ease;
+}
+[data-theme="light"] .kpi-card {
+  background: linear-gradient(165deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid #cbd5e1;
+  border-top: 1px solid #ffffff;
+  border-bottom: 2px solid #cbd5e1;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06), inset 0 1px 0 #ffffff;
+}
+.kpi-card:hover {
+  transform: translateY(-3.5px);
+  border-color: rgba(245, 158, 11, 0.45);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35), 0 0 16px rgba(245, 158, 11, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+.kpi-info h4 {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+.kpi-val {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.1;
+}
+.kpi-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, rgba(245, 158, 11, 0.2) 0%, rgba(217, 119, 6, 0.08) 100%);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-top: 1px solid rgba(251, 191, 36, 0.5);
+  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  color: var(--accent-gold);
+}
+.kpi-card.emerald .kpi-icon { color: var(--emerald); background: var(--emerald-bg); border-color: rgba(16,185,129,0.3); }
+.kpi-card.blue .kpi-icon { color: var(--blue); background: rgba(59,130,246,0.12); border-color: rgba(59,130,246,0.25); }
+
+/* Control & Filter Bar */
+.cal-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: var(--shadow-3d-card);
+}
+.cal-tools-left, .cal-tools-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.view-tabs {
+  display: flex;
+  background: linear-gradient(180deg, #080e1c 0%, #0d1527 100%);
+  border: 1px solid #1e2c4c;
+  border-top: 1px solid #121c32;
+  border-bottom: 1px solid #2a3d66;
+  border-radius: 9px;
+  padding: 3px;
+  gap: 4px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.45);
+}
+.view-tab {
+  padding: 7px 15px;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 7px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.view-tab.active {
+  background: linear-gradient(180deg, rgba(30, 48, 86, 0.85) 0%, rgba(19, 30, 56, 0.95) 100%);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  border-bottom: 1.5px solid rgba(0, 0, 0, 0.4);
+}
+.search-input {
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  padding: 7px 14px 7px 32px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  width: 220px;
+  transition: border-color 0.15s;
+}
+.search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-icon {
+  position: absolute;
+  left: 10px;
+  width: 15px;
+  height: 15px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+/* Month Navigation */
+.month-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.month-title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text-main);
+  min-width: 160px;
+  text-align: center;
+}
+
+/* Calendar Grid View */
+.cal-month-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  padding: 10px 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+.cal-day {
+  min-height: 105px;
+  background: linear-gradient(180deg, rgba(23, 36, 66, 0.6) 0%, rgba(13, 21, 39, 0.75) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.35);
+  border-radius: 10px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+.cal-day:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(180deg, rgba(27, 42, 77, 0.8) 0%, rgba(17, 26, 48, 0.9) 100%);
+  border-color: var(--accent);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.3), 0 0 14px rgba(245, 158, 11, 0.15);
+}
+.cal-day.other-month {
+  opacity: 0.35;
+  background: transparent;
+}
+.cal-day.today {
+  border-color: var(--accent-gold);
+  background: rgba(245, 158, 11, 0.05);
+}
+.cal-day.today .day-num {
+  background: var(--accent-gold);
+  color: #000;
+  font-weight: 800;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.day-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+.day-num {
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: var(--text-main);
+}
+.day-events {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+.event-chip {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 6px;
+  border-radius: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.event-chip.confirmed {
+  background: rgba(16, 185, 129, 0.18);
+  color: var(--emerald);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+.event-chip.active {
+  background: rgba(59, 130, 246, 0.18);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.35);
+}
+.event-chip.completed {
+  background: rgba(148, 163, 184, 0.15);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+.event-chip.cancelled {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+/* List / Table View */
+.booking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.booking-card {
+  padding: 16px 20px;
+  border-radius: 12px;
+  display: grid;
+  grid-template-columns: 2fr 2fr 1.5fr 1fr auto;
+  gap: 16px;
+  align-items: center;
+  background: linear-gradient(165deg, rgba(23, 36, 66, 0.7) 0%, rgba(13, 21, 39, 0.85) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.45);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.booking-card:hover {
+  transform: translateY(-2.5px);
+  border-color: rgba(245, 158, 11, 0.45);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35), 0 0 14px rgba(245, 158, 11, 0.12);
+}
+.b-cust h3 {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.b-phone {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+.b-veh {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.b-veh-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent-gold);
+}
+.b-veh-dates {
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+.b-fin {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.b-token {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--emerald);
+}
+.b-bal {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  width: fit-content;
+}
+.status-badge.confirmed { background: rgba(16, 185, 129, 0.15); color: var(--emerald); border: 1px solid rgba(16, 185, 129, 0.35); }
+.status-badge.active { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.35); }
+.status-badge.completed { background: rgba(148, 163, 184, 0.15); color: var(--text-muted); border: 1px solid var(--border); }
+.status-badge.cancelled { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35); }
+
+.b-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-icon {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+/* Conflict Alert */
+.conflict-alert {
+  padding: 10px 14px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+.conflict-alert.show {
+  display: flex;
+}
+
+@media (max-width: 900px) {
+  .booking-card {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .cal-day {
+    min-height: 80px;
+    padding: 4px;
+  }
+  .b-actions {
+    flex-wrap: wrap;
+  }
+}
+
+/* ==========================================================================
+   Light Mode Complete Visibility & Contrast Audit Overrides for Calendar
+   ========================================================================== */
+[data-theme="light"] .cal-toolbar {
+  background: #ffffff !important;
+  border: 1.5px solid #cbd5e1 !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08) !important;
+}
+
+[data-theme="light"] .view-tabs {
+  background: #f1f5f9 !important;
+  border: 1.5px solid #cbd5e1 !important;
+  box-shadow: inset 0 2px 4px rgba(15, 23, 42, 0.08) !important;
+}
+
+[data-theme="light"] .view-tab {
+  color: #334155 !important;
+  font-weight: 700 !important;
+}
+
+[data-theme="light"] .view-tab:hover {
+  color: #0f172a !important;
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .view-tab.active {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1.5px solid #94a3b8 !important;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.14) !important;
+}
+
+[data-theme="light"] .search-input {
+  background: #ffffff !important;
+  border: 1.5px solid #94a3b8 !important;
+  color: #020617 !important;
+  font-weight: 700 !important;
+}
+
+[data-theme="light"] .search-input::placeholder {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .search-icon {
+  color: #475569 !important;
+}
+
+[data-theme="light"] .month-title {
+  color: #020617 !important;
+  font-weight: 800 !important;
+}
+
+[data-theme="light"] .cal-weekdays {
+  color: #1e293b !important;
+  font-weight: 800 !important;
+}
+
+[data-theme="light"] .cal-day {
+  background: #ffffff !important;
+  border: 1.5px solid #cbd5e1 !important;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05) !important;
+}
+
+[data-theme="light"] .cal-day:hover {
+  background: #f8fafc !important;
+  border-color: #b45309 !important;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.1) !important;
+}
+
+[data-theme="light"] .cal-day.today {
+  background: #fffbeb !important;
+  border: 2px solid #d97706 !important;
+}
+
+[data-theme="light"] .cal-day.today .day-num {
+  background: #d97706 !important;
+  color: #ffffff !important;
+  font-weight: 900 !important;
+}
+
+[data-theme="light"] .cal-day.other-month {
+  background: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+  opacity: 0.65 !important;
+}
+
+[data-theme="light"] .cal-day.other-month .day-num {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .day-num {
+  color: #020617 !important;
+  font-weight: 800 !important;
+}
+
+/* Event Chips inside Calendar Days */
+[data-theme="light"] .event-chip.confirmed {
+  background: #d1fae5 !important;
+  color: #065f46 !important;
+  border: 1px solid #10b981 !important;
+  font-weight: 800 !important;
+}
+
+[data-theme="light"] .event-chip.active {
+  background: #dbeafe !important;
+  color: #1e40af !important;
+  border: 1px solid #3b82f6 !important;
+  font-weight: 800 !important;
+}
+
+[data-theme="light"] .event-chip.completed {
+  background: #e2e8f0 !important;
+  color: #1e293b !important;
+  border: 1px solid #94a3b8 !important;
+  font-weight: 800 !important;
+}
+
+[data-theme="light"] .event-chip.cancelled {
+  background: #fee2e2 !important;
+  color: #991b1b !important;
+  border: 1px solid #ef4444 !important;
+  font-weight: 800 !important;
+}
+
+/* List / Table View Booking Cards */
+[data-theme="light"] .booking-card {
+  background: #ffffff !important;
+  border: 1.5px solid #cbd5e1 !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06) !important;
+}
+
+[data-theme="light"] .booking-card:hover {
+  background: #f8fafc !important;
+  border-color: #b45309 !important;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12) !important;
+}
+
+[data-theme="light"] .b-cust h3 {
+  color: #020617 !important;
+  font-weight: 800 !important;
+}
+
+[data-theme="light"] .b-phone {
+  color: #334155 !important;
+  font-weight: 700 !important;
+}
+
+[data-theme="light"] .b-veh-name {
+  color: #92400e !important;
+  font-weight: 800 !important;
+}
+
+[data-theme="light"] .b-veh-dates {
+  color: #334155 !important;
+  font-weight: 700 !important;
+}
+
+[data-theme="light"] .b-token {
+  color: #047857 !important;
+  font-weight: 800 !important;
+}
+
+[data-theme="light"] .b-bal {
+  color: #475569 !important;
+  font-weight: 700 !important;
+}
+
+/* Status Badges */
+[data-theme="light"] .status-badge.confirmed {
+  background: #d1fae5 !important;
+  color: #065f46 !important;
+  border: 1.5px solid #10b981 !important;
+}
+
+[data-theme="light"] .status-badge.active {
+  background: #dbeafe !important;
+  color: #1e40af !important;
+  border: 1.5px solid #3b82f6 !important;
+}
+
+[data-theme="light"] .status-badge.completed {
+  background: #e2e8f0 !important;
+  color: #1e293b !important;
+  border: 1.5px solid #94a3b8 !important;
+}
+
+[data-theme="light"] .status-badge.cancelled {
+  background: #fee2e2 !important;
+  color: #991b1b !important;
+  border: 1.5px solid #ef4444 !important;
+}
+
+/* Conflict Alert */
+[data-theme="light"] .conflict-alert {
+  background: #fee2e2 !important;
+  border: 1.5px solid #f87171 !important;
+  color: #991b1b !important;
+  font-weight: 700 !important;
+}
+
+/* KPI Summary Cards in Light Mode */
+[data-theme="light"] .kpi-info h4 {
+  color: #334155 !important;
+  font-weight: 800 !important;
+}
+
+[data-theme="light"] .kpi-val {
+  color: #020617 !important;
+  font-weight: 900 !important;
+}
+
+[data-theme="light"] .kpi-icon {
+  background: #f1f5f9 !important;
+  border: 1.5px solid #cbd5e1 !important;
+  color: #b45309 !important;
+}
+
+[data-theme="light"] .kpi-card.emerald .kpi-icon {
+  background: #d1fae5 !important;
+  border-color: #10b981 !important;
+  color: #047857 !important;
+}
+
+[data-theme="light"] .kpi-card.blue .kpi-icon {
+  background: #dbeafe !important;
+  border-color: #3b82f6 !important;
+  color: #1d4ed8 !important;
+}
+
+/* Modal in Light Mode */
+[data-theme="light"] .modal-box {
+  background: #ffffff !important;
+  border: 1.5px solid #cbd5e1 !important;
+  color: #020617 !important;
+}
+
+[data-theme="light"] .modal-box h2,
+[data-theme="light"] .modal-box h3 {
+  color: #020617 !important;
+  font-weight: 900 !important;
+}
+
+[data-theme="light"] .modal-box label {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <!-- ================= BRAND BAR ================= -->
+  <header class="brandbar">
+    <div class="brand-left">
+      <div class="brand-icon-badge" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1>Shree Self Driving &amp; Car Rental Service</h1>
+        <p>
+          <a href="../index.html">&larr; Back to Tools</a>
+          <span style="opacity:.4;">&bull;</span>
+          <a href="../quote/index.html">Quotation Calculator</a>
+          <span style="opacity:.4;">&bull;</span>
+          <a href="../invoice/index.html" style="color:var(--accent-gold); font-weight:700;">GST Invoice</a>
+          <span style="opacity:.4;">&bull;</span>
+          <a href="tel:9768010603" class="brand-phone-pill" title="Bookings">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            9768010603
+          </a>
+        </p>
+      </div>
+    </div>
+    <div class="brand-actions">
+      <button class="btn primary" id="btnOpenNewBooking" type="button" style="padding:8px 16px; font-weight:700;">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        + New Advance Booking
+      </button>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle theme">Light mode</button>
+    </div>
+  </header>
+
+  <!-- ================= LAYOUT ================= -->
+  <main class="cal-layout">
+    
+    <!-- KPI SUMMARY CARDS -->
+    <div class="kpi-grid">
+      <div class="card kpi-card emerald">
+        <div class="kpi-info">
+          <h4>Confirmed Advance Bookings</h4>
+          <div class="kpi-val mono-nums" id="kpiConfirmed">0</div>
+        </div>
+        <div class="kpi-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+      </div>
+      <div class="card kpi-card blue">
+        <div class="kpi-info">
+          <h4>Currently In-Drive</h4>
+          <div class="kpi-val mono-nums" id="kpiActive">0</div>
+        </div>
+        <div class="kpi-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C2.1 10.8 2 11 2 11.2V16c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
+        </div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-info">
+          <h4>Advance Token Collected</h4>
+          <div class="kpi-val mono-nums" id="kpiToken">₹0</div>
+        </div>
+        <div class="kpi-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        </div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-info">
+          <h4>Total Fleet Bookings</h4>
+          <div class="kpi-val mono-nums" id="kpiTotal">0</div>
+        </div>
+        <div class="kpi-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOOLBAR & VIEW SWITCHER -->
+    <div class="card cal-toolbar">
+      <div class="cal-tools-left">
+        <div class="view-tabs">
+          <button type="button" class="view-tab active" id="tabCalendar" data-view="calendar">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Calendar View
+          </button>
+          <button type="button" class="view-tab" id="tabList" data-view="list">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            All Bookings List
+          </button>
+        </div>
+
+        <div class="search-wrap">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" class="search-input" id="searchBox" placeholder="Search customer, car...">
+        </div>
+
+        <select id="filterStatus" class="search-input" style="width:160px; padding-left:12px;">
+          <option value="">All Statuses</option>
+          <option value="confirmed">Confirmed / Advance Paid</option>
+          <option value="active">Active / In-Drive</option>
+          <option value="completed">Completed / Returned</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
+
+      <div class="cal-tools-right">
+        <div class="month-nav" id="monthNav">
+          <button class="btn ghost btn-icon" id="btnPrevMonth" title="Previous Month">&larr;</button>
+          <div class="month-title" id="monthDisplay">Month Year</div>
+          <button class="btn ghost btn-icon" id="btnNextMonth" title="Next Month">&rarr;</button>
+          <button class="btn ghost" id="btnToday" style="padding:5px 10px; font-size:12px;">Today</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALENDAR MONTH VIEW CONTAINER -->
+    <div id="viewCalendarContainer" class="cal-month-wrap">
+      <div class="cal-weekdays">
+        <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
+      </div>
+      <div class="cal-grid" id="calendarGrid"></div>
+    </div>
+
+    <!-- LIST VIEW CONTAINER -->
+    <div id="viewListContainer" class="booking-list" style="display:none;"></div>
+
+  </main>
+</div>
+
+<!-- ================= MODAL: ADD / EDIT ADVANCE BOOKING ================= -->
+<div id="modalBooking" class="modal-backdrop" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="modalBookingTitle">
+  <div class="modal-box card" style="max-width:620px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+      <h3 id="modalBookingTitle" style="font-family:var(--font-display); font-size:20px; font-weight:800; color:var(--text-main); margin:0;">
+        New Advance Booking
+      </h3>
+      <button type="button" class="btn ghost btn-icon" id="btnCloseBookingModal">&times;</button>
+    </div>
+
+    <form id="formBooking" autocomplete="off" onsubmit="return false;">
+      <input type="hidden" id="bId" value="">
+
+      <!-- Section: Customer -->
+      <div class="grid2">
+        <div class="field">
+          <label for="bCustomerName">Customer Name *</label>
+          <input type="text" id="bCustomerName" required placeholder="e.g. Rahul Sharma">
+        </div>
+        <div class="field">
+          <label for="bCustomerPhone">WhatsApp Number *</label>
+          <input type="tel" id="bCustomerPhone" required placeholder="e.g. 9876543210 (10 digits)">
+        </div>
+      </div>
+
+      <!-- Section: Vehicle -->
+      <div class="grid2">
+        <div class="field">
+          <label for="bVehicleSelect">Select Fleet Vehicle</label>
+          <select id="bVehicleSelect">
+            <option value="">-- Choose from Presets or Type Below --</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="bVehicleName">Vehicle Name *</label>
+          <input type="text" id="bVehicleName" required placeholder="e.g. Swift VXi / WagonR / Ertiga">
+        </div>
+      </div>
+
+      <!-- Section: Dates & Times -->
+      <div class="grid2">
+        <div class="field">
+          <label for="bPickupDate">Pickup Date &amp; Time *</label>
+          <div style="display:flex; gap:6px;">
+            <input type="date" id="bPickupDate" required style="flex:1;">
+            <input type="time" id="bPickupTime" value="10:00" style="width:110px;">
+          </div>
+        </div>
+        <div class="field">
+          <label for="bReturnDate">Return Date &amp; Time *</label>
+          <div style="display:flex; gap:6px;">
+            <input type="date" id="bReturnDate" required style="flex:1;">
+            <input type="time" id="bReturnTime" value="20:00" style="width:110px;">
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Vehicle Conflict Alert -->
+      <div id="bConflictAlert" class="conflict-alert" role="alert">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span id="bConflictText">Warning: This vehicle is already booked for overlapping dates!</span>
+      </div>
+
+      <!-- Section: Financials -->
+      <div class="grid2" style="margin-top:12px;">
+        <div class="field">
+          <label for="bTotalAmount">Total Estimated Rental (₹)</label>
+          <input type="number" id="bTotalAmount" placeholder="e.g. 6000" min="0">
+        </div>
+        <div class="field">
+          <label for="bTokenAmount">Advance Token Paid (₹) *</label>
+          <input type="number" id="bTokenAmount" required placeholder="e.g. 1000" min="0">
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="field">
+          <label for="bBalanceAmount">Balance Due at Handover (₹)</label>
+          <input type="text" id="bBalanceAmount" readonly style="font-weight:700; color:var(--emerald); cursor:not-allowed;" value="₹0">
+        </div>
+        <div class="field">
+          <label for="bStatus">Booking Status</label>
+          <select id="bStatus">
+            <option value="confirmed">Confirmed / Advance Paid</option>
+            <option value="active">Active / In-Drive (Picked Up)</option>
+            <option value="completed">Completed / Returned</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="bLocation">Pickup Location / Special Notes</label>
+        <input type="text" id="bLocation" placeholder="e.g. Sector 17 Khanda Colony Office / Panvel Station / Airport Drop">
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:18px;">
+        <button type="button" class="btn ghost" id="btnCancelBooking">Cancel</button>
+        <button type="submit" class="btn primary" id="btnSaveBooking" style="padding:10px 22px; font-weight:700;">
+          Save Booking
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="../calc.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var BOOKINGS_KEY = 'sdr-bookings';
+  var VEH_KEY = 'sdr-vehicles';
+
+  var $ = function (id) { return document.getElementById(id); };
+  var val = function (id) { return ($(id).value || '').trim(); };
+
+  var currentYear = new Date().getFullYear();
+  var currentMonth = new Date().getMonth(); // 0-indexed
+  var activeView = 'calendar'; // 'calendar' | 'list'
+
+  /* Clean Phone Number Sanitizer */
+  function cleanPhone(raw) {
+    if (!raw) return '';
+    var num = String(raw).replace(/\D/g, '');
+    if (!num) return '';
+    if (num.length === 11 && num.charAt(0) === '0') num = num.substring(1);
+    if (num.length === 13 && num.substring(0, 3) === '910') num = '91' + num.substring(3);
+    if (num.length === 10) num = '91' + num;
+    return num;
+  }
+
+  /* Storage Operations */
+  function loadBookings() {
+    try {
+      var data = localStorage.getItem(BOOKINGS_KEY);
+      if (data) {
+        var parsed = JSON.parse(data);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch (e) {}
+    // Seed initial realistic bookings if completely fresh
+    var now = new Date();
+    var y = now.getFullYear();
+    var m = (now.getMonth() + 1).toString().padStart(2, '0');
+    var d1 = Math.min(25, now.getDate() + 1).toString().padStart(2, '0');
+    var d2 = Math.min(28, now.getDate() + 3).toString().padStart(2, '0');
+    
+    var initial = [
+      {
+        id: 'bk-' + Date.now(),
+        customerName: 'Rahul Sharma',
+        customerPhone: '9820198201',
+        vehicleName: 'Maruti Swift VXi',
+        pickupDate: y + '-' + m + '-' + d1,
+        pickupTime: '10:00',
+        returnDate: y + '-' + m + '-' + d2,
+        returnTime: '20:00',
+        totalAmount: 5500,
+        tokenAmount: 1000,
+        status: 'confirmed',
+        location: 'Sector 17, Khanda Colony, Panvel',
+        createdAt: new Date().toISOString()
+      }
+    ];
+    saveBookings(initial);
+    return initial;
+  }
+
+  function saveBookings(list) {
+    try {
+      localStorage.setItem(BOOKINGS_KEY, JSON.stringify(list));
+    } catch (e) {}
+  }
+
+  var DEFAULT_FLEET = [
+    {
+      id: 'swift-vxi',
+      name: 'Maruti Swift VXi',
+      regNo: 'MH 46 BV 1001',
+      fuel: 'Petrol',
+      seats: '5 Seater',
+      ratePerDay: '2000',
+      extraHourRate: '150',
+      kmPerDay: '300',
+      includedKM: '',
+      extraKMRate: '9',
+      token: '1000',
+      deposit: '3000',
+      deliveryCharges: '0',
+      washingCharges: '0'
+    },
+    {
+      id: 'wagonr-zxi',
+      name: 'Maruti WagonR ZXi',
+      regNo: 'MH 46 BV 1002',
+      fuel: 'Petrol / CNG',
+      seats: '5 Seater',
+      ratePerDay: '1800',
+      extraHourRate: '120',
+      kmPerDay: '300',
+      includedKM: '',
+      extraKMRate: '8',
+      token: '1000',
+      deposit: '3000',
+      deliveryCharges: '0',
+      washingCharges: '0'
+    },
+    {
+      id: 'ertiga-zxi',
+      name: 'Maruti Ertiga ZXi',
+      regNo: 'MH 46 BV 1003',
+      fuel: 'Petrol / CNG',
+      seats: '7 Seater',
+      ratePerDay: '3000',
+      extraHourRate: '200',
+      kmPerDay: '300',
+      includedKM: '',
+      extraKMRate: '11',
+      token: '1500',
+      deposit: '4000',
+      deliveryCharges: '0',
+      washingCharges: '0'
+    },
+    {
+      id: 'creta-sx',
+      name: 'Hyundai Creta SX',
+      regNo: 'MH 46 BV 1004',
+      fuel: 'Diesel',
+      seats: '5 Seater',
+      ratePerDay: '3500',
+      extraHourRate: '250',
+      kmPerDay: '300',
+      includedKM: '',
+      extraKMRate: '12',
+      token: '2000',
+      deposit: '5000',
+      deliveryCharges: '0',
+      washingCharges: '0'
+    },
+    {
+      id: 'thar-4x4',
+      name: 'Mahindra Thar 4x4',
+      regNo: 'MH 46 BV 1005',
+      fuel: 'Diesel AT',
+      seats: '4 Seater',
+      ratePerDay: '4500',
+      extraHourRate: '300',
+      kmPerDay: '300',
+      includedKM: '',
+      extraKMRate: '15',
+      token: '2000',
+      deposit: '6000',
+      deliveryCharges: '0',
+      washingCharges: '0'
+    },
+    {
+      id: 'scorpio-n',
+      name: 'Mahindra Scorpio-N',
+      regNo: 'MH 46 BV 1006',
+      fuel: 'Diesel',
+      seats: '7 Seater',
+      ratePerDay: '4000',
+      extraHourRate: '250',
+      kmPerDay: '300',
+      includedKM: '',
+      extraKMRate: '14',
+      token: '2000',
+      deposit: '5000',
+      deliveryCharges: '0',
+      washingCharges: '0'
+    }
+  ];
+
+  function loadVehicles() {
+    try {
+      var data = localStorage.getItem(VEH_KEY);
+      if (data) {
+        var parsed = JSON.parse(data);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    try {
+      localStorage.setItem(VEH_KEY, JSON.stringify(DEFAULT_FLEET));
+    } catch (ex) {}
+    return DEFAULT_FLEET.slice();
+  }
+
+  /* Populate Vehicle Dropdown in Modal */
+  function populateVehicleSelect() {
+    var list = loadVehicles();
+    var sel = $('bVehicleSelect');
+    sel.innerHTML = '<option value="">-- Choose from Fleet Presets or Type Below --</option>';
+    list.forEach(function (v) {
+      var opt = document.createElement('option');
+      opt.value = v.name;
+      opt.textContent = v.name + (v.fuel ? ' (' + v.fuel + ')' : '') + (v.ratePerDay ? ' - ₹' + v.ratePerDay + '/day' : '');
+      sel.appendChild(opt);
+    });
+  }
+
+  $('bVehicleSelect').addEventListener('change', function () {
+    var valName = this.value;
+    if (valName) {
+      $('bVehicleName').value = valName;
+      var list = loadVehicles();
+      var v = list.find(function (item) { return item.name === valName; });
+      if (v) {
+        if (v.token) $('bTokenAmount').value = v.token;
+        var p = val('bPickupDate');
+        var r = val('bReturnDate');
+        if (p && r && v.ratePerDay) {
+          var d1 = new Date(p);
+          var d2 = new Date(r);
+          var diff = d2.getTime() - d1.getTime();
+          var days = Math.max(1, Math.round(diff / (1000 * 60 * 60 * 24)));
+          $('bTotalAmount').value = days * Number(v.ratePerDay);
+        }
+        updateBalanceDisplay();
+      }
+      checkConflict();
+    }
+  });
+
+  window.addEventListener('storage', function (e) {
+    if (e.key === VEH_KEY) {
+      populateVehicleSelect();
+    }
+  });
+
+  /* Auto-calculate balance in modal */
+  function updateBalanceDisplay() {
+    var total = parseFloat(val('bTotalAmount')) || 0;
+    var token = parseFloat(val('bTokenAmount')) || 0;
+    var bal = Math.max(0, total - token);
+    $('bBalanceAmount').value = '₹' + bal.toLocaleString('en-IN');
+  }
+
+  $('bTotalAmount').addEventListener('input', updateBalanceDisplay);
+  $('bTokenAmount').addEventListener('input', updateBalanceDisplay);
+
+  /* Conflict Detection for overlapping bookings on same vehicle */
+  function checkConflict() {
+    var veh = val('bVehicleName').toLowerCase();
+    var pDate = val('bPickupDate');
+    var rDate = val('bReturnDate');
+    var bId = val('bId');
+
+    var alertEl = $('bConflictAlert');
+    var textEl = $('bConflictText');
+
+    if (!veh || !pDate || !rDate) {
+      alertEl.classList.remove('show');
+      return false;
+    }
+
+    var bookings = loadBookings();
+    var conflict = bookings.find(function (b) {
+      if (b.id === bId) return false;
+      if (b.status === 'cancelled' || b.status === 'completed') return false;
+      if ((b.vehicleName || '').toLowerCase() !== veh) return false;
+
+      // Check date overlaps
+      var bStart = b.pickupDate;
+      var bEnd = b.returnDate;
+      return (pDate <= bEnd && rDate >= bStart);
+    });
+
+    if (conflict) {
+      textEl.textContent = '⚠️ Attention: "' + conflict.vehicleName + '" is already booked by ' + conflict.customerName + ' (' + conflict.pickupDate + ' to ' + conflict.returnDate + ')!';
+      alertEl.classList.add('show');
+      return true;
+    } else {
+      alertEl.classList.remove('show');
+      return false;
+    }
+  }
+
+  $('bVehicleName').addEventListener('input', checkConflict);
+  $('bPickupDate').addEventListener('change', checkConflict);
+  $('bReturnDate').addEventListener('change', checkConflict);
+
+  /* WhatsApp Confirmation Sender */
+  function sendWhatsAppConfirmation(b) {
+    var clean = cleanPhone(b.customerPhone);
+    var balance = Math.max(0, (b.totalAmount || 0) - (b.tokenAmount || 0));
+
+    var lines = [
+      '🚗 *SHREE SELF DRIVING & CAR RENTAL SERVICE*',
+      '━━━━━━━━━━━━━━━━━━━━',
+      '✅ *ADVANCE BOOKING CONFIRMATION*',
+      '━━━━━━━━━━━━━━━━━━━━',
+      '👤 *Customer:* ' + b.customerName,
+      '🚙 *Vehicle:* ' + b.vehicleName,
+      '📅 *Pickup:* ' + b.pickupDate + ' (' + (b.pickupTime || '10:00 AM') + ')',
+      '📅 *Return:* ' + b.returnDate + ' (' + (b.returnTime || '08:00 PM') + ')',
+      '━━━━━━━━━━━━━━━━━━━━',
+      '💰 *Estimated Rental:* ₹' + (b.totalAmount || 0).toLocaleString('en-IN'),
+      '💳 *Advance Token Received:* ₹' + (b.tokenAmount || 0).toLocaleString('en-IN'),
+      '💵 *Balance Due at Handover:* ₹' + balance.toLocaleString('en-IN'),
+      '━━━━━━━━━━━━━━━━━━━━',
+      '📍 *Pickup Location:* ' + (b.location || 'Sector 17, Khanda Colony, Panvel'),
+      '📞 *Bookings & Enquiries:* +91 9768010603',
+      '',
+      '🙏 *Thank you for booking with Shree Self Driving! Have a safe trip!*'
+    ];
+
+    var text = encodeURIComponent(lines.join('\n'));
+    var isMobile = /Android|iPhone|iPad|iPod|Windows Phone|webOS|BlackBerry/i.test(navigator.userAgent);
+
+    if (isMobile) {
+      window.location.href = clean ? 'https://wa.me/' + clean + '?text=' + text : 'https://wa.me/?text=' + text;
+    } else {
+      var deskUrl = clean ? 'https://web.whatsapp.com/send?phone=' + clean + '&text=' + text : 'https://web.whatsapp.com/send?text=' + text;
+      var w = window.open(deskUrl, '_blank');
+      if (!w || w.closed || typeof w.closed === 'undefined') {
+        window.location.href = clean ? 'https://wa.me/' + clean + '?text=' + text : 'https://wa.me/?text=' + text;
+      }
+    }
+  }
+
+  /* Send to Quotation Calculator */
+  function openInInvoiceGenerator(b) {
+    var p = new URLSearchParams();
+    if (b.customerName) p.set('customerName', b.customerName);
+    if (b.customerPhone) p.set('customerPhone', b.customerPhone);
+    if (b.vehicleName) p.set('vehName', b.vehicleName);
+    if (b.pickupDate) p.set('pickupDate', b.pickupDate);
+    if (b.returnDate) p.set('returnDate', b.returnDate);
+    if (b.tokenAmount) p.set('token', b.tokenAmount);
+    if (b.totalAmount) p.set('dayRate', b.totalAmount);
+    window.location.href = '../invoice/index.html?' + p.toString();
+  }
+
+  function openInQuotationCalculator(b) {
+    var params = new URLSearchParams();
+    if (b.customerName) params.set('customerName', b.customerName);
+    if (b.customerPhone) params.set('customerPhone', b.customerPhone);
+    if (b.vehicleName) params.set('vehName', b.vehicleName);
+    if (b.pickupDate) params.set('pickupDate', b.pickupDate);
+    if (b.returnDate) params.set('returnDate', b.returnDate);
+    if (b.tokenAmount) params.set('token', b.tokenAmount);
+
+    window.location.href = '../quote/index.html?' + params.toString();
+  }
+
+  /* Render KPI Cards */
+  function renderKPIs(list) {
+    var confirmed = 0;
+    var active = 0;
+    var totalToken = 0;
+
+    list.forEach(function (b) {
+      if (b.status === 'confirmed') confirmed++;
+      if (b.status === 'active') active++;
+      if (b.status !== 'cancelled') totalToken += (Number(b.tokenAmount) || 0);
+    });
+
+    $('kpiConfirmed').textContent = confirmed;
+    $('kpiActive').textContent = active;
+    $('kpiToken').textContent = '₹' + totalToken.toLocaleString('en-IN');
+    $('kpiTotal').textContent = list.length;
+  }
+
+  /* Render Calendar View */
+  function renderCalendar(bookings) {
+    var grid = $('calendarGrid');
+    grid.innerHTML = '';
+
+    var firstDay = new Date(currentYear, currentMonth, 1);
+    var lastDay = new Date(currentYear, currentMonth + 1, 0);
+
+    // Days in previous month
+    var startDayIndex = (firstDay.getDay() + 6) % 7; // Monday = 0
+    var prevMonthLastDay = new Date(currentYear, currentMonth, 0).getDate();
+
+    // Month display label
+    var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    $('monthDisplay').textContent = monthNames[currentMonth] + ' ' + currentYear;
+
+    var today = new Date();
+    var todayISO = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+
+    // Filter bookings based on search & status filter
+    var query = val('searchBox').toLowerCase();
+    var statusFilter = $('filterStatus').value;
+
+    var filtered = bookings.filter(function (b) {
+      if (statusFilter && b.status !== statusFilter) return false;
+      if (query) {
+        var match = (b.customerName || '').toLowerCase().indexOf(query) !== -1 ||
+                    (b.customerPhone || '').indexOf(query) !== -1 ||
+                    (b.vehicleName || '').toLowerCase().indexOf(query) !== -1;
+        if (!match) return false;
+      }
+      return true;
+    });
+
+    // Cells from prev month
+    for (var i = startDayIndex - 1; i >= 0; i--) {
+      var d = prevMonthLastDay - i;
+      var cell = document.createElement('div');
+      cell.className = 'cal-day other-month';
+      cell.innerHTML = '<div class="day-head"><span class="day-num">' + d + '</span></div>';
+      grid.appendChild(cell);
+    }
+
+    // Current month cells
+    for (var day = 1; day <= lastDay.getDate(); day++) {
+      var cellDayISO = currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+      var isToday = (cellDayISO === todayISO);
+
+      var cell = document.createElement('div');
+      cell.className = 'cal-day' + (isToday ? ' today' : '');
+      cell.setAttribute('data-date', cellDayISO);
+
+      var dayBookings = filtered.filter(function (b) {
+        return (cellDayISO >= b.pickupDate && cellDayISO <= b.returnDate);
+      });
+
+      var eventsHtml = dayBookings.map(function (b) {
+        var isPickup = (cellDayISO === b.pickupDate);
+        var icon = isPickup ? '🟢' : '🚗';
+        return '<div class="event-chip ' + (b.status || 'confirmed') + '" title="' + b.vehicleName + ' - ' + b.customerName + ' (₹' + (b.tokenAmount || 0) + ' Token)">' +
+                 icon + ' ' + b.vehicleName.split(' ')[0] + ' (' + b.customerName.split(' ')[0] + ')' +
+               '</div>';
+      }).join('');
+
+      cell.innerHTML = '<div class="day-head">' +
+                         '<span class="day-num">' + day + '</span>' +
+                         (dayBookings.length ? '<span style="font-size:10px; color:var(--text-muted);">' + dayBookings.length + ' booked</span>' : '') +
+                       '</div>' +
+                       '<div class="day-events">' + eventsHtml + '</div>';
+
+      // Click on day cell to quickly add booking on this date
+      (function (dateStr) {
+        cell.addEventListener('click', function () {
+          openAddModal(dateStr);
+        });
+      })(cellDayISO);
+
+      grid.appendChild(cell);
+    }
+
+    // Remaining cells to complete 35 or 42 grid
+    var totalCells = startDayIndex + lastDay.getDate();
+    var nextMonthDays = (7 - (totalCells % 7)) % 7;
+    for (var n = 1; n <= nextMonthDays; n++) {
+      var cell = document.createElement('div');
+      cell.className = 'cal-day other-month';
+      cell.innerHTML = '<div class="day-head"><span class="day-num">' + n + '</span></div>';
+      grid.appendChild(cell);
+    }
+  }
+
+  /* Render List View */
+  function renderList(bookings) {
+    var container = $('viewListContainer');
+    container.innerHTML = '';
+
+    var query = val('searchBox').toLowerCase();
+    var statusFilter = $('filterStatus').value;
+
+    var filtered = bookings.filter(function (b) {
+      if (statusFilter && b.status !== statusFilter) return false;
+      if (query) {
+        var match = (b.customerName || '').toLowerCase().indexOf(query) !== -1 ||
+                    (b.customerPhone || '').indexOf(query) !== -1 ||
+                    (b.vehicleName || '').toLowerCase().indexOf(query) !== -1;
+        if (!match) return false;
+      }
+      return true;
+    });
+
+    if (filtered.length === 0) {
+      container.innerHTML = '<div class="card" style="padding:40px; text-align:center; color:var(--text-muted);">' +
+        '<h3>No advance bookings found</h3><p style="font-size:13px; margin-top:4px;">Click "+ New Advance Booking" to schedule a customer pickup.</p></div>';
+      return;
+    }
+
+    // Sort upcoming pickups first
+    filtered.sort(function (a, b) {
+      return (a.pickupDate || '').localeCompare(b.pickupDate || '');
+    });
+
+    filtered.forEach(function (b) {
+      var balance = Math.max(0, (b.totalAmount || 0) - (b.tokenAmount || 0));
+
+      var card = document.createElement('div');
+      card.className = 'card booking-card';
+
+      var statusLabel = {
+        'confirmed': 'Advance Paid',
+        'active': 'In-Drive',
+        'completed': 'Completed',
+        'cancelled': 'Cancelled'
+      }[b.status] || b.status;
+
+      card.innerHTML =
+        '<div class="b-cust">' +
+          '<h3>' + b.customerName + '</h3>' +
+          '<div class="b-phone">📱 +91 ' + b.customerPhone + '</div>' +
+          (b.location ? '<div style="font-size:12px; color:var(--text-dim); margin-top:3px;">📍 ' + b.location + '</div>' : '') +
+        '</div>' +
+        '<div class="b-veh">' +
+          '<div class="b-veh-name">🚗 ' + b.vehicleName + '</div>' +
+          '<div class="b-veh-dates">📅 ' + b.pickupDate + ' ' + (b.pickupTime || '') + ' &rarr; ' + b.returnDate + ' ' + (b.returnTime || '') + '</div>' +
+        '</div>' +
+        '<div class="b-fin">' +
+          '<div class="b-token mono-nums">✅ Token: ₹' + (b.tokenAmount || 0).toLocaleString('en-IN') + '</div>' +
+          '<div class="b-bal mono-nums">Balance Due: ₹' + balance.toLocaleString('en-IN') + '</div>' +
+        '</div>' +
+        '<div>' +
+          '<span class="status-badge ' + (b.status || 'confirmed') + '">' + statusLabel + '</span>' +
+        '</div>' +
+        '<div class="b-actions">' +
+          '<button class="btn wa btn-icon" title="Send Confirmation to WhatsApp" data-wa="' + b.id + '">' +
+            '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.888 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>' +
+          '</button>' +
+          '<button class="btn ghost btn-icon" title="Convert to GST Tax Invoice" data-invoice="' + b.id + '">' +
+            '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>' +
+          '</button>' +
+          '<button class="btn ghost btn-icon" title="Open in Quotation Calculator" data-quote="' + b.id + '">' +
+            '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>' +
+          '</button>' +
+          '<button class="btn ghost btn-icon" title="Edit Booking" data-edit="' + b.id + '">' +
+            '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>' +
+          '</button>' +
+          '<button class="btn ghost btn-icon" style="color:var(--red);" title="Delete Booking" data-del="' + b.id + '">' +
+            '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>' +
+          '</button>' +
+        '</div>';
+
+      container.appendChild(card);
+    });
+
+    // Wire action buttons
+    container.querySelectorAll('[data-wa]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = this.getAttribute('data-wa');
+        var b = bookings.find(function (item) { return item.id === id; });
+        if (b) sendWhatsAppConfirmation(b);
+      });
+    });
+
+    container.querySelectorAll('[data-invoice]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = this.getAttribute('data-invoice');
+        var b = bookings.find(function (item) { return item.id === id; });
+        if (b) openInInvoiceGenerator(b);
+      });
+    });
+
+    container.querySelectorAll('[data-quote]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = this.getAttribute('data-quote');
+        var b = bookings.find(function (item) { return item.id === id; });
+        if (b) openInQuotationCalculator(b);
+      });
+    });
+
+    container.querySelectorAll('[data-edit]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = this.getAttribute('data-edit');
+        var b = bookings.find(function (item) { return item.id === id; });
+        if (b) openEditModal(b);
+      });
+    });
+
+    container.querySelectorAll('[data-del]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = this.getAttribute('data-del');
+        var b = bookings.find(function (item) { return item.id === id; });
+        if (b && confirm('Are you sure you want to delete booking for ' + b.customerName + ' (' + b.vehicleName + ')?')) {
+          var updated = bookings.filter(function (item) { return item.id !== id; });
+          saveBookings(updated);
+          refresh();
+        }
+      });
+    });
+  }
+
+  function refresh() {
+    var bookings = loadBookings();
+    renderKPIs(bookings);
+    if (activeView === 'calendar') {
+      $('viewCalendarContainer').style.display = 'flex';
+      $('viewListContainer').style.display = 'none';
+      renderCalendar(bookings);
+    } else {
+      $('viewCalendarContainer').style.display = 'none';
+      $('viewListContainer').style.display = 'flex';
+      renderList(bookings);
+    }
+  }
+
+  /* Modal Handlers */
+  function openAddModal(defaultDate) {
+    populateVehicleSelect();
+    $('formBooking').reset();
+    $('bId').value = '';
+    $('modalBookingTitle').textContent = 'New Advance Booking';
+    $('bStatus').value = 'confirmed';
+    $('bConflictAlert').classList.remove('show');
+
+    var d = defaultDate || new Date().toISOString().split('T')[0];
+    $('bPickupDate').value = d;
+    $('bPickupTime').value = '10:00';
+
+    // Default return next day
+    var next = new Date(d);
+    next.setDate(next.getDate() + 1);
+    $('bReturnDate').value = next.toISOString().split('T')[0];
+    $('bReturnTime').value = '20:00';
+
+    updateBalanceDisplay();
+    $('modalBooking').style.display = 'flex';
+  }
+
+  function openEditModal(b) {
+    populateVehicleSelect();
+    $('bId').value = b.id;
+    $('modalBookingTitle').textContent = 'Edit Advance Booking';
+    $('bCustomerName').value = b.customerName || '';
+    $('bCustomerPhone').value = b.customerPhone || '';
+    $('bVehicleName').value = b.vehicleName || '';
+    $('bVehicleSelect').value = b.vehicleName || '';
+    $('bPickupDate').value = b.pickupDate || '';
+    $('bPickupTime').value = b.pickupTime || '10:00';
+    $('bReturnDate').value = b.returnDate || '';
+    $('bReturnTime').value = b.returnTime || '20:00';
+    $('bTotalAmount').value = b.totalAmount || '';
+    $('bTokenAmount').value = b.tokenAmount || '';
+    $('bStatus').value = b.status || 'confirmed';
+    $('bLocation').value = b.location || '';
+    $('bConflictAlert').classList.remove('show');
+
+    updateBalanceDisplay();
+    $('modalBooking').style.display = 'flex';
+  }
+
+  function closeModal() {
+    $('modalBooking').style.display = 'none';
+  }
+
+  $('btnOpenNewBooking').addEventListener('click', function () { openAddModal(); });
+  $('btnCloseBookingModal').addEventListener('click', closeModal);
+  $('btnCancelBooking').addEventListener('click', closeModal);
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && $('modalBooking').style.display === 'flex') {
+      closeModal();
+    }
+  });
+
+  /* Save Booking Form */
+  $('formBooking').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    var name = val('bCustomerName');
+    var phone = val('bCustomerPhone');
+    var veh = val('bVehicleName');
+    var pDate = val('bPickupDate');
+    var rDate = val('bReturnDate');
+    var token = parseFloat(val('bTokenAmount')) || 0;
+    var total = parseFloat(val('bTotalAmount')) || 0;
+
+    if (!name || !phone || !veh || !pDate || !rDate) {
+      alert('Please fill in Customer Name, WhatsApp Number, Vehicle and Dates.');
+      return;
+    }
+
+    if (rDate < pDate) {
+      alert('Return date cannot be earlier than pickup date!');
+      return;
+    }
+
+    var id = val('bId');
+    var bookings = loadBookings();
+
+    var bookingData = {
+      id: id || ('bk-' + Date.now()),
+      customerName: name,
+      customerPhone: phone,
+      vehicleName: veh,
+      pickupDate: pDate,
+      pickupTime: val('bPickupTime') || '10:00',
+      returnDate: rDate,
+      returnTime: val('bReturnTime') || '20:00',
+      totalAmount: total,
+      tokenAmount: token,
+      status: val('bStatus') || 'confirmed',
+      location: val('bLocation'),
+      updatedAt: new Date().toISOString()
+    };
+
+    if (id) {
+      var idx = bookings.findIndex(function (b) { return b.id === id; });
+      if (idx !== -1) bookings[idx] = bookingData;
+    } else {
+      bookingData.createdAt = new Date().toISOString();
+      bookings.push(bookingData);
+    }
+
+    saveBookings(bookings);
+    closeModal();
+    refresh();
+
+    // Ask to send confirmation to WhatsApp
+    if (!id && confirm('Advance booking saved! Do you want to send booking confirmation & token receipt to customer on WhatsApp?')) {
+      sendWhatsAppConfirmation(bookingData);
+    }
+  });
+
+  /* View switcher tabs */
+  $('tabCalendar').addEventListener('click', function () {
+    activeView = 'calendar';
+    $('tabCalendar').classList.add('active');
+    $('tabList').classList.remove('active');
+    refresh();
+  });
+
+  $('tabList').addEventListener('click', function () {
+    activeView = 'list';
+    $('tabList').classList.add('active');
+    $('tabCalendar').classList.remove('active');
+    refresh();
+  });
+
+  /* Search & Filter live update */
+  $('searchBox').addEventListener('input', refresh);
+  $('filterStatus').addEventListener('change', refresh);
+
+  /* Month navigation */
+  $('btnPrevMonth').addEventListener('click', function () {
+    currentMonth--;
+    if (currentMonth < 0) {
+      currentMonth = 11;
+      currentYear--;
+    }
+    refresh();
+  });
+
+  $('btnNextMonth').addEventListener('click', function () {
+    currentMonth++;
+    if (currentMonth > 11) {
+      currentMonth = 0;
+      currentYear++;
+    }
+    refresh();
+  });
+
+  $('btnToday').addEventListener('click', function () {
+    var now = new Date();
+    currentYear = now.getFullYear();
+    currentMonth = now.getMonth();
+    refresh();
+  });
+
+  // Initial load
+  refresh();
+})();
+</script>
+</body>
+</html>

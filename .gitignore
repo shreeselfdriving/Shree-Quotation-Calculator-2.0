@@ -1,0 +1,14 @@
+# Dependencies & local agents/cache
+node_modules/
+.gemini/
+__pycache__/
+*.pyc
+
+# Logs & temp files
+*.log
+*.zip
+scratch/
+
+# OS metadata
+Thumbs.db
+.DS_Store
