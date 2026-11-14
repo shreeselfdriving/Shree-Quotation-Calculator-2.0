@@ -1420,7 +1420,20 @@
       var hasParams = false;
       if (p.get('customerName')) { $('custName').value = p.get('customerName'); hasParams = true; }
       if (p.get('customerPhone')) { $('custPhone').value = p.get('customerPhone'); hasParams = true; }
-      if (p.get('vehName')) { $('vehName').value = p.get('vehName'); hasParams = true; }
+      if (p.get('vehName')) {
+        var vName = p.get('vehName');
+        $('vehName').value = vName;
+        hasParams = true;
+        var v = RentalCalc.findVehicle(vName);
+        if (v) {
+          if ($('invVehicleSelect')) $('invVehicleSelect').value = v.id;
+          if (v.regNo) $('vehReg').value = v.regNo;
+          if (v.ratePerDay && !p.get('dayRate')) $('dayRate').value = v.ratePerDay;
+          if (v.extraHourRate && !p.get('extraHours')) $('extraHourRate').value = v.extraHourRate;
+          if (v.deposit && !p.get('deposit')) $('deposit').value = v.deposit;
+          if (v.token && !p.get('token')) $('tokenPaid').value = v.token;
+        }
+      }
       if (p.get('dayRate')) { $('dayRate').value = p.get('dayRate'); hasParams = true; }
       if (p.get('days')) { $('billDays').value = p.get('days'); hasParams = true; }
       if (p.get('extraHours')) { $('extraHours').value = p.get('extraHours'); hasParams = true; }
