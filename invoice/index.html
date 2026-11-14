@@ -895,10 +895,20 @@
       $('returnDateTime').value = b.returnDate + 'T' + (b.returnTime || '20:00');
     }
     if (b.tokenAmount) $('tokenPaid').value = b.tokenAmount;
-    if (b.totalAmount) {
-      $('dayRate').value = b.totalAmount;
-      $('billDays').value = 1;
+
+    // Match vehicle in fleet to auto-populate Reg No, day rate, extra hour rate, deposit
+    var v = RentalCalc.findVehicle(b.vehicleName);
+    if (v) {
+      if ($('invVehicleSelect')) $('invVehicleSelect').value = v.id;
+      $('vehReg').value = v.regNo || 'MH 46 BV 1001';
+      if (v.ratePerDay) $('dayRate').value = v.ratePerDay;
+      if (v.extraHourRate) $('extraHourRate').value = v.extraHourRate;
+      if (v.deposit) $('deposit').value = v.deposit;
+    } else {
+      $('vehReg').value = 'MH 46 BV 1001';
+      if (b.totalAmount) $('dayRate').value = b.totalAmount;
     }
+
     autoCalcDates();
     renderInvoice();
   }
