@@ -1189,12 +1189,14 @@
     var today = new Date();
     var todayISO = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
 
-    // Filter bookings based on search & status filter
+    // Filter bookings based on search, status & vehicle filter
     var query = val('searchBox').toLowerCase();
     var statusFilter = $('filterStatus').value;
+    var vehFilter = $('filterVehicle') ? $('filterVehicle').value.toLowerCase() : '';
 
     var filtered = bookings.filter(function (b) {
       if (statusFilter && b.status !== statusFilter) return false;
+      if (vehFilter && (b.vehicleName || '').toLowerCase().indexOf(vehFilter) === -1) return false;
       if (query) {
         var match = (b.customerName || '').toLowerCase().indexOf(query) !== -1 ||
                     (b.customerPhone || '').indexOf(query) !== -1 ||
