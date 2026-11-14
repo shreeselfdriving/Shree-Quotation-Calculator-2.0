@@ -302,6 +302,178 @@
     return L.join('\n');
   }
 
+  /* Single Canonical Source of Truth for Fleet Across the Entire Software */
+  var VEH_STORAGE_KEY = 'sdr-vehicles';
+
+  var DEFAULT_FLEET = [
+    {
+      id: 'swift-vxi',
+      name: 'Maruti Swift VXi',
+      regNo: 'MH 46 BV 1001',
+      fuel: 'Petrol',
+      seats: '5 Seater',
+      ratePerDay: '2000',
+      extraHourRate: '150',
+      kmPerDay: '300',
+      includedKM: '',
+      extraKMRate: '9',
+      token: '1000',
+      deposit: '3000',
+      deliveryCharges: '0',
+      washingCharges: '0'
+    },
+    {
+      id: 'wagonr-zxi',
+      name: 'Maruti WagonR ZXi',
+      regNo: 'MH 46 BV 1002',
+      fuel: 'Petrol / CNG',
+      seats: '5 Seater',
+      ratePerDay: '1800',
+      extraHourRate: '120',
+      kmPerDay: '300',
+      includedKM: '',
+      extraKMRate: '8',
+      token: '1000',
+      deposit: '3000',
+      deliveryCharges: '0',
+      washingCharges: '0'
+    },
+    {
+      id: 'ertiga-zxi',
+      name: 'Maruti Ertiga ZXi',
+      regNo: 'MH 46 BV 1003',
+      fuel: 'Petrol / CNG',
+      seats: '7 Seater',
+      ratePerDay: '3000',
+      extraHourRate: '200',
+      kmPerDay: '300',
+      includedKM: '',
+      extraKMRate: '11',
+      token: '1500',
+      deposit: '4000',
+      deliveryCharges: '0',
+      washingCharges: '0'
+    },
+    {
+      id: 'creta-sx',
+      name: 'Hyundai Creta SX',
+      regNo: 'MH 46 BV 1004',
+      fuel: 'Diesel',
+      seats: '5 Seater',
+      ratePerDay: '3500',
+      extraHourRate: '250',
+      kmPerDay: '300',
+      includedKM: '',
+      extraKMRate: '12',
+      token: '2000',
+      deposit: '5000',
+      deliveryCharges: '0',
+      washingCharges: '0'
+    },
+    {
+      id: 'thar-4x4',
+      name: 'Mahindra Thar 4x4',
+      regNo: 'MH 46 BV 1005',
+      fuel: 'Diesel AT',
+      seats: '4 Seater',
+      ratePerDay: '4500',
+      extraHourRate: '300',
+      kmPerDay: '300',
+      includedKM: '',
+      extraKMRate: '15',
+      token: '2000',
+      deposit: '6000',
+      deliveryCharges: '0',
+      washingCharges: '0'
+    },
+    {
+      id: 'scorpio-n',
+      name: 'Mahindra Scorpio-N',
+      regNo: 'MH 46 BV 1006',
+      fuel: 'Diesel',
+      seats: '7 Seater',
+      ratePerDay: '4000',
+      extraHourRate: '250',
+      kmPerDay: '300',
+      includedKM: '',
+      extraKMRate: '14',
+      token: '2000',
+      deposit: '5000',
+      deliveryCharges: '0',
+      washingCharges: '0'
+    }
+  ];
+
+  function cloneVehicle(v) {
+    return JSON.parse(JSON.stringify(v));
+  }
+
+  function loadFleet() {
+    var stored = null;
+    try {
+      if (typeof localStorage !== 'undefined') {
+        var raw = localStorage.getItem(VEH_STORAGE_KEY);
+        if (raw) stored = JSON.parse(raw);
+      }
+    } catch (e) {}
+
+    if (!Array.isArray(stored) || stored.length === 0) {
+      saveFleet(DEFAULT_FLEET);
+      return DEFAULT_FLEET.map(cloneVehicle);
+    }
+
+    var merged = stored.slice();
+    var hasChanges = false;
+
+    DEFAULT_FLEET.forEach(function (def) {
+      var found = merged.find(function (v) {
+        return (v.id && v.id === def.id) ||
+               (v.name && v.name.toLowerCase() === def.name.toLowerCase());
+      });
+      if (!found) {
+        merged.push(cloneVehicle(def));
+        hasChanges = true;
+      } else {
+        for (var k in def) {
+          if (def.hasOwnProperty(k) && (found[k] === undefined || found[k] === null || found[k] === '')) {
+            found[k] = def[k];
+            hasChanges = true;
+          }
+        }
+      }
+    });
+
+    if (hasChanges) {
+      saveFleet(merged);
+    }
+    return merged;
+  }
+
+  function saveFleet(list) {
+    try {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem(VEH_STORAGE_KEY, JSON.stringify(list));
+        if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
+          window.dispatchEvent(new CustomEvent('sdr-fleet-updated', { detail: list }));
+        }
+      }
+    } catch (e) {}
+  }
+
+  function findVehicle(idOrName) {
+    if (!idOrName) return null;
+    var q = String(idOrName).trim().toLowerCase();
+    var list = loadFleet();
+    return list.find(function (v) {
+      if (v.id && v.id.toLowerCase() === q) return true;
+      if (v.name && v.name.toLowerCase() === q) return true;
+      if (v.name && v.name.toLowerCase().indexOf(q) !== -1) return true;
+      if (q.indexOf((v.name || '').toLowerCase()) !== -1) return true;
+      if (v.regNo && v.regNo.toLowerCase() === q) return true;
+      return false;
+    }) || null;
+  }
+
   return {
     MONTHS: MONTHS,
     toDate: toDate,
@@ -311,6 +483,12 @@
     formatDateOnly: formatDateOnly,
     formatDuration: formatDuration,
     buildView: buildView,
-    buildText: buildText
+    buildText: buildText,
+    DEFAULT_FLEET: DEFAULT_FLEET,
+    VEH_STORAGE_KEY: VEH_STORAGE_KEY,
+    loadFleet: loadFleet,
+    saveFleet: saveFleet,
+    findVehicle: findVehicle,
+    cloneVehicle: cloneVehicle
   };
 });
