@@ -129,6 +129,7 @@
   <p class="foot">Shree Self Driving &middot; Fast, Offline-First Static Web Application</p>
 </div>
 
+<script src="calc.js"></script>
 <script>
 (function () {
   'use strict';
@@ -184,6 +185,54 @@
   }).join('');
 
   document.getElementById('tools').innerHTML = html;
+
+  /* Render Synchronized Fleet Grid */
+  function renderFleetGrid() {
+    var RC = window.RentalCalc;
+    var fleet = (RC && RC.loadFleet) ? RC.loadFleet() : [];
+    var badge = document.getElementById('fleetBadgeCount');
+    if (badge) badge.textContent = '✅ ' + fleet.length + ' Fleet Cars Live';
+
+    var grid = document.getElementById('fleetGrid');
+    if (!grid) return;
+
+    var fleetHtml = fleet.map(function (v) {
+      var price = Number(v.ratePerDay) || 0;
+      return '<div class="card" style="background: var(--surface-raised); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between;">' +
+        '<div>' +
+          '<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">' +
+            '<h4 style="margin: 0; font-size: 1.05rem; font-weight: 800; color: var(--text);">' + esc(v.name) + '</h4>' +
+            '<span style="font-size: 10px; font-weight: 800; text-transform: uppercase; background: rgba(245,158,11,0.12); color: var(--accent-gold); border: 1px solid rgba(245,158,11,0.3); border-radius: 6px; padding: 2px 6px;">' + esc(v.regNo || 'MH 46 BV') + '</span>' +
+          '</div>' +
+          '<div style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px; display: flex; gap: 8px; flex-wrap: wrap;">' +
+            '<span>⛽ ' + esc(v.fuel || 'Petrol') + '</span> &bull; ' +
+            '<span>💺 ' + esc(v.seats || '5 Seater') + '</span> &bull; ' +
+            '<span>🛣️ ' + esc(v.kmPerDay || '300') + ' km/d</span>' +
+          '</div>' +
+          '<div style="font-size: 1.25rem; font-weight: 900; color: var(--primary); margin-bottom: 14px;">' +
+            '₹' + price.toLocaleString('en-IN') + '<span style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted);"> / day</span>' +
+          '</div>' +
+        '</div>' +
+        '<div style="display: flex; gap: 6px; border-top: 1px solid var(--border); padding-top: 10px;">' +
+          '<a href="quote/index.html?vehName=' + encodeURIComponent(v.name) + '" class="btn ghost" style="flex: 1; padding: 6px 8px; font-size: 11.5px; text-align: center;">Quote</a>' +
+          '<a href="calendar/index.html?vehName=' + encodeURIComponent(v.name) + '" class="btn ghost" style="flex: 1; padding: 6px 8px; font-size: 11.5px; text-align: center;">Book</a>' +
+          '<a href="invoice/index.html?vehName=' + encodeURIComponent(v.name) + '" class="btn ghost" style="flex: 1; padding: 6px 8px; font-size: 11.5px; text-align: center;">Invoice</a>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    grid.innerHTML = fleetHtml;
+  }
+
+  renderFleetGrid();
+
+  window.addEventListener('storage', function (e) {
+    if (window.RentalCalc && e.key === window.RentalCalc.VEH_STORAGE_KEY) {
+      renderFleetGrid();
+    }
+  });
+
+  window.addEventListener('sdr-fleet-updated', renderFleetGrid);
 })();
 </script>
 </body>
