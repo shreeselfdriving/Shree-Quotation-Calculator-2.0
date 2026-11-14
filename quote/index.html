@@ -1404,6 +1404,24 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
     }
   });
 
+  $('btnBookInCalendar').addEventListener('click', function () {
+    var inputs = readInputs();
+    if (!inputs.vehName || !inputs.pickup || !inputs.return) {
+      alert('Please select a vehicle and set pickup/return dates first.');
+      return;
+    }
+    var calc = RC.compute(inputs);
+    var p = new URLSearchParams();
+    if (inputs.customerName) p.set('customerName', inputs.customerName);
+    if (inputs.customerPhone) p.set('customerPhone', inputs.customerPhone);
+    if (inputs.vehName) p.set('vehName', inputs.vehName);
+    if (inputs.pickupDate) p.set('pickupDate', inputs.pickupDate);
+    if (inputs.returnDate) p.set('returnDate', inputs.returnDate);
+    if (inputs.token) p.set('token', inputs.token);
+    if (calc.totalRental) p.set('totalAmount', calc.totalRental);
+    window.location.href = '../calendar/index.html?' + p.toString();
+  });
+
   $('btnConvertToInvoice').addEventListener('click', function () {
     var inputs = readInputs();
     if (!inputs.vehName || !inputs.pickup || !inputs.return || !inputs.ratePerDay) {
