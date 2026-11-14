@@ -798,128 +798,25 @@
     } catch (e) {}
   }
 
-    var DEFAULT_FLEET = [
-    {
-      id: 'swift-vxi',
-      name: 'Maruti Swift VXi',
-      regNo: 'MH 46 BV 1001',
-      fuel: 'Petrol',
-      seats: '5 Seater',
-      ratePerDay: '2000',
-      extraHourRate: '150',
-      kmPerDay: '300',
-      includedKM: '',
-      extraKMRate: '9',
-      token: '1000',
-      deposit: '3000',
-      deliveryCharges: '0',
-      washingCharges: '0'
-    },
-    {
-      id: 'wagonr-zxi',
-      name: 'Maruti WagonR ZXi',
-      regNo: 'MH 46 BV 1002',
-      fuel: 'Petrol / CNG',
-      seats: '5 Seater',
-      ratePerDay: '1800',
-      extraHourRate: '120',
-      kmPerDay: '300',
-      includedKM: '',
-      extraKMRate: '8',
-      token: '1000',
-      deposit: '3000',
-      deliveryCharges: '0',
-      washingCharges: '0'
-    },
-    {
-      id: 'ertiga-zxi',
-      name: 'Maruti Ertiga ZXi',
-      regNo: 'MH 46 BV 1003',
-      fuel: 'Petrol / CNG',
-      seats: '7 Seater',
-      ratePerDay: '3000',
-      extraHourRate: '200',
-      kmPerDay: '300',
-      includedKM: '',
-      extraKMRate: '11',
-      token: '1500',
-      deposit: '4000',
-      deliveryCharges: '0',
-      washingCharges: '0'
-    },
-    {
-      id: 'creta-sx',
-      name: 'Hyundai Creta SX',
-      regNo: 'MH 46 BV 1004',
-      fuel: 'Diesel',
-      seats: '5 Seater',
-      ratePerDay: '3500',
-      extraHourRate: '250',
-      kmPerDay: '300',
-      includedKM: '',
-      extraKMRate: '12',
-      token: '2000',
-      deposit: '5000',
-      deliveryCharges: '0',
-      washingCharges: '0'
-    },
-    {
-      id: 'thar-4x4',
-      name: 'Mahindra Thar 4x4',
-      regNo: 'MH 46 BV 1005',
-      fuel: 'Diesel AT',
-      seats: '4 Seater',
-      ratePerDay: '4500',
-      extraHourRate: '300',
-      kmPerDay: '300',
-      includedKM: '',
-      extraKMRate: '15',
-      token: '2000',
-      deposit: '6000',
-      deliveryCharges: '0',
-      washingCharges: '0'
-    },
-    {
-      id: 'scorpio-n',
-      name: 'Mahindra Scorpio-N',
-      regNo: 'MH 46 BV 1006',
-      fuel: 'Diesel',
-      seats: '7 Seater',
-      ratePerDay: '4000',
-      extraHourRate: '250',
-      kmPerDay: '300',
-      includedKM: '',
-      extraKMRate: '14',
-      token: '2000',
-      deposit: '5000',
-      deliveryCharges: '0',
-      washingCharges: '0'
-    }
-  ];
-
   function loadVehicles() {
-    try {
-      var data = localStorage.getItem(VEH_KEY);
-      if (data) {
-        var parsed = JSON.parse(data);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-      }
-    } catch (e) {}
-    try {
-      localStorage.setItem(VEH_KEY, JSON.stringify(DEFAULT_FLEET));
-    } catch (ex) {}
-    return DEFAULT_FLEET.slice();
+    return RentalCalc.loadFleet();
+  }
+
+  function saveVehicles(list) {
+    RentalCalc.saveFleet(list);
   }
 
   function populateFleetDropdown() {
     var list = loadVehicles();
     var sel = $('invVehicleSelect');
     if (!sel) return;
+    var curr = sel.value;
     sel.innerHTML = '<option value="">-- Choose from Fleet Cars or Type Below --</option>';
     list.forEach(function (v) {
       var opt = document.createElement('option');
       opt.value = v.id;
-      opt.textContent = v.name + (v.fuel ? ' (' + v.fuel + ')' : '') + (v.ratePerDay ? ' - ₹' + v.ratePerDay + '/day' : '');
+      opt.textContent = v.name + (v.fuel ? ' (' + v.fuel + ')' : '') + (v.ratePerDay ? ' - ₹' + v.ratePerDay + '/day' : '') + (v.regNo ? ' [' + v.regNo + ']' : '');
+      if (v.id === curr) opt.selected = true;
       sel.appendChild(opt);
     });
   }
@@ -952,8 +849,7 @@
   $('invVehicleSelect').addEventListener('change', function () {
     var id = this.value;
     if (!id) return;
-    var list = loadVehicles();
-    var v = list.find(function (item) { return item.id === id; });
+    var v = RentalCalc.findVehicle(id);
     if (v) {
       $('vehName').value = v.name + (v.fuel ? ' (' + v.fuel + ')' : '');
       $('vehReg').value = v.regNo || 'MH 46 BV 1001';
@@ -961,18 +857,23 @@
       if (v.extraHourRate) $('extraHourRate').value = v.extraHourRate;
       if (v.deposit) $('deposit').value = v.deposit;
       if (v.token) $('tokenPaid').value = v.token;
+      autoCalcDates();
       renderInvoice();
     }
   });
 
   window.addEventListener('storage', function (e) {
-    if (e.key === VEH_KEY) {
+    if (e.key === RentalCalc.VEH_STORAGE_KEY) {
       populateFleetDropdown();
     }
     if (e.key === BOOKINGS_KEY) {
       populateImportDropdown();
-  populateFleetDropdown();
+      populateFleetDropdown();
     }
+  });
+
+  window.addEventListener('sdr-fleet-updated', function () {
+    populateFleetDropdown();
   });
 
   $('selImportBooking').addEventListener('change' , function () {
