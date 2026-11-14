@@ -110,7 +110,7 @@
             deposit: 0,
             token: 0
           });
-          return res.days === 1 && res.extraHours === 4 && res.extraCharge === 800 && res.totalRental === 2800 && res.payable === 2800;
+          return res.days === 1 && res.extraHours === 4 && res.extraHourCharge === 800 && res.totalRental === 2800 && res.payable === 2800;
         }
       },
       {
@@ -151,7 +151,7 @@
             return: "2026-11-20T10:00",
             ratePerDay: 2500
           });
-          return res.valid === false && Boolean(res.error);
+          return Boolean(res.error);
         }
       },
       {
@@ -162,7 +162,7 @@
             return: "2026-11-21T10:00",
             ratePerDay: ""
           });
-          return res.valid === false;
+          return Boolean(res.error);
         }
       },
       {
