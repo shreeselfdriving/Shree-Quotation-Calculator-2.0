@@ -52,6 +52,25 @@
 
   <div class="tool-grid" id="tools"></div>
 
+  <!-- ================= SYNCHRONIZED FLEET SHOWCASE ================= -->
+  <section class="card" style="margin-bottom: 24px; padding: 24px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+      <div>
+        <h2 style="font-size: 1.35rem; font-weight: 800; margin: 0; display: flex; align-items: center; gap: 8px;">
+          🚗 Active Fleet Vehicles (Synced Across Suite)
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.88rem; margin: 4px 0 0;">
+          All cars synchronized in real-time across Quotation Calculator, Booking Calendar, and GST Invoice Generator.
+        </p>
+      </div>
+      <span class="badge" id="fleetBadgeCount" style="background: rgba(16, 185, 129, 0.15); color: var(--emerald); border: 1px solid rgba(16, 185, 129, 0.35); padding: 5px 12px; border-radius: 20px; font-weight: 700; font-size: 0.82rem;">
+        ✅ 6 Fleet Cars Live
+      </span>
+    </div>
+
+    <div class="fleet-grid" id="fleetGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;"></div>
+  </section>
+
   <!-- ================= CONTACT US ================= -->
   <section class="contact-section card">
     <div class="contact-head">
