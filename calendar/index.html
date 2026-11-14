@@ -1542,6 +1542,7 @@
   /* Search & Filter live update */
   $('searchBox').addEventListener('input', refresh);
   $('filterStatus').addEventListener('change', refresh);
+  if ($('filterVehicle')) $('filterVehicle').addEventListener('change', refresh);
 
   /* Month navigation */
   $('btnPrevMonth').addEventListener('click', function () {
@@ -1569,8 +1570,40 @@
     refresh();
   });
 
+  /* Parse URL parameters (e.g. from Quotation Calculator "Book in Calendar") */
+  function parseUrlParams() {
+    try {
+      var p = new URLSearchParams(window.location.search);
+      var cName = p.get('customerName');
+      var vName = p.get('vehName');
+      var pDate = p.get('pickupDate');
+      if (cName || vName || pDate) {
+        openAddModal(pDate);
+        if (cName) $('bCustomerName').value = cName;
+        if (p.get('customerPhone')) $('bCustomerPhone').value = p.get('customerPhone');
+        if (vName) {
+          var v = RentalCalc.findVehicle(vName);
+          if (v) {
+            $('bVehicleSelect').value = v.id;
+            $('bVehicleName').value = v.name;
+          } else {
+            $('bVehicleName').value = vName;
+          }
+        }
+        if (pDate) $('bPickupDate').value = pDate;
+        if (p.get('returnDate')) $('bReturnDate').value = p.get('returnDate');
+        if (p.get('token')) $('bTokenAmount').value = p.get('token');
+        if (p.get('totalAmount')) $('bTotalAmount').value = p.get('totalAmount');
+        updateBalanceDisplay();
+        checkConflict();
+      }
+    } catch (e) {}
+  }
+
   // Initial load
+  populateVehicleSelect();
   refresh();
+  parseUrlParams();
 })();
 </script>
 </body>
