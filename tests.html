@@ -185,6 +185,32 @@
         run: () => {
           return RentalCalc.formatINR(125000) === "₹1,25,000" && RentalCalc.formatINR(500) === "₹500";
         }
+      },
+      {
+        name: "Unified Fleet loaded: 6 standard fleet vehicles present with all attributes",
+        run: () => {
+          const fleet = RentalCalc.loadFleet();
+          if (!Array.isArray(fleet) || fleet.length < 6) return false;
+          const swift = fleet.find(v => v.id === "swift-vxi");
+          const ertiga = fleet.find(v => v.id === "ertiga-zxi");
+          const thar = fleet.find(v => v.id === "thar-4x4");
+          return swift && swift.regNo === "MH 46 BV 1001" &&
+                 ertiga && ertiga.seats === "7 Seater" &&
+                 thar && thar.ratePerDay === "4500";
+        }
+      },
+      {
+        name: "Fleet lookup helper (findVehicle) by ID, exact name and partial name",
+        run: () => {
+          const byId = RentalCalc.findVehicle("swift-vxi");
+          const byName = RentalCalc.findVehicle("Maruti Ertiga ZXi");
+          const byPartial = RentalCalc.findVehicle("Scorpio");
+          const byReg = RentalCalc.findVehicle("MH 46 BV 1004");
+          return byId && byId.name === "Maruti Swift VXi" &&
+                 byName && byName.id === "ertiga-zxi" &&
+                 byPartial && byPartial.id === "scorpio-n" &&
+                 byReg && byReg.id === "creta-sx";
+        }
       }
     ];
 
