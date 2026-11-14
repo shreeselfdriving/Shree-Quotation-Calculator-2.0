@@ -1270,9 +1270,11 @@
 
     var query = val('searchBox').toLowerCase();
     var statusFilter = $('filterStatus').value;
+    var vehFilter = $('filterVehicle') ? $('filterVehicle').value.toLowerCase() : '';
 
     var filtered = bookings.filter(function (b) {
       if (statusFilter && b.status !== statusFilter) return false;
+      if (vehFilter && (b.vehicleName || '').toLowerCase().indexOf(vehFilter) === -1) return false;
       if (query) {
         var match = (b.customerName || '').toLowerCase().indexOf(query) !== -1 ||
                     (b.customerPhone || '').indexOf(query) !== -1 ||
