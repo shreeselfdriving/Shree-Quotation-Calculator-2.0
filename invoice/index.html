@@ -1458,6 +1458,14 @@
         $('returnDateTime').value = p.get('returnDate') + 'T20:00';
         hasParams = true;
       }
+      if (p.get('deliveryLocation')) {
+        $('deliveryLocation').value = p.get('deliveryLocation');
+        hasParams = true;
+      }
+      if (p.get('location')) {
+        $('deliveryLocation').value = p.get('location');
+        hasParams = true;
+      }
       if (hasParams) {
         autoCalcDates();
       }
@@ -1467,6 +1475,7 @@
   /* Reset Form */
   $('btnResetInvoice').addEventListener('click', function () {
     $('formInvoice').reset();
+    $('deliveryLocation').value = '';
     setNextInvoiceNumber();
     $('invDate').value = new Date().toISOString().split('T')[0];
     renderInvoice();
