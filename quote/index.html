@@ -642,6 +642,7 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
       vehSeats: val('vehSeats'),
       pickup: combine('pickupDate', 'pickupHour', 'pickupMin', 'pickupAmPm'),
       return: combine('returnDate', 'returnHour', 'returnMin', 'returnAmPm'),
+      deliveryLocation: val('deliveryLocation'),
       ratePerDay: val('ratePerDay'),
       extraHourRate: val('extraHourRate'),
       kmPerDay: val('kmPerDay') || '300',
