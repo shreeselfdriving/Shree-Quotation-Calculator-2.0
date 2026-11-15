@@ -700,6 +700,7 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
              '<div class="q-ref-card-body">' +
                '<div class="q-ref-row"><span class="q-lbl">🟢 Pickup</span><span class="q-val">' + esc(RC.formatDateTime(inputs.pickup)) + '</span></div>' +
                '<div class="q-ref-row"><span class="q-lbl">🔴 Return</span><span class="q-val">' + esc(RC.formatDateTime(inputs.return)) + '</span></div>' +
+               '<div class="q-ref-row"><span class="q-lbl">📍 Delivery Location</span><span class="q-val" style="font-weight:700;">' + esc(inputs.deliveryLocation || 'Office / Self Pickup') + '</span></div>' +
                '<div class="q-ref-row"><span class="q-lbl">⏳ Total Duration</span><span class="q-val">' + esc(fmtDuration(calc.days, calc.extraHours)) + '</span></div>' +
                '<div class="q-ref-row"><span class="q-lbl">📋 Rental Type</span><span class="q-val">' + esc(inputs.vehType || 'Self Drive') + '</span></div>' +
              '</div>' +
