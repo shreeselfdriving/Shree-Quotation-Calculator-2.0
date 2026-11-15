@@ -898,6 +898,7 @@
     if (b.returnDate) {
       $('returnDateTime').value = b.returnDate + 'T' + (b.returnTime || '20:00');
     }
+    if (b.location) $('deliveryLocation').value = b.location;
     if (b.tokenAmount) $('tokenPaid').value = b.tokenAmount;
 
     // Match vehicle in fleet to auto-populate Reg No, day rate, extra hour rate, deposit
