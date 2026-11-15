@@ -211,6 +211,23 @@
                  byPartial && byPartial.id === "scorpio-n" &&
                  byReg && byReg.id === "creta-sx";
         }
+      },
+      {
+        name: "Car Delivery Location included in quotation view & WhatsApp text formatting",
+        run: () => {
+          const inputs = {
+            customerName: "Sanjay Patil",
+            vehName: "Maruti Swift VXi",
+            pickup: "2026-11-20T10:00",
+            return: "2026-11-21T10:00",
+            deliveryLocation: "Panvel Railway Station",
+            ratePerDay: 2000
+          };
+          const calc = RentalCalc.compute(inputs);
+          const view = RentalCalc.buildView(inputs, calc);
+          const text = RentalCalc.buildText(view);
+          return text.includes("Panvel Railway Station") && text.includes("Delivery Location");
+        }
       }
     ];
 
