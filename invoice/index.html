@@ -1212,6 +1212,7 @@
       '━━━━━━━━━━━━━━━━━━━━',
       '👤 *Billed To:* ' + (val('custName') || 'Valued Customer'),
       '🚙 *Vehicle:* ' + (val('vehName') || 'Self Drive Car') + ' (' + (val('vehReg') || '') + ')',
+      '📍 *Car Delivery Location:* ' + (val('deliveryLocation') || 'Office / Self Pickup'),
       '📅 *Rental Days:* ' + c.days + ' Days' + (c.extraHours ? ' (' + c.extraHours + ' hrs extra)' : ''),
       '━━━━━━━━━━━━━━━━━━━━',
       '💰 *Taxable Rental Amount:* ' + fmt(c.subtotalTaxable)
