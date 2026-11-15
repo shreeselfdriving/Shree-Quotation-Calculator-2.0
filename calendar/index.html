@@ -1135,6 +1135,7 @@
     if (b.vehicleName) p.set('vehName', b.vehicleName);
     if (b.pickupDate) p.set('pickupDate', b.pickupDate);
     if (b.returnDate) p.set('returnDate', b.returnDate);
+    if (b.location) p.set('deliveryLocation', b.location);
     if (b.tokenAmount) p.set('token', b.tokenAmount);
     if (b.totalAmount) p.set('dayRate', b.totalAmount);
     window.location.href = '../invoice/index.html?' + p.toString();
@@ -1147,6 +1148,7 @@
     if (b.vehicleName) params.set('vehName', b.vehicleName);
     if (b.pickupDate) params.set('pickupDate', b.pickupDate);
     if (b.returnDate) params.set('returnDate', b.returnDate);
+    if (b.location) params.set('deliveryLocation', b.location);
     if (b.tokenAmount) params.set('token', b.tokenAmount);
 
     window.location.href = '../quote/index.html?' + params.toString();
