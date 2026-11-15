@@ -225,7 +225,8 @@
       ] },
       { title: '\uD83D\uDCC5 TRIP SCHEDULE', gap: true, rows: [
         { label: '\uD83D\uDFE2 Pickup', value: formatDateTime(inputs.pickup), labelBold: true },
-        { label: '\uD83D\uDD34 Return', value: formatDateTime(inputs.return), labelBold: true }
+        { label: '\uD83D\uDD34 Return', value: formatDateTime(inputs.return), labelBold: true },
+        { label: '\uD83D\uDCCD Delivery Location', value: inputs.deliveryLocation || 'Office / Self Pickup', labelBold: true }
       ] },
       { title: '\u23F3 RENTAL DURATION', rows: [
         { label: 'Total Duration', value: formatDuration(calc.days, calc.extraHours), bold: true },
