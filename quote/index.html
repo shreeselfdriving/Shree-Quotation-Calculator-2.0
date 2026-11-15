@@ -1424,6 +1424,7 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
     if (inputs.vehName) p.set('vehName', inputs.vehName);
     if (inputs.pickupDate) p.set('pickupDate', inputs.pickupDate);
     if (inputs.returnDate) p.set('returnDate', inputs.returnDate);
+    if (inputs.deliveryLocation) p.set('deliveryLocation', inputs.deliveryLocation);
     if (inputs.token) p.set('token', inputs.token);
     if (calc.totalRental) p.set('totalAmount', calc.totalRental);
     window.location.href = '../calendar/index.html?' + p.toString();
@@ -1443,6 +1444,7 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
     if (inputs.ratePerDay) p.set('dayRate', inputs.ratePerDay);
     if (calc.days) p.set('days', calc.days);
     if (calc.extraHours) p.set('extraHours', calc.extraHours);
+    if (inputs.deliveryLocation) p.set('deliveryLocation', inputs.deliveryLocation);
     if (inputs.deposit) p.set('deposit', inputs.deposit);
     if (inputs.token) p.set('token', inputs.token);
     if (calc.discount) p.set('discount', calc.discount);
@@ -1477,6 +1479,8 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
     if (p.get('customerPhone')) $('customerPhone').value = p.get('customerPhone');
     if (p.get('pickupDate')) $('pickupDate').value = p.get('pickupDate');
     if (p.get('returnDate')) $('returnDate').value = p.get('returnDate');
+    if (p.get('deliveryLocation')) $('deliveryLocation').value = p.get('deliveryLocation');
+    if (p.get('location')) $('deliveryLocation').value = p.get('location');
     if (p.get('token')) $('token').value = p.get('token');
     if (p.get('vehName')) {
       var vName = p.get('vehName');
