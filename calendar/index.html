@@ -1594,6 +1594,8 @@
         }
         if (pDate) $('bPickupDate').value = pDate;
         if (p.get('returnDate')) $('bReturnDate').value = p.get('returnDate');
+        if (p.get('deliveryLocation')) $('bLocation').value = p.get('deliveryLocation');
+        if (p.get('location')) $('bLocation').value = p.get('location');
         if (p.get('token')) $('bTokenAmount').value = p.get('token');
         if (p.get('totalAmount')) $('bTotalAmount').value = p.get('totalAmount');
         updateBalanceDisplay();
