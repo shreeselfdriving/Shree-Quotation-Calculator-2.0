@@ -407,28 +407,48 @@
     }
   ];
 
+  var DEFAULT_DELIVERY_POINTS = [
+    'Office / Self Pickup (Khanda Colony, Panvel)',
+    'Panvel Railway Station',
+    'Bhoomi Landmark, Sector 17, Khanda Colony, Panvel',
+    'Chhatrapati Shivaji Maharaj International Airport (T1 / T2)',
+    'Navi Mumbai (Vashi / Belapur / Kharghar)',
+    'Customer Doorstep Delivery'
+  ];
+
   function cloneVehicle(v) {
     return JSON.parse(JSON.stringify(v));
   }
 
   function loadFleet() {
     var stored = null;
+    var deletedIds = [];
     try {
       if (typeof localStorage !== 'undefined') {
         var raw = localStorage.getItem(VEH_STORAGE_KEY);
         if (raw) stored = JSON.parse(raw);
+        var delRaw = localStorage.getItem(VEH_DELETED_KEY);
+        if (delRaw) deletedIds = JSON.parse(delRaw) || [];
       }
     } catch (e) {}
 
     if (!Array.isArray(stored) || stored.length === 0) {
-      saveFleet(DEFAULT_FLEET);
-      return DEFAULT_FLEET.map(cloneVehicle);
+      if (!Array.isArray(deletedIds) || deletedIds.length === 0) {
+        saveFleet(DEFAULT_FLEET);
+        return DEFAULT_FLEET.map(cloneVehicle);
+      }
+      return [];
     }
 
     var merged = stored.slice();
     var hasChanges = false;
 
     DEFAULT_FLEET.forEach(function (def) {
+      var isDeleted = Array.isArray(deletedIds) && deletedIds.some(function (d) {
+        return d === def.id || (def.name && d === def.name.toLowerCase());
+      });
+      if (isDeleted) return;
+
       var found = merged.find(function (v) {
         return (v.id && v.id === def.id) ||
                (v.name && v.name.toLowerCase() === def.name.toLowerCase());
@@ -463,6 +483,74 @@
     } catch (e) {}
   }
 
+  function deleteVehicle(id) {
+    if (!id) return false;
+    var list = loadFleet();
+    var target = list.find(function (v) { return v.id === id; });
+    if (!target) return false;
+
+    var filtered = list.filter(function (v) { return v.id !== id; });
+
+    try {
+      if (typeof localStorage !== 'undefined') {
+        var delRaw = localStorage.getItem(VEH_DELETED_KEY);
+        var delList = delRaw ? JSON.parse(delRaw) : [];
+        if (!Array.isArray(delList)) delList = [];
+        if (delList.indexOf(id) === -1) delList.push(id);
+        if (target.name && delList.indexOf(target.name.toLowerCase()) === -1) {
+          delList.push(target.name.toLowerCase());
+        }
+        localStorage.setItem(VEH_DELETED_KEY, JSON.stringify(delList));
+      }
+    } catch (e) {}
+
+    saveFleet(filtered);
+    return true;
+  }
+
+  function addVehicle(veh) {
+    if (!veh || !veh.name) return null;
+    var name = String(veh.name).trim();
+    if (!name) return null;
+    var newId = veh.id || ('veh_' + Date.now());
+    var fullVeh = {
+      id: newId,
+      name: name,
+      regNo: String(veh.regNo || '').trim(),
+      fuel: String(veh.fuel || 'Petrol').trim(),
+      seats: String(veh.seats || '5 Seater').trim(),
+      ratePerDay: String(veh.ratePerDay != null ? veh.ratePerDay : '1800').trim(),
+      extraHourRate: String(veh.extraHourRate != null ? veh.extraHourRate : '100').trim(),
+      kmPerDay: String(veh.kmPerDay != null ? veh.kmPerDay : '300').trim(),
+      includedKM: String(veh.includedKM || '').trim(),
+      extraKMRate: String(veh.extraKMRate != null ? veh.extraKMRate : '8').trim(),
+      token: String(veh.token != null ? veh.token : '1000').trim(),
+      deposit: String(veh.deposit != null ? veh.deposit : '4000').trim(),
+      deliveryCharges: String(veh.deliveryCharges != null ? veh.deliveryCharges : '0').trim(),
+      washingCharges: String(veh.washingCharges != null ? veh.washingCharges : '0').trim()
+    };
+
+    try {
+      if (typeof localStorage !== 'undefined') {
+        var delRaw = localStorage.getItem(VEH_DELETED_KEY);
+        if (delRaw) {
+          var delList = JSON.parse(delRaw);
+          if (Array.isArray(delList)) {
+            delList = delList.filter(function (d) {
+              return d !== fullVeh.id && d !== fullVeh.name.toLowerCase();
+            });
+            localStorage.setItem(VEH_DELETED_KEY, JSON.stringify(delList));
+          }
+        }
+      }
+    } catch (e) {}
+
+    var list = loadFleet();
+    list.push(fullVeh);
+    saveFleet(list);
+    return fullVeh;
+  }
+
   function findVehicle(idOrName) {
     if (!idOrName) return null;
     var q = String(idOrName).trim().toLowerCase();
@@ -477,6 +565,65 @@
     }) || null;
   }
 
+  function loadDeliveryPoints() {
+    var stored = null;
+    try {
+      if (typeof localStorage !== 'undefined') {
+        var raw = localStorage.getItem(LOC_STORAGE_KEY);
+        if (raw) stored = JSON.parse(raw);
+      }
+    } catch (e) {}
+
+    if (!Array.isArray(stored) || stored.length === 0) {
+      saveDeliveryPoints(DEFAULT_DELIVERY_POINTS);
+      return DEFAULT_DELIVERY_POINTS.slice();
+    }
+
+    var merged = stored.slice();
+    var hasChanges = false;
+    DEFAULT_DELIVERY_POINTS.forEach(function (def) {
+      var exists = merged.some(function (p) {
+        return String(p).trim().toLowerCase() === def.toLowerCase();
+      });
+      if (!exists) {
+        merged.push(def);
+        hasChanges = true;
+      }
+    });
+
+    if (hasChanges) {
+      saveDeliveryPoints(merged);
+    }
+    return merged;
+  }
+
+  function saveDeliveryPoints(list) {
+    try {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem(LOC_STORAGE_KEY, JSON.stringify(list));
+        if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
+          window.dispatchEvent(new CustomEvent('sdr-delivery-points-updated', { detail: list }));
+        }
+      }
+    } catch (e) {}
+  }
+
+  function addDeliveryPoint(pointName) {
+    if (!pointName) return false;
+    var name = String(pointName).trim();
+    if (!name || name === 'Office / Self Pickup') return false;
+    var list = loadDeliveryPoints();
+    var exists = list.some(function (p) {
+      return p.toLowerCase() === name.toLowerCase();
+    });
+    if (!exists) {
+      list.push(name);
+      saveDeliveryPoints(list);
+      return true;
+    }
+    return false;
+  }
+
   return {
     MONTHS: MONTHS,
     toDate: toDate,
@@ -489,9 +636,17 @@
     buildText: buildText,
     DEFAULT_FLEET: DEFAULT_FLEET,
     VEH_STORAGE_KEY: VEH_STORAGE_KEY,
+    VEH_DELETED_KEY: VEH_DELETED_KEY,
+    LOC_STORAGE_KEY: LOC_STORAGE_KEY,
+    DEFAULT_DELIVERY_POINTS: DEFAULT_DELIVERY_POINTS,
     loadFleet: loadFleet,
     saveFleet: saveFleet,
+    addVehicle: addVehicle,
+    deleteVehicle: deleteVehicle,
     findVehicle: findVehicle,
-    cloneVehicle: cloneVehicle
+    cloneVehicle: cloneVehicle,
+    loadDeliveryPoints: loadDeliveryPoints,
+    saveDeliveryPoints: saveDeliveryPoints,
+    addDeliveryPoint: addDeliveryPoint
   };
 });
