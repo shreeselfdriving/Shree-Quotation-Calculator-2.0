@@ -867,6 +867,18 @@
     }
   });
 
+  function populateDeliveryPoints() {
+    if (!RentalCalc || !RentalCalc.loadDeliveryPoints) return;
+    var list = RentalCalc.loadDeliveryPoints();
+    var dl = $('invLocationList');
+    if (!dl) return;
+    var html = '';
+    list.forEach(function (loc) {
+      html += '<option value="' + esc(loc) + '">';
+    });
+    dl.innerHTML = html;
+  }
+
   window.addEventListener('storage', function (e) {
     if (e.key === RentalCalc.VEH_STORAGE_KEY) {
       populateFleetDropdown();
@@ -875,10 +887,17 @@
       populateImportDropdown();
       populateFleetDropdown();
     }
+    if (e.key === RentalCalc.LOC_STORAGE_KEY) {
+      populateDeliveryPoints();
+    }
   });
 
   window.addEventListener('sdr-fleet-updated', function () {
     populateFleetDropdown();
+  });
+
+  window.addEventListener('sdr-delivery-points-updated', function () {
+    populateDeliveryPoints();
   });
 
   $('selImportBooking').addEventListener('change' , function () {
