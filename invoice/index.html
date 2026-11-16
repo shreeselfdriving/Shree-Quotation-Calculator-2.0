@@ -892,12 +892,26 @@
     }
   });
 
+  var isHandlingFleetEvent = false;
   window.addEventListener('sdr-fleet-updated', function () {
-    populateFleetDropdown();
+    if (isHandlingFleetEvent) return;
+    isHandlingFleetEvent = true;
+    try {
+      populateFleetDropdown();
+    } finally {
+      isHandlingFleetEvent = false;
+    }
   });
 
+  var isHandlingPointsEvent = false;
   window.addEventListener('sdr-delivery-points-updated', function () {
-    populateDeliveryPoints();
+    if (isHandlingPointsEvent) return;
+    isHandlingPointsEvent = true;
+    try {
+      populateDeliveryPoints();
+    } finally {
+      isHandlingPointsEvent = false;
+    }
   });
 
   $('selImportBooking').addEventListener('change' , function () {
