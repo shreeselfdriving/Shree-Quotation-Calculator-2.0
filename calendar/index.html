@@ -976,12 +976,58 @@
     } catch (e) {}
   }
 
+  var DEFAULT_FLEET = [
+    { id: 'swift-vxi', name: 'Maruti Swift VXi', regNo: 'MH 46 BV 1001', fuel: 'Petrol', seats: '5 Seater', ratePerDay: '2000', extraHourRate: '150', kmPerDay: '300', extraKMRate: '9', token: '1000', deposit: '3000', deliveryCharges: '0', washingCharges: '0' },
+    { id: 'wagonr-zxi', name: 'Maruti WagonR ZXi', regNo: 'MH 46 BV 1002', fuel: 'Petrol / CNG', seats: '5 Seater', ratePerDay: '1800', extraHourRate: '120', kmPerDay: '300', extraKMRate: '8', token: '1000', deposit: '3000', deliveryCharges: '0', washingCharges: '0' },
+    { id: 'ertiga-zxi', name: 'Maruti Ertiga ZXi', regNo: 'MH 46 BV 1003', fuel: 'Petrol / CNG', seats: '7 Seater', ratePerDay: '3000', extraHourRate: '200', kmPerDay: '300', extraKMRate: '11', token: '1500', deposit: '4000', deliveryCharges: '0', washingCharges: '0' },
+    { id: 'creta-sx', name: 'Hyundai Creta SX', regNo: 'MH 46 BV 1004', fuel: 'Diesel', seats: '5 Seater', ratePerDay: '3500', extraHourRate: '250', kmPerDay: '300', extraKMRate: '12', token: '2000', deposit: '5000', deliveryCharges: '0', washingCharges: '0' },
+    { id: 'thar-4x4', name: 'Mahindra Thar 4x4', regNo: 'MH 46 BV 1005', fuel: 'Diesel AT', seats: '4 Seater', ratePerDay: '4500', extraHourRate: '300', kmPerDay: '300', extraKMRate: '15', token: '2000', deposit: '6000', deliveryCharges: '0', washingCharges: '0' },
+    { id: 'scorpio-n', name: 'Mahindra Scorpio-N', regNo: 'MH 46 BV 1006', fuel: 'Diesel', seats: '7 Seater', ratePerDay: '4000', extraHourRate: '250', kmPerDay: '300', extraKMRate: '14', token: '2000', deposit: '5000', deliveryCharges: '0', washingCharges: '0' }
+  ];
+
   function loadVehicles() {
-    return RentalCalc.loadFleet();
+    if (window.RentalCalc && typeof window.RentalCalc.loadFleet === 'function') {
+      try {
+        return window.RentalCalc.loadFleet();
+      } catch (e) {
+        console.warn('RentalCalc.loadFleet error:', e);
+      }
+    }
+    try {
+      var raw = localStorage.getItem('sdr-vehicles');
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return DEFAULT_FLEET.slice();
   }
 
   function saveVehicles(list) {
-    RentalCalc.saveFleet(list);
+    try {
+      localStorage.setItem('sdr-vehicles', JSON.stringify(list));
+    } catch (e) {}
+    if (window.RentalCalc && typeof window.RentalCalc.saveFleet === 'function') {
+      try {
+        window.RentalCalc.saveFleet(list);
+      } catch (e) {}
+    }
+  }
+
+  function findVehicleHelper(idOrName) {
+    if (window.RentalCalc && typeof window.RentalCalc.findVehicle === 'function') {
+      try {
+        var found = window.RentalCalc.findVehicle(idOrName);
+        if (found) return found;
+      } catch (e) {}
+    }
+    var list = loadVehicles();
+    var q = String(idOrName || '').toLowerCase().trim();
+    return list.find(function (v) {
+      return (v.id && v.id.toLowerCase() === q) ||
+             (v.name && v.name.toLowerCase() === q) ||
+             (v.name && v.name.toLowerCase().indexOf(q) !== -1);
+    }) || null;
   }
 
   /* Populate Vehicle Dropdown in Modal and Filter Bar */
@@ -1013,7 +1059,7 @@
   $('bVehicleSelect').addEventListener('change', function () {
     var idOrName = this.value;
     if (idOrName) {
-      var v = RentalCalc.findVehicle(idOrName);
+      var v = findVehicleHelper(idOrName);
       if (v) {
         $('bVehicleName').value = v.name;
         if (v.token && !val('bTokenAmount')) $('bTokenAmount').value = v.token;
@@ -1033,8 +1079,8 @@
   });
 
   function populateDeliveryPoints() {
-    if (!RentalCalc || !RentalCalc.loadDeliveryPoints) return;
-    var list = RentalCalc.loadDeliveryPoints();
+    if (!window.RentalCalc || typeof window.RentalCalc.loadDeliveryPoints !== 'function') return;
+    var list = window.RentalCalc.loadDeliveryPoints();
     var dl = $('bLocationList');
     if (!dl) return;
     var html = '';
@@ -1045,10 +1091,12 @@
   }
 
   window.addEventListener('storage', function (e) {
-    if (e.key === RentalCalc.VEH_STORAGE_KEY) {
+    var vehKey = (window.RentalCalc && window.RentalCalc.VEH_STORAGE_KEY) || 'sdr-vehicles';
+    var locKey = (window.RentalCalc && window.RentalCalc.LOC_STORAGE_KEY) || 'sdr-delivery-points';
+    if (e.key === vehKey) {
       populateVehicleSelect();
     }
-    if (e.key === RentalCalc.LOC_STORAGE_KEY) {
+    if (e.key === locKey) {
       populateDeliveryPoints();
     }
   });
