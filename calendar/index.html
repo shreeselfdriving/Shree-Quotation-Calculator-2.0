@@ -1027,14 +1027,33 @@
     }
   });
 
+  function populateDeliveryPoints() {
+    if (!RentalCalc || !RentalCalc.loadDeliveryPoints) return;
+    var list = RentalCalc.loadDeliveryPoints();
+    var dl = $('bLocationList');
+    if (!dl) return;
+    var html = '';
+    list.forEach(function (loc) {
+      html += '<option value="' + esc(loc) + '">';
+    });
+    dl.innerHTML = html;
+  }
+
   window.addEventListener('storage', function (e) {
     if (e.key === RentalCalc.VEH_STORAGE_KEY) {
       populateVehicleSelect();
+    }
+    if (e.key === RentalCalc.LOC_STORAGE_KEY) {
+      populateDeliveryPoints();
     }
   });
 
   window.addEventListener('sdr-fleet-updated', function () {
     populateVehicleSelect();
+  });
+
+  window.addEventListener('sdr-delivery-points-updated', function () {
+    populateDeliveryPoints();
   });
 
   /* Auto-calculate balance in modal */
