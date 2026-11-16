@@ -303,8 +303,10 @@
     return L.join('\n');
   }
 
-  /* Single Canonical Source of Truth for Fleet Across the Entire Software */
+  /* Single Canonical Source of Truth for Fleet & Delivery Points Across Entire Suite */
   var VEH_STORAGE_KEY = 'sdr-vehicles';
+  var VEH_DELETED_KEY = 'sdr-vehicles-deleted';
+  var LOC_STORAGE_KEY = 'sdr-delivery-points';
 
   var DEFAULT_FLEET = [
     {
