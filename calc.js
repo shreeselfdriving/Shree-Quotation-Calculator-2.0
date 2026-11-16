@@ -23,6 +23,12 @@
     return isNaN(d.getTime()) ? null : d;
   }
 
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
   /* Lenient numeric coercion for display formatting (unparseable -> 0). */
   function num(value) {
     var n = typeof value === 'number' ? value : parseFloat(value);
