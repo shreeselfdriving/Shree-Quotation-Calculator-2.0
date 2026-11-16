@@ -434,7 +434,7 @@
 
     if (!Array.isArray(stored) || stored.length === 0) {
       if (!Array.isArray(deletedIds) || deletedIds.length === 0) {
-        saveFleet(DEFAULT_FLEET);
+        saveFleet(DEFAULT_FLEET, true);
         return DEFAULT_FLEET.map(cloneVehicle);
       }
       return [];
@@ -467,17 +467,23 @@
     });
 
     if (hasChanges) {
-      saveFleet(merged);
+      saveFleet(merged, true);
     }
     return merged;
   }
 
-  function saveFleet(list) {
+  var isSyncingFleet = false;
+  function saveFleet(list, silent) {
     try {
       if (typeof localStorage !== 'undefined') {
         localStorage.setItem(VEH_STORAGE_KEY, JSON.stringify(list));
-        if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
-          window.dispatchEvent(new CustomEvent('sdr-fleet-updated', { detail: list }));
+        if (!silent && !isSyncingFleet && typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
+          isSyncingFleet = true;
+          try {
+            window.dispatchEvent(new CustomEvent('sdr-fleet-updated', { detail: list }));
+          } finally {
+            isSyncingFleet = false;
+          }
         }
       }
     } catch (e) {}
