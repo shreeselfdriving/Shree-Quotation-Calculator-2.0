@@ -483,7 +483,7 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
     document.head.appendChild(cdn);
   }
 </script>
-<script src="../calc.js?v=3"></script>
+<script src="../calc.js?v=20261117_05"></script>
 <script>
 (function () {
   'use strict';
@@ -499,12 +499,42 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
 
   var isKmManuallyEdited = false;
 
+  var DEFAULT_FLEET = [
+    { id: 'swift-vxi', name: 'Maruti Swift VXi', regNo: 'MH 46 BV 1001', fuel: 'Petrol', seats: '5 Seater', ratePerDay: '2000', extraHourRate: '150', kmPerDay: '300', extraKMRate: '9', token: '1000', deposit: '3000', deliveryCharges: '0', washingCharges: '0' },
+    { id: 'wagonr-zxi', name: 'Maruti WagonR ZXi', regNo: 'MH 46 BV 1002', fuel: 'Petrol / CNG', seats: '5 Seater', ratePerDay: '1800', extraHourRate: '120', kmPerDay: '300', extraKMRate: '8', token: '1000', deposit: '3000', deliveryCharges: '0', washingCharges: '0' },
+    { id: 'ertiga-zxi', name: 'Maruti Ertiga ZXi', regNo: 'MH 46 BV 1003', fuel: 'Petrol / CNG', seats: '7 Seater', ratePerDay: '3000', extraHourRate: '200', kmPerDay: '300', extraKMRate: '11', token: '1500', deposit: '4000', deliveryCharges: '0', washingCharges: '0' },
+    { id: 'creta-sx', name: 'Hyundai Creta SX', regNo: 'MH 46 BV 1004', fuel: 'Diesel', seats: '5 Seater', ratePerDay: '3500', extraHourRate: '250', kmPerDay: '300', extraKMRate: '12', token: '2000', deposit: '5000', deliveryCharges: '0', washingCharges: '0' },
+    { id: 'thar-4x4', name: 'Mahindra Thar 4x4', regNo: 'MH 46 BV 1005', fuel: 'Diesel AT', seats: '4 Seater', ratePerDay: '4500', extraHourRate: '300', kmPerDay: '300', extraKMRate: '15', token: '2000', deposit: '6000', deliveryCharges: '0', washingCharges: '0' },
+    { id: 'scorpio-n', name: 'Mahindra Scorpio-N', regNo: 'MH 46 BV 1006', fuel: 'Diesel', seats: '7 Seater', ratePerDay: '4000', extraHourRate: '250', kmPerDay: '300', extraKMRate: '14', token: '2000', deposit: '5000', deliveryCharges: '0', washingCharges: '0' }
+  ];
+
   function loadVehicles() {
-    return RC.loadFleet();
+    if (window.RentalCalc && typeof window.RentalCalc.loadFleet === 'function') {
+      try {
+        return window.RentalCalc.loadFleet();
+      } catch (e) {
+        console.warn('RentalCalc.loadFleet error:', e);
+      }
+    }
+    try {
+      var raw = localStorage.getItem('sdr-vehicles');
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return DEFAULT_FLEET.slice();
   }
 
   function saveVehicles(list) {
-    RC.saveFleet(list);
+    try {
+      localStorage.setItem('sdr-vehicles', JSON.stringify(list));
+    } catch (e) {}
+    if (window.RentalCalc && typeof window.RentalCalc.saveFleet === 'function') {
+      try {
+        window.RentalCalc.saveFleet(list);
+      } catch (e) {}
+    }
   }
 
   function populateVehicleDropdown(selectedId) {
@@ -523,7 +553,8 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
   }
 
   function populateDeliveryPoints() {
-    if (!RC || !RC.loadDeliveryPoints) return;
+    var RC = window.RentalCalc;
+    if (!RC || typeof RC.loadDeliveryPoints !== 'function') return;
     var list = RC.loadDeliveryPoints();
     var dl = $('deliveryPointsList');
     if (!dl) return;
@@ -535,10 +566,12 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
   }
 
   window.addEventListener('storage', function (e) {
-    if (e.key === RC.VEH_STORAGE_KEY) {
+    var vehKey = (window.RentalCalc && window.RentalCalc.VEH_STORAGE_KEY) || 'sdr-vehicles';
+    var locKey = (window.RentalCalc && window.RentalCalc.LOC_STORAGE_KEY) || 'sdr-delivery-points';
+    if (e.key === vehKey) {
       populateVehicleDropdown($('vehiclePreset').value);
     }
-    if (e.key === RC.LOC_STORAGE_KEY) {
+    if (e.key === locKey) {
       populateDeliveryPoints();
     }
   });
