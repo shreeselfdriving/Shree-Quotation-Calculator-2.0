@@ -1069,8 +1069,13 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
     var veh = list.find(function (v) { return v.id === id; });
     if (!veh) return;
     if (confirm('Are you sure you want to delete "' + veh.name + '"?')) {
-      if (RC && RC.deleteVehicle) {
-        RC.deleteVehicle(id);
+      if (window.RentalCalc && typeof window.RentalCalc.deleteVehicle === 'function') {
+        try {
+          window.RentalCalc.deleteVehicle(id);
+        } catch (e) {
+          list = list.filter(function (v) { return v.id !== id; });
+          saveVehicles(list);
+        }
       } else {
         list = list.filter(function (v) { return v.id !== id; });
         saveVehicles(list);
