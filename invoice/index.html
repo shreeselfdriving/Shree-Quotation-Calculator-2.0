@@ -1396,8 +1396,10 @@
     };
 
     var loc = (val('deliveryLocation') || '').trim();
-    if (loc && RentalCalc && RentalCalc.addDeliveryPoint) {
-      RentalCalc.addDeliveryPoint(loc);
+    if (loc && window.RentalCalc && typeof window.RentalCalc.addDeliveryPoint === 'function') {
+      try {
+        window.RentalCalc.addDeliveryPoint(loc);
+      } catch (e) {}
     }
 
     var list = loadInvoices();
