@@ -912,6 +912,11 @@
 
   var $ = function (id) { return document.getElementById(id); };
   var val = function (id) { return ($(id).value || '').trim(); };
+  var esc = function (s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  };
 
   var currentYear = new Date().getFullYear();
   var currentMonth = new Date().getMonth(); // 0-indexed
