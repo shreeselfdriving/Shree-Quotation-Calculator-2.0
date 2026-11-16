@@ -1514,6 +1514,10 @@
     $('bReturnDate').value = next.toISOString().split('T')[0];
     $('bReturnTime').value = '20:00';
 
+    $('bTokenAmount').value = '1000';
+    $('bTotalAmount').value = '';
+    $('bLocation').value = 'Office / Self Pickup';
+
     updateBalanceDisplay();
     $('modalBooking').style.display = 'flex';
   }
@@ -1531,7 +1535,7 @@
     $('bReturnDate').value = b.returnDate || '';
     $('bReturnTime').value = b.returnTime || '20:00';
     $('bTotalAmount').value = b.totalAmount || '';
-    $('bTokenAmount').value = b.tokenAmount || '';
+    $('bTokenAmount').value = b.tokenAmount != null ? b.tokenAmount : '';
     $('bStatus').value = b.status || 'confirmed';
     $('bLocation').value = b.location || '';
     $('bConflictAlert').classList.remove('show');
@@ -1554,9 +1558,11 @@
     }
   });
 
-  /* Save Booking Form */
-  $('formBooking').addEventListener('submit', function (e) {
-    e.preventDefault();
+  /* Save Booking Handler */
+  var isSavingBooking = false;
+  function handleSaveBooking(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    if (isSavingBooking) return;
 
     var name = val('bCustomerName');
     var phone = val('bCustomerPhone');
@@ -1576,47 +1582,66 @@
       return;
     }
 
-    var id = val('bId');
-    var bookings = loadBookings();
+    isSavingBooking = true;
+    try {
+      var id = val('bId');
+      var bookings = loadBookings();
 
-    var bookingData = {
-      id: id || ('bk-' + Date.now()),
-      customerName: name,
-      customerPhone: phone,
-      vehicleName: veh,
-      pickupDate: pDate,
-      pickupTime: val('bPickupTime') || '10:00',
-      returnDate: rDate,
-      returnTime: val('bReturnTime') || '20:00',
-      totalAmount: total,
-      tokenAmount: token,
-      status: val('bStatus') || 'confirmed',
-      location: val('bLocation') || 'Office / Self Pickup',
-      updatedAt: new Date().toISOString()
-    };
+      var bookingData = {
+        id: id || ('bk-' + Date.now()),
+        customerName: name,
+        customerPhone: phone,
+        vehicleName: veh,
+        pickupDate: pDate,
+        pickupTime: val('bPickupTime') || '10:00',
+        returnDate: rDate,
+        returnTime: val('bReturnTime') || '20:00',
+        totalAmount: total,
+        tokenAmount: token,
+        status: val('bStatus') || 'confirmed',
+        location: val('bLocation') || 'Office / Self Pickup',
+        updatedAt: new Date().toISOString()
+      };
 
-    var loc = (val('bLocation') || '').trim();
-    if (loc && RentalCalc && RentalCalc.addDeliveryPoint) {
-      RentalCalc.addDeliveryPoint(loc);
+      var loc = (val('bLocation') || '').trim();
+      if (loc && window.RentalCalc && typeof window.RentalCalc.addDeliveryPoint === 'function') {
+        try {
+          window.RentalCalc.addDeliveryPoint(loc);
+        } catch (err) {}
+      }
+
+      if (id) {
+        var idx = bookings.findIndex(function (b) { return b.id === id; });
+        if (idx !== -1) bookings[idx] = bookingData;
+      } else {
+        bookingData.createdAt = new Date().toISOString();
+        bookings.push(bookingData);
+      }
+
+      saveBookings(bookings);
+      closeModal();
+      refresh();
+
+      // Ask to send confirmation to WhatsApp
+      if (!id) {
+        setTimeout(function () {
+          if (confirm('✅ Advance booking saved successfully!\n\nDo you want to send booking confirmation & token receipt to customer on WhatsApp?')) {
+            sendWhatsAppConfirmation(bookingData);
+          }
+        }, 50);
+      }
+    } catch (saveErr) {
+      console.error('Error saving booking:', saveErr);
+      alert('Error saving booking: ' + (saveErr.message || 'Unknown error'));
+    } finally {
+      setTimeout(function () {
+        isSavingBooking = false;
+      }, 300);
     }
+  }
 
-    if (id) {
-      var idx = bookings.findIndex(function (b) { return b.id === id; });
-      if (idx !== -1) bookings[idx] = bookingData;
-    } else {
-      bookingData.createdAt = new Date().toISOString();
-      bookings.push(bookingData);
-    }
-
-    saveBookings(bookings);
-    closeModal();
-    refresh();
-
-    // Ask to send confirmation to WhatsApp
-    if (!id && confirm('Advance booking saved! Do you want to send booking confirmation & token receipt to customer on WhatsApp?')) {
-      sendWhatsAppConfirmation(bookingData);
-    }
-  });
+  $('btnSaveBooking').addEventListener('click', handleSaveBooking);
+  $('formBooking').addEventListener('submit', handleSaveBooking);
 
   /* View switcher tabs */
   $('tabCalendar').addEventListener('click', function () {
