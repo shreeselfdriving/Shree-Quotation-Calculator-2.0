@@ -989,7 +989,7 @@
     if (b.tokenAmount) $('tokenPaid').value = b.tokenAmount;
 
     // Match vehicle in fleet to auto-populate Reg No, day rate, extra hour rate, deposit
-    var v = RentalCalc.findVehicle(b.vehicleName);
+    var v = findVehicleHelper(b.vehicleName);
     if (v) {
       if ($('invVehicleSelect')) $('invVehicleSelect').value = v.id;
       $('vehReg').value = v.regNo || 'MH 46 BV 1001';
