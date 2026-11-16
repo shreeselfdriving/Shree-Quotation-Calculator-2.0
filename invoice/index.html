@@ -737,6 +737,11 @@
   var $ = function (id) { return document.getElementById(id); };
   var val = function (id) { return ($(id).value || '').trim(); };
   var numVal = function (id) { return parseFloat(val(id)) || 0; };
+  var esc = function (s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  };
 
   /* Format Currency Indian */
   function fmt(n) {
