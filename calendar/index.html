@@ -1524,9 +1524,14 @@
       totalAmount: total,
       tokenAmount: token,
       status: val('bStatus') || 'confirmed',
-      location: val('bLocation'),
+      location: val('bLocation') || 'Office / Self Pickup',
       updatedAt: new Date().toISOString()
     };
+
+    var loc = (val('bLocation') || '').trim();
+    if (loc && RentalCalc && RentalCalc.addDeliveryPoint) {
+      RentalCalc.addDeliveryPoint(loc);
+    }
 
     if (id) {
       var idx = bookings.findIndex(function (b) { return b.id === id; });
