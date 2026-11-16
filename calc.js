@@ -581,7 +581,7 @@
     } catch (e) {}
 
     if (!Array.isArray(stored) || stored.length === 0) {
-      saveDeliveryPoints(DEFAULT_DELIVERY_POINTS);
+      saveDeliveryPoints(DEFAULT_DELIVERY_POINTS, true);
       return DEFAULT_DELIVERY_POINTS.slice();
     }
 
@@ -598,17 +598,23 @@
     });
 
     if (hasChanges) {
-      saveDeliveryPoints(merged);
+      saveDeliveryPoints(merged, true);
     }
     return merged;
   }
 
-  function saveDeliveryPoints(list) {
+  var isSyncingPoints = false;
+  function saveDeliveryPoints(list, silent) {
     try {
       if (typeof localStorage !== 'undefined') {
         localStorage.setItem(LOC_STORAGE_KEY, JSON.stringify(list));
-        if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
-          window.dispatchEvent(new CustomEvent('sdr-delivery-points-updated', { detail: list }));
+        if (!silent && !isSyncingPoints && typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
+          isSyncingPoints = true;
+          try {
+            window.dispatchEvent(new CustomEvent('sdr-delivery-points-updated', { detail: list }));
+          } finally {
+            isSyncingPoints = false;
+          }
         }
       }
     } catch (e) {}
