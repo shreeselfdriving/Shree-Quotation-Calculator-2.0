@@ -1535,8 +1535,16 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
 
   buildTimeSelects();
   populateVehicleDropdown('');
+  populateDeliveryPoints();
   clearVehicleFields();
   applyDefaults();
+
+  $('deliveryLocation').addEventListener('change', function () {
+    var loc = val('deliveryLocation');
+    if (loc && RC && RC.addDeliveryPoint) {
+      RC.addDeliveryPoint(loc);
+    }
+  });
 
   /* URL Query Parameters Pre-population (e.g. from Booking Calendar) */
   try {
