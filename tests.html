@@ -228,6 +228,61 @@
           const text = RentalCalc.buildText(view);
           return text.includes("Panvel Railway Station") && text.includes("Delivery Location");
         }
+      },
+      {
+        name: "Add New Vehicle: saves custom vehicle with all fields and appears in fleet",
+        run: () => {
+          const initialFleet = RentalCalc.loadFleet();
+          const newVeh = RentalCalc.addVehicle({
+            name: "Toyota Innova Crysta ZXi",
+            regNo: "MH 46 BV 7788",
+            fuel: "Diesel",
+            seats: "7 Seater",
+            ratePerDay: "4200",
+            extraHourRate: "300"
+          });
+          const updatedFleet = RentalCalc.loadFleet();
+          const found = RentalCalc.findVehicle("Toyota Innova Crysta ZXi");
+          // cleanup test vehicle
+          if (newVeh && newVeh.id) RentalCalc.deleteVehicle(newVeh.id);
+          return newVeh && found && found.regNo === "MH 46 BV 7788" && found.ratePerDay === "4200" && updatedFleet.length === initialFleet.length + 1;
+        }
+      },
+      {
+        name: "Vehicle Deletion: permanently deletes vehicle and does not resurrect on subsequent loads",
+        run: () => {
+          const tempVeh = RentalCalc.addVehicle({
+            name: "Temporary Test Car",
+            ratePerDay: "1500"
+          });
+          const beforeDelete = RentalCalc.loadFleet().length;
+          RentalCalc.deleteVehicle(tempVeh.id);
+          const afterDelete = RentalCalc.loadFleet().length;
+          // Reload fleet again to verify no resurrection
+          const reloadFleet = RentalCalc.loadFleet().length;
+          return afterDelete === beforeDelete - 1 && reloadFleet === afterDelete;
+        }
+      },
+      {
+        name: "Delivery Points: seeds default delivery points across entire software",
+        run: () => {
+          const points = RentalCalc.loadDeliveryPoints();
+          return Array.isArray(points) && points.length >= 6 &&
+                 points.includes("Panvel Railway Station") &&
+                 points.includes("Office / Self Pickup (Khanda Colony, Panvel)");
+        }
+      },
+      {
+        name: "Delivery Points: saves new delivery location and deduplicates case-insensitively",
+        run: () => {
+          const countBefore = RentalCalc.loadDeliveryPoints().length;
+          RentalCalc.addDeliveryPoint("Navi Mumbai Central Park");
+          const countAfter = RentalCalc.loadDeliveryPoints().length;
+          // Duplicate attempt with different casing
+          RentalCalc.addDeliveryPoint("navi mumbai central park");
+          const countDup = RentalCalc.loadDeliveryPoints().length;
+          return countAfter === countBefore + 1 && countDup === countAfter;
+        }
       }
     ];
 
