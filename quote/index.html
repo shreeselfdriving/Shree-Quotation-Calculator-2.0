@@ -1008,6 +1008,7 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
 
     saveVehicles(list);
     populateVehicleDropdown(id);
+    $('vehiclePreset').value = id;
     showVehMsg('Saved parameters for ' + veh.name + '!', 'success');
   });
 
@@ -1021,8 +1022,12 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
     var veh = list.find(function (v) { return v.id === id; });
     if (!veh) return;
     if (confirm('Are you sure you want to delete "' + veh.name + '"?')) {
-      list = list.filter(function (v) { return v.id !== id; });
-      saveVehicles(list);
+      if (RC && RC.deleteVehicle) {
+        RC.deleteVehicle(id);
+      } else {
+        list = list.filter(function (v) { return v.id !== id; });
+        saveVehicles(list);
+      }
       populateVehicleDropdown('');
       clearVehicleFields();
       showVehMsg('Deleted ' + veh.name, 'info');
@@ -1032,6 +1037,7 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
 
   function openAddModal() {
     $('newVehName').value = '';
+    if ($('newVehReg')) $('newVehReg').value = '';
     $('newVehFuel').value = 'Petrol';
     $('newVehSeats').value = '5 Seater';
     $('newVehRate').value = '1500';
@@ -1060,49 +1066,80 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
     }
   });
 
+  var isSubmittingVeh = false;
   $('btnConfirmAddVehicle').addEventListener('click', function () {
+    if (isSubmittingVeh) return;
     var name = ($('newVehName').value || '').trim();
     if (!name) {
       alert('Please enter a vehicle name.');
       $('newVehName').focus();
       return;
     }
-    var newId = 'veh_' + Date.now();
-    var newVeh = {
-      id: newId,
-      name: name,
-      fuel: ($('newVehFuel').value || 'Petrol').trim(),
-      seats: ($('newVehSeats').value || '5 Seater').trim(),
-      ratePerDay: ($('newVehRate').value || '1500').trim(),
-      extraHourRate: ($('newVehExtraHour').value || '100').trim(),
-      kmPerDay: ($('newVehKM').value || '300').trim(),
-      includedKM: '',
-      extraKMRate: ($('newVehExtraKM').value || '8').trim(),
-      token: ($('newVehToken').value || '1000').trim(),
-      deposit: ($('newVehDeposit').value || '4000').trim(),
-      deliveryCharges: ($('newVehDelivery').value || '0').trim(),
-      washingCharges: ($('newVehWashing').value || '0').trim()
-    };
-    var list = loadVehicles();
-    list.push(newVeh);
-    saveVehicles(list);
-    closeAddModal();
-    populateVehicleDropdown(newId);
-    $('vehName').value = newVeh.name;
-    $('vehFuel').value = newVeh.fuel;
-    $('vehSeats').value = newVeh.seats;
-    $('ratePerDay').value = newVeh.ratePerDay;
-    $('extraHourRate').value = newVeh.extraHourRate;
-    $('kmPerDay').value = newVeh.kmPerDay;
-    isKmManuallyEdited = false;
-    autoCalcKM();
-    $('extraKMRate').value = newVeh.extraKMRate;
-    $('token').value = newVeh.token;
-    $('deposit').value = newVeh.deposit;
-    $('deliveryCharges').value = newVeh.deliveryCharges;
-    $('washingCharges').value = newVeh.washingCharges;
-    showVehMsg('Added ' + newVeh.name + '!', 'success');
-    update();
+    var rateVal = ($('newVehRate').value || '').trim();
+    if (!rateVal || isNaN(parseFloat(rateVal)) || parseFloat(rateVal) <= 0) {
+      alert('Please enter a valid rate per day.');
+      $('newVehRate').focus();
+      return;
+    }
+
+    isSubmittingVeh = true;
+    var confirmBtn = $('btnConfirmAddVehicle');
+    confirmBtn.disabled = true;
+
+    try {
+      var newVehData = {
+        name: name,
+        regNo: ($('newVehReg') ? $('newVehReg').value : '') || '',
+        fuel: ($('newVehFuel').value || 'Petrol').trim(),
+        seats: ($('newVehSeats').value || '5 Seater').trim(),
+        ratePerDay: rateVal,
+        extraHourRate: ($('newVehExtraHour').value || '100').trim(),
+        kmPerDay: ($('newVehKM').value || '300').trim(),
+        includedKM: '',
+        extraKMRate: ($('newVehExtraKM').value || '8').trim(),
+        token: ($('newVehToken').value || '1000').trim(),
+        deposit: ($('newVehDeposit').value || '4000').trim(),
+        deliveryCharges: ($('newVehDelivery').value || '0').trim(),
+        washingCharges: ($('newVehWashing').value || '0').trim()
+      };
+
+      var saved = (RC && RC.addVehicle) ? RC.addVehicle(newVehData) : null;
+      var newId = saved ? saved.id : ('veh_' + Date.now());
+
+      if (!saved) {
+        newVehData.id = newId;
+        var list = loadVehicles();
+        list.push(newVehData);
+        saveVehicles(list);
+        saved = newVehData;
+      }
+
+      closeAddModal();
+      populateVehicleDropdown(newId);
+      $('vehiclePreset').value = newId;
+
+      $('vehName').value = saved.name;
+      $('vehFuel').value = saved.fuel;
+      $('vehSeats').value = saved.seats;
+      $('ratePerDay').value = saved.ratePerDay;
+      $('extraHourRate').value = saved.extraHourRate;
+      $('kmPerDay').value = saved.kmPerDay;
+      isKmManuallyEdited = false;
+      autoCalcKM();
+      $('extraKMRate').value = saved.extraKMRate;
+      $('token').value = saved.token;
+      $('deposit').value = saved.deposit;
+      $('deliveryCharges').value = saved.deliveryCharges;
+      $('washingCharges').value = saved.washingCharges;
+      showVehMsg('Added ' + saved.name + ' successfully!', 'success');
+      update();
+    } catch (err) {
+      console.error('Error adding vehicle:', err);
+      alert('Error adding vehicle: ' + (err.message || 'Unknown error'));
+    } finally {
+      isSubmittingVeh = false;
+      confirmBtn.disabled = false;
+    }
   });
 
   /* Auto KM & Manual Edit Event Listeners */
