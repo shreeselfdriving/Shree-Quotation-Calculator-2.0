@@ -1701,7 +1701,7 @@
         if (cName) $('bCustomerName').value = cName;
         if (p.get('customerPhone')) $('bCustomerPhone').value = p.get('customerPhone');
         if (vName) {
-          var v = RentalCalc.findVehicle(vName);
+          var v = findVehicleHelper(vName);
           if (v) {
             $('bVehicleSelect').value = v.id;
             $('bVehicleName').value = v.name;
