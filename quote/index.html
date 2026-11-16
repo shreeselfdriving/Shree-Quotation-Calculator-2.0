@@ -1155,8 +1155,15 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
         washingCharges: ($('newVehWashing').value || '0').trim()
       };
 
-      var saved = (RC && RC.addVehicle) ? RC.addVehicle(newVehData) : null;
-      var newId = saved ? saved.id : ('veh_' + Date.now());
+      var saved = null;
+      if (window.RentalCalc && typeof window.RentalCalc.addVehicle === 'function') {
+        try {
+          saved = window.RentalCalc.addVehicle(newVehData);
+        } catch (e) {
+          console.warn('RentalCalc.addVehicle error:', e);
+        }
+      }
+      var newId = (saved && saved.id) ? saved.id : ('veh_' + Date.now());
 
       if (!saved) {
         newVehData.id = newId;
