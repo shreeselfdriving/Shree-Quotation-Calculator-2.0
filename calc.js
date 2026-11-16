@@ -657,6 +657,7 @@
     deleteVehicle: deleteVehicle,
     findVehicle: findVehicle,
     cloneVehicle: cloneVehicle,
+    esc: esc,
     loadDeliveryPoints: loadDeliveryPoints,
     saveDeliveryPoints: saveDeliveryPoints,
     addDeliveryPoint: addDeliveryPoint
