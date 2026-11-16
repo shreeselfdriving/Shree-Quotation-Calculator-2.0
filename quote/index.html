@@ -517,16 +517,38 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
       html += '<option value="' + esc(v.id) + '"' + isSel + '>' + esc(v.name) + sub + '</option>';
     });
     sel.innerHTML = html;
+    if (selectedId) {
+      sel.value = selectedId;
+    }
+  }
+
+  function populateDeliveryPoints() {
+    if (!RC || !RC.loadDeliveryPoints) return;
+    var list = RC.loadDeliveryPoints();
+    var dl = $('deliveryPointsList');
+    if (!dl) return;
+    var html = '';
+    list.forEach(function (loc) {
+      html += '<option value="' + esc(loc) + '">';
+    });
+    dl.innerHTML = html;
   }
 
   window.addEventListener('storage', function (e) {
     if (e.key === RC.VEH_STORAGE_KEY) {
       populateVehicleDropdown($('vehiclePreset').value);
     }
+    if (e.key === RC.LOC_STORAGE_KEY) {
+      populateDeliveryPoints();
+    }
   });
 
   window.addEventListener('sdr-fleet-updated', function () {
     populateVehicleDropdown($('vehiclePreset').value);
+  });
+
+  window.addEventListener('sdr-delivery-points-updated', function () {
+    populateDeliveryPoints();
   });
 
   function showVehMsg(msg, type) {
