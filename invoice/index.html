@@ -1328,6 +1328,11 @@
       savedAt: new Date().toISOString()
     };
 
+    var loc = (val('deliveryLocation') || '').trim();
+    if (loc && RentalCalc && RentalCalc.addDeliveryPoint) {
+      RentalCalc.addDeliveryPoint(loc);
+    }
+
     var list = loadInvoices();
     var existingIdx = list.findIndex(function (item) { return item.invNumber === invNum; });
     if (existingIdx !== -1) {
