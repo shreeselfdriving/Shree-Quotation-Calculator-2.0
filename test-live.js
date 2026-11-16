@@ -4,7 +4,7 @@ const os = require('os');
 const chrome = spawn('C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe', [
   '--headless=new',
   '--remote-debugging-port=9225',
-  '--user-data-dir=' + os.tmpdir() + '\\chrome-test-profile',
+  '--user-data-dir=' + os.tmpdir() + '\\chrome-test-profile-' + Date.now(),
   'https://shreeselfdriving.github.io/Shree-Quotation-Calculator-2.0/quote/'
 ]);
 
@@ -16,16 +16,16 @@ setTimeout(async () => {
     if (!tab) {
       console.log('Target tab not found. Found:', tabs.map(t => t.url));
       chrome.kill();
-      return;
+      process.exit(1);
     }
     const ws = new WebSocket(tab.webSocketDebuggerUrl);
-    ws.on('open', () => {
+    ws.addEventListener('open', () => {
       let callId = 1;
       function send(method, params = {}) {
         ws.send(JSON.stringify({ id: callId++, method, params }));
       }
-      ws.on('message', (data) => {
-        const msg = JSON.parse(data.toString());
+      ws.addEventListener('message', (event) => {
+        const msg = JSON.parse(event.data);
         if (msg.method === 'Runtime.consoleAPICalled') {
           console.log('[BROWSER CONSOLE]', msg.params.type, msg.params.args.map(a => a.value));
         }
@@ -73,4 +73,4 @@ setTimeout(async () => {
     chrome.kill();
     process.exit(1);
   }
-}, 3000);
+}, 3500);
