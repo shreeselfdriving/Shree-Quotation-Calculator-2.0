@@ -2619,9 +2619,24 @@ textarea {
   border: 1px solid #fcd34d !important;
 }
 
+[data-theme="light"] .km-badge {
+  background: #fde68a !important;
+  color: #92400e !important;
+}
+
+[data-theme="light"] .km-badge.total {
+  background: #d1fae5 !important;
+  color: #065f46 !important;
+}
+
 [data-theme="light"] .km-part-day input {
   color: #92400e !important;
   font-weight: 800 !important;
+}
+
+[data-theme="light"] .km-part-total {
+  background: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
 }
 
 [data-theme="light"] .km-part-total input {
@@ -2635,7 +2650,7 @@ textarea {
 }
 
 [data-theme="light"] .km-arrow {
-  color: #64748b !important;
+  color: #475569 !important;
   font-weight: 800 !important;
 }
 
