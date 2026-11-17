@@ -1004,6 +1004,43 @@
     });
   };
 
+  function addTouchClick(element, handler) {
+    if (!element) return;
+    var startX = 0, startY = 0, hasMoved = false, lastTrigger = 0;
+    element.addEventListener('touchstart', function (e) {
+      if (e.touches && e.touches.length === 1) {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        hasMoved = false;
+      }
+    }, { passive: true });
+
+    element.addEventListener('touchmove', function (e) {
+      if (e.touches && e.touches.length === 1) {
+        var dx = Math.abs(e.touches[0].clientX - startX);
+        var dy = Math.abs(e.touches[0].clientY - startY);
+        if (dx > 10 || dy > 10) hasMoved = true;
+      }
+    }, { passive: true });
+
+    element.addEventListener('touchend', function (e) {
+      if (!hasMoved) {
+        var now = Date.now();
+        if (now - lastTrigger < 350) return;
+        lastTrigger = now;
+        e.preventDefault();
+        handler.call(element, e);
+      }
+    }, { passive: false });
+
+    element.addEventListener('click', function (e) {
+      var now = Date.now();
+      if (now - lastTrigger < 350) return;
+      lastTrigger = now;
+      handler.call(element, e);
+    });
+  }
+
   var currentYear = new Date().getFullYear();
   var currentMonth = new Date().getMonth(); // 0-indexed
   var activeView = 'calendar'; // 'calendar' | 'list'
@@ -1117,7 +1154,7 @@
   }
 
   /* Populate Vehicle Dropdown in Modal and Filter Bar */
-  function populateVehicleSelect() {
+  function populateVehicleSelect(selectedId) {
     var list = loadVehicles();
     var sel = $('bVehicleSelect');
     if (sel) {
@@ -1126,8 +1163,15 @@
         var opt = document.createElement('option');
         opt.value = v.id;
         opt.textContent = v.name + (v.fuel ? ' (' + v.fuel + ')' : '') + (v.ratePerDay ? ' - ₹' + v.ratePerDay + '/day' : '') + (v.regNo ? ' [' + v.regNo + ']' : '');
+        if (selectedId && (v.id === selectedId || v.name === selectedId)) opt.selected = true;
         sel.appendChild(opt);
       });
+      var addOpt = document.createElement('option');
+      addOpt.value = '__add_new_vehicle__';
+      addOpt.textContent = '➕ + Add New Vehicle to Fleet...';
+      addOpt.style.fontWeight = 'bold';
+      addOpt.style.color = 'var(--accent-gold)';
+      sel.appendChild(addOpt);
     }
 
     var filterVeh = $('filterVehicle');
@@ -1144,6 +1188,10 @@
 
   $('bVehicleSelect').addEventListener('change', function () {
     var idOrName = this.value;
+    if (idOrName === '__add_new_vehicle__') {
+      openAddVehicleModal();
+      return;
+    }
     if (idOrName) {
       var v = findVehicleHelper(idOrName);
       if (v) {
