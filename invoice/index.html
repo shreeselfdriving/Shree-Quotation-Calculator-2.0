@@ -1309,14 +1309,14 @@
       lines.push('📊 *CGST (' + c.cgstRate + '%) + SGST (' + c.sgstRate + '%):* ' + fmt(c.totalTax));
     }
     if (c.deposit > 0) {
-      lines.push('🛡️ *Refundable Deposit:* ' + fmt(c.deposit));
+      lines.push('🛡️ *Add: Refundable Security Deposit:* +' + fmt(c.deposit));
     }
     if (c.token > 0) {
-      lines.push('💳 *Less Advance Token Received:* -' + fmt(c.token));
+      lines.push('💳 *Less: Token / Advance Received:* -' + fmt(c.token));
     }
 
     lines.push('━━━━━━━━━━━━━━━━━━━━');
-    lines.push('✅ *NET PAYABLE / RECEIVED:* ' + fmt(c.netPayable));
+    lines.push('✅ *BALANCE DUE / NET PAYABLE:* ' + fmt(c.netPayable));
     lines.push('📝 *Status:* ' + (val('paymentStatus') || 'Paid in Full'));
     lines.push('💳 *Pay via UPI:* 9768010603@upi');
     lines.push('━━━━━━━━━━━━━━━━━━━━');
