@@ -949,6 +949,128 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
 
   var lastText = '';
 
+  /* Build WhatsApp & Text message ensuring 9-point Charges Breakdown */
+  function generateQuotationText(inputs, calc, view) {
+    if (RC && typeof RC.buildText === 'function') {
+      var txt = RC.buildText(view);
+      if (txt && txt.indexOf('1. Rental Charges') !== -1 && txt.indexOf('9. Balance Due') !== -1) {
+        return txt;
+      }
+    }
+
+    var fmtINR = RC.formatINR;
+    var L = [];
+    var biz = (inputs.bizName || 'SHREE SELF DRIVING & CAR RENTAL SERVICE').toUpperCase();
+    var sub = (inputs.vehType || 'SELF DRIVE').toUpperCase();
+    L.push('🚗 *' + biz + '*');
+    L.push('*' + sub + ' CAR RENTAL QUOTATION*');
+    if (inputs.validity) {
+      L.push('⏰ *Quotation Validity:* ' + inputs.validity);
+    }
+    L.push('━━━━━━━━━━━━━━━━━━━━');
+
+    if (inputs.customerName) {
+      L.push('');
+      L.push('*🧾 CUSTOMER DETAILS*');
+      L.push('• *Customer Name:* ' + inputs.customerName);
+      if (inputs.quotationDate) L.push('• *Quotation Date:* ' + RC.formatDateOnly(inputs.quotationDate));
+      if (inputs.validity) L.push('• *Quotation Validity:* ' + inputs.validity);
+    }
+
+    L.push('');
+    L.push('*🚘 VEHICLE DETAILS*');
+    L.push('• *Vehicle:* ' + (inputs.vehName || 'Self Drive Car'));
+    if (inputs.vehFuel) L.push('• *Fuel Type:* ' + inputs.vehFuel);
+    L.push('• *Rental Type:* ' + (inputs.vehType || 'Self Drive'));
+    if (inputs.vehSeats) L.push('• *Seating Capacity:* ' + inputs.vehSeats);
+
+    L.push('');
+    L.push('*📅 TRIP SCHEDULE*');
+    L.push('• *🟢 Pickup:* ' + RC.formatDateTime(inputs.pickup));
+    L.push('• *🔴 Return:* ' + RC.formatDateTime(inputs.return));
+    L.push('• *📍 Delivery Location:* ' + (inputs.deliveryLocation || 'Office / Self Pickup'));
+
+    L.push('');
+    L.push('*⏳ RENTAL DURATION*');
+    L.push('• *Total Duration: ' + RC.formatDuration(calc.days, calc.extraHours) + '*');
+    L.push('• *Total Rental Days:* ' + calc.days + (calc.days === 1 ? ' Day' : ' Days'));
+    L.push('• *Extra Hours:* ' + (calc.extraHours > 0 ? calc.extraHours + (calc.extraHours === 1 ? ' Hour' : ' Hours') : 'Nil'));
+
+    L.push('');
+    L.push('*🛣️ KM PACKAGE*');
+    var kmStr = calc.includedKM > 0
+      ? (calc.kmPerDay > 0 && calc.days > 0 && calc.includedKM === calc.kmPerDay * calc.days
+          ? calc.includedKM + ' KM (' + calc.kmPerDay + ' KM/day × ' + calc.days + ' Days)'
+          : calc.includedKM + ' KM')
+      : 'Unlimited';
+    L.push('• *Included KM Limit:* ' + kmStr);
+    L.push('• *Extra KM Charges:* ' + fmtINR(calc.extraKMRate) + ' Per KM');
+    L.push('• *Extra Hour Charges:* ' + fmtINR(calc.extraHourRate) + ' Per Hour');
+
+    L.push('');
+    L.push('*💰 CHARGES BREAKDOWN*');
+    var gross = calc.grossRental != null ? calc.grossRental : calc.totalRental;
+    var net = calc.netRental != null ? calc.netRental : (calc.totalRental - calc.discount);
+    var totalPayableAmt = calc.totalPayableAmount != null ? calc.totalPayableAmount : (net + calc.deposit + calc.deliveryCharges + calc.washingCharges);
+    var balDue = calc.balanceDue != null ? calc.balanceDue : calc.payable;
+    var pct = calc.discountType === 'percent' ? ' (' + calc.discountValue + '%)' : '';
+
+    var extraHrsLabel = calc.extraHours > 0
+      ? '2. Extra Hours (' + calc.extraHours + ' × ' + fmtINR(calc.extraHourRate) + '): ' + fmtINR(calc.extraHourCharge)
+      : (calc.extraHourRate > 0 ? '2. Extra Hours (0 × ' + fmtINR(calc.extraHourRate) + '): ' + fmtINR(0) : '2. Extra Hours (0 hrs): ' + fmtINR(0));
+
+    L.push('1. Rental Charges (' + fmtINR(calc.ratePerDay) + ' × ' + calc.days + ' Days): ' + fmtINR(calc.rental));
+    L.push(extraHrsLabel);
+    L.push('3. Gross Rental Amount: *' + fmtINR(gross) + '*');
+    L.push('4. Less: Offer / Discount' + (calc.discount > 0 ? pct : '') + ': −' + fmtINR(calc.discount));
+    L.push('5. Net Rental Amount: *' + fmtINR(net) + '*');
+    L.push('6. Add: Refundable Security Deposit: +' + fmtINR(calc.deposit));
+
+    if (calc.deliveryCharges > 0) {
+      L.push('• Add: Delivery Charges: +' + fmtINR(calc.deliveryCharges));
+    }
+    if (calc.washingCharges > 0) {
+      L.push('• Add: Car Washing Charges: +' + fmtINR(calc.washingCharges));
+    }
+
+    L.push('7. Total Payable Amount: *' + fmtINR(totalPayableAmt) + '*');
+    L.push('8. Less: Token / Advance Received: −' + fmtINR(calc.token));
+    L.push('9. Balance Due: *' + fmtINR(balDue) + '*');
+
+    L.push('');
+    L.push('━━━━━━━━━━━━━━━━━━━━');
+    L.push('✅ *9. BALANCE DUE AT HANDOVER: ' + fmtINR(balDue) + '*');
+    L.push('━━━━━━━━━━━━━━━━━━━━');
+
+    var notes = (inputs.quoteNotes || '').split('\n').map(function (l) { return l.trim(); }).filter(Boolean);
+    if (!notes.length) {
+      notes = [
+        'FASTag toll and parking charges as per actuals.',
+        'Original driving licence and Aadhaar card mandatory at vehicle pickup.',
+        'Vehicle inspection and fuel check will be conducted mutually at handover.'
+      ];
+    }
+    L.push('');
+    L.push('📝 *IMPORTANT NOTES & INSTRUCTIONS:*');
+    notes.forEach(function (n) { L.push('• ' + n); });
+
+    var terms = (view && view.terms && view.terms.length) ? view.terms : [
+      'Remaining rental amount and security deposit must be paid at vehicle handover.',
+      'The ' + fmtINR(calc.deposit) + ' security deposit is refundable after vehicle return and inspection, subject to applicable deductions.',
+      'The package includes ' + calc.includedKM + ' KM. Extra KM will be charged at ' + fmtINR(calc.extraKMRate) + ' per KM.',
+      'Extra hours are charged at ' + fmtINR(calc.extraHourRate) + ' per hour.'
+    ];
+    L.push('');
+    L.push('*📌 TERMS & CONDITIONS*');
+    terms.forEach(function (t) { L.push('• ' + t); });
+
+    L.push('');
+    L.push('🙏 *Thank you for choosing ' + (inputs.bizName || 'SHREE SELF DRIVING & CAR RENTAL SERVICE') + '!*');
+    L.push('Have a safe and comfortable drive! 🚗');
+
+    return L.join('\n');
+  }
+
   function update() {
     autoCalcKM();
     var inputs = readInputs();
