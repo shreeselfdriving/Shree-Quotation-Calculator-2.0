@@ -928,14 +928,15 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
       var colStyle = color ? ' style="color:' + color + ';"' : '';
       return '<div class="chip"><div class="k">' + k + '</div><div class="v mono-nums"' + colStyle + '>' + esc(ok ? v : '\u2014') + '</div></div>';
     };
+    var balDue = calc.balanceDue != null ? calc.balanceDue : calc.payable;
     $('summary').innerHTML =
       chip('Duration', calc.days + 'd' + (calc.extraHours > 0 ? ' ' + calc.extraHours + 'h' : '')) +
-      chip('Days', calc.days) +
-      chip('Extra hrs', calc.extraHours) +
-      chip('Payable', RC.formatINR(calc.payable), 'var(--emerald)');
+      chip('Gross Rental', RC.formatINR(calc.grossRental || calc.totalRental)) +
+      chip('Net Rental', RC.formatINR(calc.netRental != null ? calc.netRental : (calc.totalRental - calc.discount))) +
+      chip('Balance Due', RC.formatINR(balDue), 'var(--emerald)');
 
     var mobAmt = $('mobPayableAmt');
-    if (mobAmt) mobAmt.textContent = ok ? RC.formatINR(calc.payable) : '\u2014';
+    if (mobAmt) mobAmt.textContent = ok ? RC.formatINR(balDue) : '\u2014';
   }
 
   function errorCard(message) {
