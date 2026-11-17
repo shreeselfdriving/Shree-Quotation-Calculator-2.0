@@ -940,6 +940,7 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
   var lastText = '';
 
   function update() {
+    autoCalcKM();
     var inputs = readInputs();
     var hasDates = Boolean(inputs.pickup && inputs.return);
     var hasVeh = Boolean(inputs.vehName);
