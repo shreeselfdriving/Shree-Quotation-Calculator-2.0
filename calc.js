@@ -214,21 +214,31 @@
     if (inputs.quotationDate) customer.push({ label: 'Quotation Date', value: formatDateOnly(inputs.quotationDate) });
     if (inputs.validity) customer.push({ label: 'Quotation Validity', value: inputs.validity });
 
+    var gross = calc.grossRental != null ? calc.grossRental : calc.totalRental;
+    var net = calc.netRental != null ? calc.netRental : (calc.totalRental - calc.discount);
+    var totalPayableAmt = calc.totalPayableAmount != null ? calc.totalPayableAmount : (net + calc.deposit + calc.deliveryCharges + calc.washingCharges);
+    var balDue = calc.balanceDue != null ? calc.balanceDue : calc.payable;
+    var pct = calc.discountType === 'percent' ? ' (' + calc.discountValue + '%)' : '';
+
     var charges = [
-      { label: 'Rental Charges (' + formatINR(calc.ratePerDay) + ' \u00D7 ' + calc.days + ' Days)', value: formatINR(calc.rental) }
+      { label: '1. Rental Charges (' + formatINR(calc.ratePerDay) + ' \u00D7 ' + calc.days + ' Days)', value: formatINR(calc.rental) },
+      { label: '2. Extra Hours (' + calc.extraHours + ' \u00D7 ' + formatINR(calc.extraHourRate) + ')', value: formatINR(calc.extraHourCharge) },
+      { label: '3. Gross Rental Amount', value: formatINR(gross), bold: true },
+      { label: '4. Less: Offer / Discount' + (calc.discount > 0 ? pct : ''), value: '\u2212' + formatINR(calc.discount), credit: true },
+      { label: '5. Net Rental Amount', value: formatINR(net), bold: true },
+      { label: '6. Add: Refundable Security Deposit', value: '+' + formatINR(calc.deposit) }
     ];
-    if (calc.extraHours > 0) {
-      charges.push({ label: 'Extra Hours (' + calc.extraHours + ' \u00D7 ' + formatINR(calc.extraHourRate) + ')', value: formatINR(calc.extraHourCharge) });
+
+    if (calc.deliveryCharges > 0) {
+      charges.push({ label: '+ Add: Delivery Charges', value: '+' + formatINR(calc.deliveryCharges) });
     }
-    charges.push({ label: 'Total Rental Amount', value: formatINR(calc.totalRental), bold: true });
-    if (calc.discount > 0) {
-      var pct = calc.discountType === 'percent' ? ' (' + calc.discountValue + '%)' : '';
-      charges.push({ label: 'Less Offer / Discount' + pct, value: '\u2212' + formatINR(calc.discount), credit: true });
+    if (calc.washingCharges > 0) {
+      charges.push({ label: '+ Add: Car Washing Charges', value: '+' + formatINR(calc.washingCharges) });
     }
-    if (calc.deposit > 0) charges.push({ label: 'Refundable Security Deposit', value: formatINR(calc.deposit) });
-    if (calc.deliveryCharges > 0) charges.push({ label: 'Delivery Charges', value: formatINR(calc.deliveryCharges) });
-    if (calc.washingCharges > 0) charges.push({ label: 'Car Washing Charges', value: formatINR(calc.washingCharges) });
-    if (calc.token > 0) charges.push({ label: 'Less Token / Advance Received', value: '\u2212' + formatINR(calc.token), credit: true });
+
+    charges.push({ label: '7. Total Payable Amount', value: formatINR(totalPayableAmt), bold: true });
+    charges.push({ label: '8. Less: Token / Advance Received', value: '\u2212' + formatINR(calc.token), credit: true });
+    charges.push({ label: '9. Balance Due', value: formatINR(balDue), bold: true, highlight: true });
 
     var sections = [
       { title: '\uD83D\uDE98 VEHICLE DETAILS', rows: [
@@ -265,7 +275,7 @@
       validity: inputs.validity || '24 Hours',
       notes: (inputs.quoteNotes || '').split('\n').map(function (l) { return l.trim(); }).filter(Boolean),
       sections: sections,
-      payable: { label: 'TOTAL PAYABLE AT HANDOVER', value: formatINR(calc.payable) },
+      payable: { label: '9. BALANCE DUE AT HANDOVER', value: formatINR(balDue) },
       termsTitle: '\uD83D\uDCCC TERMS & CONDITIONS',
       terms: termLines(inputs, calc),
       phone: '9768010603'
@@ -286,12 +296,21 @@
       L.push('');
       L.push('*' + sec.title + '*');
       sec.rows.forEach(function (r) {
-        if (r.bold) {
-          L.push('\u2022 *' + r.label + ': ' + r.value + '*');
-        } else if (r.credit) {
-          L.push('\u2022 *' + r.label + ':* ~' + r.value + '~');
+        var isNumbered = /^\d+\./.test(r.label);
+        if (isNumbered) {
+          if (r.bold) {
+            L.push(r.label + ': *' + r.value + '*');
+          } else {
+            L.push(r.label + ': ' + r.value);
+          }
         } else {
-          L.push('\u2022 *' + r.label + ':* ' + r.value);
+          if (r.bold) {
+            L.push('\u2022 *' + r.label + ': ' + r.value + '*');
+          } else if (r.credit) {
+            L.push('\u2022 *' + r.label + ':* ~' + r.value + '~');
+          } else {
+            L.push('\u2022 *' + r.label + ':* ' + r.value);
+          }
         }
       });
     });
