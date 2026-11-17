@@ -213,17 +213,26 @@
             <label for="kmPerDay">3. Included KM limit</label>
             <span id="kmHint" class="field-pill accent" title="Click to edit Per-Day KM limit" style="cursor:pointer;">300 km/d &times; days</span>
           </div>
-          <div class="km-composite-input">
-            <div class="km-part-day" id="wrapKmDay" title="Per-Day KM Limit (Default 300 km/day - Editable)">
-              <span class="km-badge">Per Day</span>
-              <input type="number" id="kmPerDay" min="0" step="1" value="300" title="KM Per Day (Default 300 KM/day)" placeholder="300" aria-label="KM Limit Per Day">
-              <span class="km-unit">km/d</span>
+          <div class="km-split-grid">
+            <div class="km-col">
+              <div class="km-col-header">
+                <label for="kmPerDay" class="km-sublabel">Per Day Limit</label>
+                <span class="km-pill-sub">Editable</span>
+              </div>
+              <div class="input-with-suffix">
+                <input type="number" id="kmPerDay" min="0" step="1" value="300" placeholder="300" aria-label="Per Day KM Limit">
+                <span class="input-suffix">km/d</span>
+              </div>
             </div>
-            <span class="km-arrow" id="kmMultiplySign">&times; days =</span>
-            <div class="km-part-total" id="wrapKmTotal" title="Total Included KM (Auto-calculated as Per-day KM × days, fully editable)">
-              <span class="km-badge total">Total</span>
-              <input type="number" id="includedKM" min="0" step="1" value="" placeholder="Auto KM" aria-label="Total Included KM">
-              <span class="km-unit">KM</span>
+            <div class="km-col">
+              <div class="km-col-header">
+                <label for="includedKM" class="km-sublabel">Total Package</label>
+                <span class="km-pill-sub green" id="kmCalcTag">Auto Calc</span>
+              </div>
+              <div class="input-with-suffix">
+                <input type="number" id="includedKM" min="0" step="1" value="" placeholder="Auto KM" aria-label="Total Included KM">
+                <span class="input-suffix">KM</span>
+              </div>
             </div>
           </div>
         </div>
