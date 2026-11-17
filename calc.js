@@ -220,9 +220,13 @@
     var balDue = calc.balanceDue != null ? calc.balanceDue : calc.payable;
     var pct = calc.discountType === 'percent' ? ' (' + calc.discountValue + '%)' : '';
 
+    var extraHoursLabel = calc.extraHours > 0
+      ? '2. Extra Hours (' + calc.extraHours + ' \u00D7 ' + formatINR(calc.extraHourRate) + ')'
+      : (calc.extraHourRate > 0 ? '2. Extra Hours (0 \u00D7 ' + formatINR(calc.extraHourRate) + ')' : '2. Extra Hours (0 hrs)');
+
     var charges = [
       { label: '1. Rental Charges (' + formatINR(calc.ratePerDay) + ' \u00D7 ' + calc.days + ' Days)', value: formatINR(calc.rental) },
-      { label: '2. Extra Hours (' + calc.extraHours + ' \u00D7 ' + formatINR(calc.extraHourRate) + ')', value: formatINR(calc.extraHourCharge) },
+      { label: extraHoursLabel, value: formatINR(calc.extraHourCharge) },
       { label: '3. Gross Rental Amount', value: formatINR(gross), bold: true },
       { label: '4. Less: Offer / Discount' + (calc.discount > 0 ? pct : ''), value: '\u2212' + formatINR(calc.discount), credit: true },
       { label: '5. Net Rental Amount', value: formatINR(net), bold: true },
