@@ -410,6 +410,8 @@ button, input, select, textarea {
   transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: var(--shadow-3d-btn);
   user-select: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .btn:hover {
