@@ -1277,6 +1277,17 @@ textarea {
   font-weight: 700;
 }
 
+.q-ref-trow.highlight {
+  background: #ecfdf5;
+  color: #065f46;
+  font-weight: 800;
+}
+
+.q-ref-trow.highlight .q-val {
+  color: #065f46;
+  font-weight: 800;
+}
+
 .q-ref-payable-bar {
   background: linear-gradient(145deg, #090e1a 0%, #1e293b 100%);
   color: #ffffff;
