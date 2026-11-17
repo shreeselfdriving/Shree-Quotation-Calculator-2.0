@@ -210,17 +210,19 @@
         </div>
         <div class="field">
           <div class="field-header">
-            <label for="includedKM">3. Included KM limit</label>
-            <span id="kmHint" class="field-pill accent">300 km/d &times; days</span>
+            <label for="kmPerDay">3. Included KM limit</label>
+            <span id="kmHint" class="field-pill accent" title="Click to edit Per-Day KM limit" style="cursor:pointer;">300 km/d &times; days</span>
           </div>
           <div class="km-composite-input">
-            <div class="km-part-day" title="KM Per Day Limit (Default: 300 KM/day)">
-              <input type="number" id="kmPerDay" min="0" step="1" value="300" title="KM Per Day (Default 300 KM/day)" placeholder="300">
+            <div class="km-part-day" id="wrapKmDay" title="Per-Day KM Limit (Default 300 km/day - Editable)">
+              <span class="km-badge">Per Day</span>
+              <input type="number" id="kmPerDay" min="0" step="1" value="300" title="KM Per Day (Default 300 KM/day)" placeholder="300" aria-label="KM Limit Per Day">
               <span class="km-unit">km/d</span>
             </div>
-            <span class="km-arrow">&rarr;</span>
-            <div class="km-part-total" title="Total Included KM (Auto-calculated as Per-day KM × days, fully editable)">
-              <input type="number" id="includedKM" min="0" step="1" value="" placeholder="Auto KM">
+            <span class="km-arrow" id="kmMultiplySign">&times; days =</span>
+            <div class="km-part-total" id="wrapKmTotal" title="Total Included KM (Auto-calculated as Per-day KM × days, fully editable)">
+              <span class="km-badge total">Total</span>
+              <input type="number" id="includedKM" min="0" step="1" value="" placeholder="Auto KM" aria-label="Total Included KM">
               <span class="km-unit">KM</span>
             </div>
           </div>
