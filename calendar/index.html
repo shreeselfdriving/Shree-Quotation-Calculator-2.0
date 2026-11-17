@@ -798,107 +798,193 @@
 <!-- ================= MODAL: ADD / EDIT ADVANCE BOOKING ================= -->
 <div id="modalBooking" class="modal-backdrop" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="modalBookingTitle">
   <div class="modal-box card" style="max-width:620px;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+    <div class="modal-header">
       <h3 id="modalBookingTitle" style="font-family:var(--font-display); font-size:20px; font-weight:800; color:var(--text-main); margin:0;">
         New Advance Booking
       </h3>
-      <button type="button" class="btn ghost btn-icon" id="btnCloseBookingModal">&times;</button>
+      <button type="button" class="btn ghost btn-icon" id="btnCloseBookingModal" aria-label="Close dialog">&times;</button>
     </div>
 
-    <form id="formBooking" autocomplete="off">
+    <form id="formBooking" autocomplete="off" style="display:flex; flex-direction:column; flex:1 1 auto; overflow:hidden;">
       <input type="hidden" id="bId" value="">
 
-      <!-- Section: Customer -->
-      <div class="grid2">
-        <div class="field">
-          <label for="bCustomerName">Customer Name *</label>
-          <input type="text" id="bCustomerName" required placeholder="e.g. Rahul Sharma">
-        </div>
-        <div class="field">
-          <label for="bCustomerPhone">WhatsApp Number *</label>
-          <input type="tel" id="bCustomerPhone" required placeholder="e.g. 9876543210 (10 digits)">
-        </div>
-      </div>
-
-      <!-- Section: Vehicle -->
-      <div class="grid2">
-        <div class="field">
-          <label for="bVehicleSelect">Select Fleet Vehicle</label>
-          <select id="bVehicleSelect">
-            <option value="">-- Choose from Presets or Type Below --</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="bVehicleName">Vehicle Name *</label>
-          <input type="text" id="bVehicleName" required placeholder="e.g. Swift VXi / WagonR / Ertiga">
-        </div>
-      </div>
-
-      <!-- Section: Dates & Times -->
-      <div class="grid2">
-        <div class="field">
-          <label for="bPickupDate">Pickup Date &amp; Time *</label>
-          <div style="display:flex; gap:6px;">
-            <input type="date" id="bPickupDate" required style="flex:1;">
-            <input type="time" id="bPickupTime" value="10:00" style="width:110px;">
+      <div class="modal-body">
+        <!-- Section: Customer -->
+        <div class="grid2">
+          <div class="field">
+            <label for="bCustomerName">Customer Name *</label>
+            <input type="text" id="bCustomerName" required placeholder="e.g. Rahul Sharma">
+          </div>
+          <div class="field">
+            <label for="bCustomerPhone">WhatsApp Number *</label>
+            <input type="tel" id="bCustomerPhone" required placeholder="e.g. 9876543210 (10 digits)">
           </div>
         </div>
-        <div class="field">
-          <label for="bReturnDate">Return Date &amp; Time *</label>
-          <div style="display:flex; gap:6px;">
-            <input type="date" id="bReturnDate" required style="flex:1;">
-            <input type="time" id="bReturnTime" value="20:00" style="width:110px;">
+
+        <!-- Section: Vehicle -->
+        <div class="grid2">
+          <div class="field">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <label for="bVehicleSelect" style="margin:0;">Select Fleet Vehicle</label>
+              <button type="button" id="btnCalAddVehicle" class="btn ghost" style="padding:2px 8px; font-size:11.5px; height:auto; min-height:26px; color:var(--accent-gold); border-color:rgba(245,158,11,0.35);" title="Add New Vehicle to Fleet">
+                + Add Vehicle
+              </button>
+            </div>
+            <select id="bVehicleSelect">
+              <option value="">-- Choose from Presets or Type Below --</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="bVehicleName">Vehicle Name *</label>
+            <input type="text" id="bVehicleName" required placeholder="e.g. Swift VXi / WagonR / Ertiga">
           </div>
         </div>
-      </div>
 
-      <!-- Live Vehicle Conflict Alert -->
-      <div id="bConflictAlert" class="conflict-alert" role="alert">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        <span id="bConflictText">Warning: This vehicle is already booked for overlapping dates!</span>
-      </div>
-
-      <!-- Section: Financials -->
-      <div class="grid2" style="margin-top:12px;">
-        <div class="field">
-          <label for="bTotalAmount">Total Estimated Rental (₹)</label>
-          <input type="number" id="bTotalAmount" placeholder="e.g. 6000" min="0">
+        <!-- Section: Dates & Times -->
+        <div class="grid2">
+          <div class="field">
+            <label for="bPickupDate">Pickup Date &amp; Time *</label>
+            <div style="display:flex; gap:6px;">
+              <input type="date" id="bPickupDate" required style="flex:1;">
+              <input type="time" id="bPickupTime" value="10:00" style="width:110px;">
+            </div>
+          </div>
+          <div class="field">
+            <label for="bReturnDate">Return Date &amp; Time *</label>
+            <div style="display:flex; gap:6px;">
+              <input type="date" id="bReturnDate" required style="flex:1;">
+              <input type="time" id="bReturnTime" value="20:00" style="width:110px;">
+            </div>
+          </div>
         </div>
+
+        <!-- Live Vehicle Conflict Alert -->
+        <div id="bConflictAlert" class="conflict-alert" role="alert">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span id="bConflictText">Warning: This vehicle is already booked for overlapping dates!</span>
+        </div>
+
+        <!-- Section: Financials -->
+        <div class="grid2" style="margin-top:12px;">
+          <div class="field">
+            <label for="bTotalAmount">Total Estimated Rental (₹)</label>
+            <input type="number" id="bTotalAmount" placeholder="e.g. 6000" min="0">
+          </div>
+          <div class="field">
+            <label for="bTokenAmount">Advance Token Paid (₹)</label>
+            <input type="number" id="bTokenAmount" placeholder="e.g. 1000" min="0">
+          </div>
+        </div>
+
+        <div class="grid2">
+          <div class="field">
+            <label for="bBalanceAmount">Balance Due at Handover (₹)</label>
+            <input type="text" id="bBalanceAmount" readonly style="font-weight:700; color:var(--emerald); cursor:not-allowed;" value="₹0">
+          </div>
+          <div class="field">
+            <label for="bStatus">Booking Status</label>
+            <select id="bStatus">
+              <option value="confirmed">Confirmed / Advance Paid</option>
+              <option value="active">Active / In-Drive (Picked Up)</option>
+              <option value="completed">Completed / Returned</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+        </div>
+
         <div class="field">
-          <label for="bTokenAmount">Advance Token Paid (₹)</label>
-          <input type="number" id="bTokenAmount" placeholder="e.g. 1000" min="0">
+          <label for="bLocation">📍 Car Delivery Location</label>
+          <input type="text" id="bLocation" list="bLocationList" placeholder="e.g. Panvel Station / Khanda Colony / Client Doorstep (or Office Pickup)">
+          <datalist id="bLocationList"></datalist>
         </div>
       </div>
 
-      <div class="grid2">
-        <div class="field">
-          <label for="bBalanceAmount">Balance Due at Handover (₹)</label>
-          <input type="text" id="bBalanceAmount" readonly style="font-weight:700; color:var(--emerald); cursor:not-allowed;" value="₹0">
-        </div>
-        <div class="field">
-          <label for="bStatus">Booking Status</label>
-          <select id="bStatus">
-            <option value="confirmed">Confirmed / Advance Paid</option>
-            <option value="active">Active / In-Drive (Picked Up)</option>
-            <option value="completed">Completed / Returned</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="field">
-        <label for="bLocation">📍 Car Delivery Location</label>
-        <input type="text" id="bLocation" list="bLocationList" placeholder="e.g. Panvel Station / Khanda Colony / Client Doorstep (or Office Pickup)">
-        <datalist id="bLocationList"></datalist>
-      </div>
-
-      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:18px;">
-        <button type="button" class="btn ghost" id="btnCancelBooking">Cancel</button>
-        <button type="button" class="btn primary" id="btnSaveBooking" style="padding:10px 22px; font-weight:700;">
+      <div class="modal-footer">
+        <button type="button" class="btn ghost" id="btnCancelBooking" style="min-height:42px;">Cancel</button>
+        <button type="button" class="btn primary" id="btnSaveBooking" style="min-height:42px; padding:10px 22px; font-weight:700;">
           Save Booking
         </button>
       </div>
     </form>
+  </div>
+</div>
+
+<!-- ================= MODAL: ADD NEW VEHICLE TO FLEET ================= -->
+<div id="modalAddVehicle" class="modal-backdrop" style="display:none; z-index:1100;" role="dialog" aria-modal="true" aria-labelledby="modalAddVehTitle">
+  <div class="modal-box card">
+    <div class="modal-header">
+      <h3 id="modalAddVehTitle" style="margin:0; font-family:var(--font-display); font-size:18px; font-weight:800; display:flex; align-items:center; gap:8px;">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add New Vehicle to Fleet
+      </h3>
+      <button type="button" id="btnCloseAddVehModal" style="background:none; border:none; color:var(--text-muted); font-size:24px; cursor:pointer; line-height:1; padding:4px;" aria-label="Close dialog">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="grid2">
+        <div class="field">
+          <label for="newVehName">Vehicle Name &amp; Model *</label>
+          <input type="text" id="newVehName" placeholder="e.g. Maruti Suzuki Swift VXI 2024">
+        </div>
+        <div class="field">
+          <label for="newVehReg">Registration No. / Plate</label>
+          <input type="text" id="newVehReg" placeholder="e.g. MH 46 BV 1007">
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label for="newVehFuel">Fuel type</label>
+          <input type="text" id="newVehFuel" placeholder="e.g. Petrol / Diesel / CNG" value="Petrol">
+        </div>
+        <div class="field">
+          <label for="newVehSeats">Seating capacity</label>
+          <input type="text" id="newVehSeats" placeholder="e.g. 5 Seater" value="5 Seater">
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label for="newVehRate">Rate per day (₹) *</label>
+          <input type="number" id="newVehRate" min="0" placeholder="e.g. 1800" value="1800">
+        </div>
+        <div class="field">
+          <label for="newVehExtraHour">Extra hour rate (₹)</label>
+          <input type="number" id="newVehExtraHour" min="0" placeholder="e.g. 100" value="100">
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label for="newVehKM">Included KM per day (Default 300 km)</label>
+          <input type="number" id="newVehKM" min="0" placeholder="e.g. 300" value="300">
+        </div>
+        <div class="field">
+          <label for="newVehExtraKM">Extra KM rate (₹ / km)</label>
+          <input type="number" id="newVehExtraKM" min="0" placeholder="e.g. 8" value="8">
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label for="newVehToken">Token received (₹)</label>
+          <input type="number" id="newVehToken" min="0" placeholder="e.g. 1000" value="1000">
+        </div>
+        <div class="field">
+          <label for="newVehDeposit">Refundable deposit (₹)</label>
+          <input type="number" id="newVehDeposit" min="0" placeholder="e.g. 4000" value="4000">
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label for="newVehDelivery">Delivery charges (₹)</label>
+          <input type="number" id="newVehDelivery" min="0" placeholder="e.g. 300" value="0">
+        </div>
+        <div class="field">
+          <label for="newVehWashing">Car washing charges (₹)</label>
+          <input type="number" id="newVehWashing" min="0" placeholder="e.g. 200" value="0">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn ghost" id="btnCancelAddVehicle" style="min-height:42px;">Cancel</button>
+      <button type="button" class="btn primary" id="btnConfirmAddVehicle" style="min-height:42px; font-weight:700;">Add Vehicle</button>
+    </div>
   </div>
 </div>
 
