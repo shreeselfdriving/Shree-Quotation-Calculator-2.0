@@ -215,26 +215,21 @@
           </div>
           <div class="km-split-grid">
             <div class="km-col">
-              <div class="km-col-header">
-                <label for="kmPerDay" class="km-sublabel">Per Day Limit</label>
-                <span class="km-pill-sub">Editable</span>
-              </div>
+              <label for="kmPerDay" class="km-sublabel">Per Day</label>
               <div class="input-with-suffix">
                 <input type="number" id="kmPerDay" min="0" step="1" value="300" placeholder="300" aria-label="Per Day KM Limit">
                 <span class="input-suffix">km/d</span>
               </div>
             </div>
             <div class="km-col">
-              <div class="km-col-header">
-                <label for="includedKM" class="km-sublabel">Total Package</label>
-                <span class="km-pill-sub green" id="kmCalcTag">Auto Calc</span>
-              </div>
+              <label for="includedKM" class="km-sublabel">Total</label>
               <div class="input-with-suffix">
                 <input type="number" id="includedKM" min="0" step="1" value="" placeholder="Auto KM" aria-label="Total Included KM">
                 <span class="input-suffix">KM</span>
               </div>
             </div>
           </div>
+          <span id="kmCalcTag" style="display:none;"></span>
         </div>
         <div class="field">
           <div class="field-header">
