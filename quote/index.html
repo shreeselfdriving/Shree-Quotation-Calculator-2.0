@@ -834,6 +834,12 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
          '</div>';
 
     // Charges Breakdown Table
+    var gross = calc.grossRental != null ? calc.grossRental : calc.totalRental;
+    var net = calc.netRental != null ? calc.netRental : (calc.totalRental - calc.discount);
+    var totalPayableAmt = calc.totalPayableAmount != null ? calc.totalPayableAmount : (net + calc.deposit + calc.deliveryCharges + calc.washingCharges);
+    var balDue = calc.balanceDue != null ? calc.balanceDue : calc.payable;
+    var pct = calc.discountType === 'percent' ? ' (' + calc.discountValue + '%)' : '';
+
     h += '<div class="q-ref-table-card">' +
            '<div class="q-ref-card-head">💰 CHARGES BREAKDOWN</div>' +
            '<div class="q-ref-table-header">' +
@@ -841,35 +847,29 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
              '<span>Amount</span>' +
            '</div>' +
            '<div class="q-ref-table-body">' +
-             '<div class="q-ref-trow"><span>Rental Charges (' + fmtINR(calc.ratePerDay) + ' &times; ' + calc.days + ' Days)</span><span class="q-val">' + fmtINR(calc.rental) + '</span></div>';
+             '<div class="q-ref-trow"><span>1. Rental Charges (' + fmtINR(calc.ratePerDay) + ' &times; ' + calc.days + ' Days)</span><span class="q-val">' + fmtINR(calc.rental) + '</span></div>' +
+             '<div class="q-ref-trow"><span>2. Extra Hours (' + calc.extraHours + ' &times; ' + fmtINR(calc.extraHourRate) + ')</span><span class="q-val">' + fmtINR(calc.extraHourCharge) + '</span></div>' +
+             '<div class="q-ref-trow bold"><span>3. Gross Rental Amount</span><span class="q-val">' + fmtINR(gross) + '</span></div>' +
+             '<div class="q-ref-trow credit"><span>4. Less: Offer / Discount' + (calc.discount > 0 ? pct : '') + '</span><span class="q-val">&minus;' + fmtINR(calc.discount) + '</span></div>' +
+             '<div class="q-ref-trow bold"><span>5. Net Rental Amount</span><span class="q-val">' + fmtINR(net) + '</span></div>' +
+             '<div class="q-ref-trow"><span>6. Add: Refundable Security Deposit</span><span class="q-val">+' + fmtINR(calc.deposit) + '</span></div>';
 
-    if (calc.extraHours > 0) {
-      h += '<div class="q-ref-trow"><span>Extra Hours (' + calc.extraHours + ' &times; ' + fmtINR(calc.extraHourRate) + ')</span><span class="q-val">' + fmtINR(calc.extraHourCharge) + '</span></div>';
-    }
-    h += '<div class="q-ref-trow bold"><span>Total Rental Amount</span><span class="q-val">' + fmtINR(calc.totalRental) + '</span></div>';
-
-    if (calc.discount > 0) {
-      var pct = calc.discountType === 'percent' ? ' (' + calc.discountValue + '%)' : '';
-      h += '<div class="q-ref-trow credit"><span>Less Offer / Discount' + pct + '</span><span class="q-val">&minus;' + fmtINR(calc.discount) + '</span></div>';
-    }
-    if (calc.deposit > 0) {
-      h += '<div class="q-ref-trow"><span>Refundable Security Deposit</span><span class="q-val">' + fmtINR(calc.deposit) + '</span></div>';
-    }
     if (calc.deliveryCharges > 0) {
-      h += '<div class="q-ref-trow"><span>Delivery Charges</span><span class="q-val">' + fmtINR(calc.deliveryCharges) + '</span></div>';
+      h += '<div class="q-ref-trow"><span>+ Add: Delivery Charges</span><span class="q-val">+' + fmtINR(calc.deliveryCharges) + '</span></div>';
     }
     if (calc.washingCharges > 0) {
-      h += '<div class="q-ref-trow"><span>Car Washing Charges</span><span class="q-val">' + fmtINR(calc.washingCharges) + '</span></div>';
+      h += '<div class="q-ref-trow"><span>+ Add: Car Washing Charges</span><span class="q-val">+' + fmtINR(calc.washingCharges) + '</span></div>';
     }
-    if (calc.token > 0) {
-      h += '<div class="q-ref-trow credit"><span>Less Token / Advance Received</span><span class="q-val">&minus;' + fmtINR(calc.token) + '</span></div>';
-    }
-    h += '</div></div>';
+
+    h += '<div class="q-ref-trow bold"><span>7. Total Payable Amount</span><span class="q-val">' + fmtINR(totalPayableAmt) + '</span></div>' +
+         '<div class="q-ref-trow credit"><span>8. Less: Token / Advance Received</span><span class="q-val">&minus;' + fmtINR(calc.token) + '</span></div>' +
+         '<div class="q-ref-trow bold highlight"><span>9. Balance Due</span><span class="q-val">' + fmtINR(balDue) + '</span></div>' +
+         '</div></div>';
 
     // Total Payable Bar
     h += '<div class="q-ref-payable-bar">' +
-           '<div class="q-ref-payable-lbl">✅ TOTAL PAYABLE AT HANDOVER</div>' +
-           '<div class="q-ref-payable-amt">' + fmtINR(calc.payable) + '</div>' +
+           '<div class="q-ref-payable-lbl">✅ 9. BALANCE DUE AT HANDOVER</div>' +
+           '<div class="q-ref-payable-amt">' + fmtINR(balDue) + '</div>' +
          '</div>';
 
     // Grid 3: Important Notes & Terms & Conditions (side by side)
