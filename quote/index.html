@@ -1294,6 +1294,11 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
     if (v) {
       var d = parseInt(v, 10);
       $('kmHint').textContent = 'Custom: ' + v + ' KM' + (days > 0 && d > 0 ? ' (' + Math.round(d / days) + ' km/d)' : '');
+      var calcTag = $('kmCalcTag');
+      if (calcTag) {
+        calcTag.textContent = 'Custom';
+        calcTag.className = 'km-pill-sub';
+      }
     } else {
       isKmManuallyEdited = false;
       autoCalcKM();
@@ -1305,24 +1310,6 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
     $('kmHint').addEventListener('click', function () {
       $('kmPerDay').focus();
       $('kmPerDay').select();
-    });
-  }
-
-  if ($('wrapKmDay')) {
-    $('wrapKmDay').addEventListener('click', function (e) {
-      if (e.target !== $('kmPerDay')) {
-        $('kmPerDay').focus();
-        $('kmPerDay').select();
-      }
-    });
-  }
-
-  if ($('wrapKmTotal')) {
-    $('wrapKmTotal').addEventListener('click', function (e) {
-      if (e.target !== $('includedKM')) {
-        $('includedKM').focus();
-        $('includedKM').select();
-      }
     });
   }
 
