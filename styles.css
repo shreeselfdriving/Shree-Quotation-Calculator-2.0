@@ -772,136 +772,105 @@ textarea {
   border-color: rgba(245, 158, 11, 0.28);
 }
 
-/* KM Dual Composite Input Control */
-.km-composite-input {
+/* ==========================================================================
+   KM Dual Split Input Control (Per-Day + Total Included KM)
+   ========================================================================== */
+
+.km-split-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+}
+
+.km-col {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--input-bg);
-  border: 1px solid var(--input-border);
-  border-radius: var(--radius-sm);
-  padding: 4px 8px;
-  min-height: 46px;
-  transition: all var(--transition-fast);
+  flex-direction: column;
+  gap: 6px;
 }
 
-.km-composite-input:focus-within {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-  background: var(--card-hover);
-}
-
-.km-part-day {
+.km-col-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 4px;
-  flex: 1;
-  min-width: 110px;
-  background: rgba(245, 158, 11, 0.09);
-  border: 1px solid rgba(245, 158, 11, 0.28);
-  border-radius: 6px;
-  padding: 2px 6px;
-  cursor: text;
-  transition: border-color 0.2s, background 0.2s;
+  font-size: 11px;
 }
 
-.km-part-day:focus-within,
-.km-part-day:hover {
-  background: rgba(245, 158, 11, 0.16);
-  border-color: var(--accent-gold);
-}
-
-.km-badge {
-  font-size: 10px;
-  font-weight: 800;
+.km-sublabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  padding: 2px 5px;
-  border-radius: 4px;
-  background: rgba(245, 158, 11, 0.2);
-  color: var(--accent-gold);
-  white-space: nowrap;
   user-select: none;
 }
 
-.km-badge.total {
-  background: rgba(16, 185, 129, 0.18);
-  color: var(--emerald);
+.km-pill-sub {
+  font-size: 9.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 1.5px 6px;
+  border-radius: 4px;
+  background: rgba(245, 158, 11, 0.16);
+  color: var(--accent-gold);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  user-select: none;
 }
 
-.km-part-day input {
+.km-pill-sub.green {
+  background: rgba(16, 185, 129, 0.16);
+  color: var(--emerald);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.input-with-suffix {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-with-suffix input {
   width: 100% !important;
-  border: none !important;
-  background: transparent !important;
-  padding: 5px 2px !important;
-  min-height: 32px !important;
+  padding-right: 48px !important;
+  font-weight: 700 !important;
   font-size: 14px !important;
-  font-weight: 800 !important;
-  color: var(--accent-gold) !important;
-  text-align: center !important;
-  box-shadow: none !important;
-  outline: none !important;
+  height: 42px !important;
+  min-height: 42px !important;
+  border-radius: var(--radius-sm) !important;
+  border: 1px solid var(--input-border) !important;
+  background: var(--input-bg) !important;
+  color: var(--text-main) !important;
   -moz-appearance: textfield;
 }
 
-.km-part-day input::-webkit-outer-spin-button,
-.km-part-day input::-webkit-inner-spin-button,
-.km-part-total input::-webkit-outer-spin-button,
-.km-part-total input::-webkit-inner-spin-button {
+.input-with-suffix input#kmPerDay {
+  color: var(--accent-gold) !important;
+  font-weight: 800 !important;
+  border-color: rgba(245, 158, 11, 0.35) !important;
+  background: rgba(245, 158, 11, 0.05) !important;
+}
+
+.input-with-suffix input:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px var(--accent-glow) !important;
+  outline: none !important;
+}
+
+.input-with-suffix input::-webkit-outer-spin-button,
+.input-with-suffix input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-.km-arrow {
-  color: var(--text-dim);
-  font-weight: 800;
-  font-size: 12px;
-  flex-shrink: 0;
-  user-select: none;
-  white-space: nowrap;
-}
-
-.km-part-total {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  flex: 1.2;
-  min-width: 125px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 6px;
-  padding: 2px 6px;
-  cursor: text;
-  transition: border-color 0.2s, background 0.2s;
-}
-
-.km-part-total:focus-within,
-.km-part-total:hover {
-  border-color: var(--accent);
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.km-part-total input {
-  width: 100% !important;
-  border: none !important;
-  background: transparent !important;
-  padding: 5px 2px !important;
-  min-height: 32px !important;
-  font-size: 14px !important;
-  font-weight: 700 !important;
-  color: var(--text-main) !important;
-  box-shadow: none !important;
-  outline: none !important;
-  text-align: center !important;
-  -moz-appearance: textfield;
-}
-
-.km-unit {
-  font-size: 11px;
+.input-suffix {
+  position: absolute;
+  right: 12px;
+  font-size: 11.5px;
   font-weight: 700;
   color: var(--text-dim);
-  padding-right: 2px;
-  white-space: nowrap;
+  pointer-events: none;
   user-select: none;
 }
 
