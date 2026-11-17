@@ -283,6 +283,46 @@
           const countDup = RentalCalc.loadDeliveryPoints().length;
           return countAfter === countBefore + 1 && countDup === countAfter;
         }
+      },
+      {
+        name: "Charges Breakdown: 9-line accounting breakdown (Rental, Extra Hours, Gross, Discount, Net, Deposit, Total, Token, Balance Due)",
+        run: () => {
+          const res = RentalCalc.compute({
+            pickup: "2026-11-20T10:00",
+            return: "2026-11-22T15:00",
+            ratePerDay: 4000,
+            extraHourRate: 250,
+            discountType: "flat",
+            discountValue: 200,
+            deposit: 5000,
+            token: 2000
+          });
+          const view = RentalCalc.buildView({
+            vehName: "Mahindra Scorpio-N",
+            pickup: "2026-11-20T10:00",
+            return: "2026-11-22T15:00",
+            ratePerDay: 4000
+          }, res);
+          const text = RentalCalc.buildText(view);
+          return res.rental === 8000 &&
+                 res.extraHourCharge === 1250 &&
+                 res.grossRental === 9250 &&
+                 res.discount === 200 &&
+                 res.netRental === 9050 &&
+                 res.deposit === 5000 &&
+                 res.totalPayableAmount === 14050 &&
+                 res.token === 2000 &&
+                 res.balanceDue === 12050 &&
+                 text.includes("1. Rental Charges (₹4,000 × 2 Days): ₹8,000") &&
+                 text.includes("2. Extra Hours (5 × ₹250): ₹1,250") &&
+                 text.includes("3. Gross Rental Amount") &&
+                 text.includes("4. Less: Offer / Discount") &&
+                 text.includes("5. Net Rental Amount") &&
+                 text.includes("6. Add: Refundable Security Deposit") &&
+                 text.includes("7. Total Payable Amount") &&
+                 text.includes("8. Less: Token / Advance Received") &&
+                 text.includes("9. Balance Due");
+        }
       }
     ];
 
