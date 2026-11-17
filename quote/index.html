@@ -1275,8 +1275,41 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
   $('includedKM').addEventListener('input', function () {
     isKmManuallyEdited = true;
     var v = val('includedKM');
-    $('kmHint').textContent = v ? 'Custom: ' + v + ' KM' : '300 km/day \u00D7 days';
+    var days = getTripDays();
+    if (v) {
+      var d = parseInt(v, 10);
+      $('kmHint').textContent = 'Custom: ' + v + ' KM' + (days > 0 && d > 0 ? ' (' + Math.round(d / days) + ' km/d)' : '');
+    } else {
+      isKmManuallyEdited = false;
+      autoCalcKM();
+    }
+    update();
   });
+
+  if ($('kmHint')) {
+    $('kmHint').addEventListener('click', function () {
+      $('kmPerDay').focus();
+      $('kmPerDay').select();
+    });
+  }
+
+  if ($('wrapKmDay')) {
+    $('wrapKmDay').addEventListener('click', function (e) {
+      if (e.target !== $('kmPerDay')) {
+        $('kmPerDay').focus();
+        $('kmPerDay').select();
+      }
+    });
+  }
+
+  if ($('wrapKmTotal')) {
+    $('wrapKmTotal').addEventListener('click', function (e) {
+      if (e.target !== $('includedKM')) {
+        $('includedKM').focus();
+        $('includedKM').select();
+      }
+    });
+  }
 
   ['pickupDate', 'pickupHour', 'pickupMin', 'pickupAmPm', 'returnDate', 'returnHour', 'returnMin', 'returnAmPm'].forEach(function (id) {
     var el = $(id);
