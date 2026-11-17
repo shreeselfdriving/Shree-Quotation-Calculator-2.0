@@ -109,6 +109,7 @@
     var rental = ratePerDay * days;
     var extraHourCharge = extraHours * extraHourRate;
     var totalRental = rental + extraHourCharge;
+    var grossRental = totalRental;
 
     var discountType = input.discountType === 'percent' ? 'percent' : 'amount';
     var discountValue = money(input.discountValue);
@@ -117,7 +118,10 @@
       : discountValue;
     discount = Math.round(Math.max(0, Math.min(totalRental, discount)));
 
-    var payable = totalRental - discount + deposit + deliveryCharges + washingCharges - token;
+    var netRental = Math.max(0, grossRental - discount);
+    var totalPayableAmount = netRental + deposit + deliveryCharges + washingCharges;
+    var balanceDue = Math.max(0, totalPayableAmount - token);
+    var payable = balanceDue;
 
     return {
       error: error,
@@ -133,13 +137,17 @@
       rental: rental,
       extraHourCharge: extraHourCharge,
       totalRental: totalRental,
+      grossRental: grossRental,
       discountType: discountType,
       discountValue: discountValue,
       discount: discount,
+      netRental: netRental,
       deposit: deposit,
       token: token,
       deliveryCharges: deliveryCharges,
       washingCharges: washingCharges,
+      totalPayableAmount: totalPayableAmount,
+      balanceDue: balanceDue,
       payable: payable
     };
   }
