@@ -2577,48 +2577,37 @@ textarea {
   font-weight: 700 !important;
 }
 
-/* KM Dual Composite Input Control in Light Mode */
-[data-theme="light"] .km-composite-input {
-  background: #ffffff !important;
-  border: 1.5px solid #94a3b8 !important;
-}
-
-[data-theme="light"] .km-part-day {
-  background: #fef3c7 !important;
-  border: 1px solid #fcd34d !important;
-}
-
-[data-theme="light"] .km-badge {
-  background: #fde68a !important;
-  color: #92400e !important;
-}
-
-[data-theme="light"] .km-badge.total {
-  background: #d1fae5 !important;
-  color: #065f46 !important;
-}
-
-[data-theme="light"] .km-part-day input {
-  color: #92400e !important;
-  font-weight: 800 !important;
-}
-
-[data-theme="light"] .km-part-total {
-  background: #f8fafc !important;
-  border: 1px solid #cbd5e1 !important;
-}
-
-[data-theme="light"] .km-part-total input {
-  color: #020617 !important;
-  font-weight: 800 !important;
-}
-
-[data-theme="light"] .km-unit {
+/* KM Split Grid in Light Mode */
+[data-theme="light"] .km-sublabel {
   color: #334155 !important;
   font-weight: 800 !important;
 }
 
-[data-theme="light"] .km-arrow {
+[data-theme="light"] .km-pill-sub {
+  background: #fef3c7 !important;
+  color: #92400e !important;
+  border-color: #fcd34d !important;
+}
+
+[data-theme="light"] .km-pill-sub.green {
+  background: #d1fae5 !important;
+  color: #065f46 !important;
+  border-color: #a7f3d0 !important;
+}
+
+[data-theme="light"] .input-with-suffix input {
+  background: #ffffff !important;
+  border-color: #94a3b8 !important;
+  color: #020617 !important;
+}
+
+[data-theme="light"] .input-with-suffix input#kmPerDay {
+  background: #fffbeb !important;
+  border-color: #f59e0b !important;
+  color: #b45309 !important;
+}
+
+[data-theme="light"] .input-suffix {
   color: #475569 !important;
   font-weight: 800 !important;
 }
