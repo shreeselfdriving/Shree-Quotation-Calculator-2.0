@@ -1123,7 +1123,7 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
 
     if (ok) {
       var view = RC.buildView(inputs, calc);
-      lastText = RC.buildText(view);
+      lastText = generateQuotationText(inputs, calc, view);
       $('quote').innerHTML = renderHtml(view, inputs, calc);
       $('banner').classList.remove('show');
     } else {
