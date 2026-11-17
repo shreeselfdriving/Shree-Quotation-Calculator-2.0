@@ -633,7 +633,22 @@ Vehicle condition and KM reading will be checked at handover and return.</textar
 
   function autoCalcKM() {
     var days = getTripDays();
-    var perDay = parseInt($('kmPerDay').value, 10);
+    var rawPerDay = ($('kmPerDay').value || '').trim();
+    var perDay = parseInt(rawPerDay, 10);
+    var mulSign = $('kmMultiplySign');
+
+    if (mulSign) {
+      mulSign.innerHTML = days > 0 ? '&times; ' + days + 'd =' : '&times; days =';
+    }
+
+    if (rawPerDay === '') {
+      if (!isKmManuallyEdited) {
+        $('includedKM').value = '';
+      }
+      $('kmHint').textContent = days > 0 ? 'Enter km/d \u00D7 ' + days + 'd' : 'km/day \u00D7 days';
+      return;
+    }
+
     if (!isFinite(perDay) || perDay <= 0) perDay = 300;
 
     if (days > 0) {
