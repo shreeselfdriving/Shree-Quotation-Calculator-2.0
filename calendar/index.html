@@ -1682,13 +1682,137 @@
     $('modalBooking').style.display = 'none';
   }
 
-  $('btnOpenNewBooking').addEventListener('click', function () { openAddModal(); });
-  $('btnCloseBookingModal').addEventListener('click', closeModal);
-  $('btnCancelBooking').addEventListener('click', closeModal);
+  /* Modal Handlers for Add Vehicle to Fleet */
+  function openAddVehicleModal() {
+    $('newVehName').value = '';
+    if ($('newVehReg')) $('newVehReg').value = '';
+    $('newVehFuel').value = 'Petrol';
+    $('newVehSeats').value = '5 Seater';
+    $('newVehRate').value = '1800';
+    $('newVehExtraHour').value = '100';
+    $('newVehKM').value = '300';
+    $('newVehExtraKM').value = '8';
+    $('newVehToken').value = '1000';
+    $('newVehDeposit').value = '4000';
+    $('newVehDelivery').value = '0';
+    $('newVehWashing').value = '0';
+    $('modalAddVehicle').style.display = 'flex';
+    if (!('ontouchstart' in window) && window.innerWidth > 768) {
+      setTimeout(function () { $('newVehName').focus(); }, 100);
+    }
+  }
+
+  function closeAddVehicleModal() {
+    $('modalAddVehicle').style.display = 'none';
+    if ($('bVehicleSelect') && $('bVehicleSelect').value === '__add_new_vehicle__') {
+      $('bVehicleSelect').value = '';
+    }
+  }
+
+  var isSubmittingCalVeh = false;
+  function handleConfirmAddCalVehicle(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    if (isSubmittingCalVeh) return;
+
+    var name = ($('newVehName').value || '').trim();
+    if (!name) {
+      alert('Please enter a vehicle name.');
+      $('newVehName').focus();
+      return;
+    }
+    var rateVal = ($('newVehRate').value || '').trim();
+    if (!rateVal || isNaN(parseFloat(rateVal)) || parseFloat(rateVal) <= 0) {
+      alert('Please enter a valid rate per day.');
+      $('newVehRate').focus();
+      return;
+    }
+
+    isSubmittingCalVeh = true;
+    var confirmBtn = $('btnConfirmAddVehicle');
+    if (confirmBtn) confirmBtn.disabled = true;
+
+    try {
+      var newVehData = {
+        name: name,
+        regNo: ($('newVehReg') ? $('newVehReg').value : '') || '',
+        fuel: ($('newVehFuel').value || 'Petrol').trim(),
+        seats: ($('newVehSeats').value || '5 Seater').trim(),
+        ratePerDay: rateVal,
+        extraHourRate: ($('newVehExtraHour').value || '100').trim(),
+        kmPerDay: ($('newVehKM').value || '300').trim(),
+        includedKM: '',
+        extraKMRate: ($('newVehExtraKM').value || '8').trim(),
+        token: ($('newVehToken').value || '1000').trim(),
+        deposit: ($('newVehDeposit').value || '4000').trim(),
+        deliveryCharges: ($('newVehDelivery').value || '0').trim(),
+        washingCharges: ($('newVehWashing').value || '0').trim()
+      };
+
+      var saved = null;
+      if (window.RentalCalc && typeof window.RentalCalc.addVehicle === 'function') {
+        try {
+          saved = window.RentalCalc.addVehicle(newVehData);
+        } catch (err) {
+          console.warn('RentalCalc.addVehicle error:', err);
+        }
+      }
+      var newId = (saved && saved.id) ? saved.id : ('veh_' + Date.now());
+
+      if (!saved) {
+        newVehData.id = newId;
+        var list = loadVehicles();
+        list.push(newVehData);
+        saveVehicles(list);
+        saved = newVehData;
+      }
+
+      closeAddVehicleModal();
+      populateVehicleSelect(newId);
+      if ($('bVehicleSelect')) $('bVehicleSelect').value = newId;
+      $('bVehicleName').value = saved.name;
+      if (saved.token && !val('bTokenAmount')) {
+        $('bTokenAmount').value = saved.token;
+      }
+      var p = val('bPickupDate');
+      var r = val('bReturnDate');
+      if (p && r && saved.ratePerDay) {
+        var d1 = new Date(p);
+        var d2 = new Date(r);
+        var diff = d2.getTime() - d1.getTime();
+        var days = Math.max(1, Math.round(diff / (1000 * 60 * 60 * 24)));
+        $('bTotalAmount').value = days * Number(saved.ratePerDay);
+      }
+      updateBalanceDisplay();
+      checkConflict();
+    } catch (saveVehErr) {
+      console.error('Error adding vehicle to fleet:', saveVehErr);
+      alert('Error adding vehicle: ' + (saveVehErr.message || 'Unknown error'));
+    } finally {
+      isSubmittingCalVeh = false;
+      if (confirmBtn) confirmBtn.disabled = false;
+    }
+  }
+
+  addTouchClick($('btnOpenNewBooking'), function () { openAddModal(); });
+  addTouchClick($('btnCloseBookingModal'), closeModal);
+  addTouchClick($('btnCancelBooking'), closeModal);
+
+  addTouchClick($('btnCalAddVehicle'), openAddVehicleModal);
+  addTouchClick($('btnCloseAddVehModal'), closeAddVehicleModal);
+  addTouchClick($('btnCancelAddVehicle'), closeAddVehicleModal);
+  addTouchClick($('btnConfirmAddVehicle'), handleConfirmAddCalVehicle);
+
+  $('modalAddVehicle').addEventListener('click', function (e) {
+    if (e.target === this) closeAddVehicleModal();
+  });
 
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && $('modalBooking').style.display === 'flex') {
-      closeModal();
+    if (e.key === 'Escape') {
+      if ($('modalAddVehicle') && $('modalAddVehicle').style.display === 'flex') {
+        closeAddVehicleModal();
+      } else if ($('modalBooking') && $('modalBooking').style.display === 'flex') {
+        closeModal();
+      }
     }
   });
 
@@ -1744,6 +1868,18 @@
         } catch (err) {}
       }
 
+      // Auto-save vehicle to fleet if it doesn't already exist
+      if (veh && !findVehicleHelper(veh) && window.RentalCalc && typeof window.RentalCalc.addVehicle === 'function') {
+        try {
+          window.RentalCalc.addVehicle({
+            name: veh,
+            ratePerDay: total ? String(total) : '2000',
+            token: token ? String(token) : '1000'
+          });
+          populateVehicleSelect();
+        } catch (autoVehErr) {}
+      }
+
       if (id) {
         var idx = bookings.findIndex(function (b) { return b.id === id; });
         if (idx !== -1) bookings[idx] = bookingData;
@@ -1774,7 +1910,7 @@
     }
   }
 
-  $('btnSaveBooking').addEventListener('click', handleSaveBooking);
+  addTouchClick($('btnSaveBooking'), handleSaveBooking);
   $('formBooking').addEventListener('submit', handleSaveBooking);
 
   /* View switcher tabs */
